@@ -1,0 +1,67 @@
+<html>
+    <style>
+        .red {
+            color: red;
+        }
+    </style>
+    <body>
+        <table id="combatLog">
+        </table>
+        <script>
+            var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
+            var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
+            
+            var frothingHeretic = {hp:10,ac:14,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
+            var enemy = frothingHeretic;
+            
+            var player = {hp:20,ac:14,weapon:morningStar,name:"Jake",perPronoun:"him",possPronoun:"his"};
+            
+            var turn = 0;
+            var dead = 0;
+            var characters = [player,enemy];
+            
+            while (!dead) {
+                takeTurn(characters[turn%2],characters[(turn+1)%2]);
+                turn++;
+            }
+            
+            function takeTurn(curr, enemy) {
+                var attackResult = makeAttack(curr,enemy);
+                var result = "";
+                
+                result += "<tr><td>";
+
+                if (attackResult == 0) {
+                    result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " " + curr.weapon.verb + " " + curr.possPronoun + " " + curr.weapon.name + " but missed!";
+                }
+                else {
+                    enemy.hp -= attackResult;
+                    if (enemy.hp > 0)
+                        result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " " + curr.weapon.verb + " " + curr.possPronoun + " " + curr.weapon.name + " at " + enemy.name + " and dealt <span class='red'>" + attackResult + "</span> damage. " + enemy.name.charAt(0).toUpperCase() + enemy.name.slice(1) + " now has <span class='red'>" + enemy.hp + "</span> health."; 
+                    else {
+                        dead = 1 + turn;
+                        result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " dealt <span class='red'>" + + attackResult + "</span> damage and " + curr.weapon.killVerb + " " + enemy.name + " with " + curr.possPronoun + " " + curr.weapon.name;
+                    }
+                }
+                result += "</tr></td>";
+                
+                document.getElementById("combatLog").innerHTML += result;
+            }
+            
+            function makeAttack(attacker,defender) {
+                if (attackRoll() + attacker.weapon.attack > defender.ac)
+                    return getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
+                else 
+                    return 0;
+            }
+            
+            function attackRoll() {
+                return parseInt(Math.random()*20+1);
+            }
+            
+            function getDamage(x,y) {
+                return parseInt(Math.random()*(y-(x-1))+x);
+            }
+        </script>
+    </body>
+</html>
