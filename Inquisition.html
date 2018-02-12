@@ -1,20 +1,56 @@
 <html>
     <style>
+        .hp, .hpMax {
+            height: 30px;
+            width: 250px;
+        }
+        
+        .hp {
+            background-color: green;
+        }
+        
+        .hpMax {
+            outline: 2px solid black;
+        }
+        
+        .hpText {
+            font-size: 18px;
+            font-weight: 900;
+            margin-left: 10px;
+        }
         .red {
             color: red;
         }
+        
+        .combatLogContainer {
+        }
     </style>
     <body>
-        <table id="combatLog">
-        </table>
+        <div class="combatLogContainer">
+            <table class="combatLogContainer">
+                <tbody id="combatLog">
+                </tbody>
+            </table>
+        </div>
+        <div class="hpMax">
+            <div class="hp" id="playerHP">
+                <div class="hpText" id="playerHPText">20/20</div>
+            </div>
+        </div>
+        <br>
+        <div class="hpMax">
+            <div class="hp" id="enemyHP">
+                <div class="hpText" id="enemyHPText">10/10</div>
+            </div>
+        </div>
         <script>
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
             
-            var frothingHeretic = {hp:10,ac:14,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
+            var frothingHeretic = {hp:10,maxHP:10,ac:14,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
             var enemy = frothingHeretic;
             
-            var player = {hp:20,ac:14,weapon:morningStar,name:"Jake",perPronoun:"him",possPronoun:"his"};
+            var player = {hp:20,maxHP:20,ac:14,weapon:morningStar,name:"Jake",perPronoun:"him",possPronoun:"his"};
             
             var turn = 0;
             var dead = 0;
@@ -28,6 +64,12 @@
             function takeTurn(curr, enemy) {
                 var attackResult = makeAttack(curr,enemy);
                 var result = "";
+                var currHP = "";
+                
+                if (turn%2 == 1)
+                    currName = "player";
+                else 
+                    currName = "enemy";
                 
                 result += "<tr><td>";
 
@@ -36,6 +78,19 @@
                 }
                 else {
                     enemy.hp -= attackResult;
+                    if (enemy.hp/enemy.maxHP < 0.2)
+                        document.getElementById(currName + "HP").style.backgroundColor = "red";
+                    else if (enemy.hp/enemy.maxHP < 0.4)
+                        document.getElementById(currName + "HP").style.backgroundColor = "yellow";
+                    if (enemy.hp < 0) {
+                        document.getElementById(currName + "HP").style.width = "0px";
+                        document.getElementById(currName + "HPText").innerHTML = "0/" + enemy.maxHP;
+                    }
+                    else {
+                        document.getElementById(currName + "HP").style.width = (enemy.hp/enemy.maxHP) * 250 + "px";
+                        document.getElementById(currName + "HPText").innerHTML = "" + enemy.hp + "/" + enemy.maxHP;
+                    }
+                    
                     if (enemy.hp > 0)
                         result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " " + curr.weapon.verb + " " + curr.possPronoun + " " + curr.weapon.name + " at " + enemy.name + " and dealt <span class='red'>" + attackResult + "</span> damage. " + enemy.name.charAt(0).toUpperCase() + enemy.name.slice(1) + " now has <span class='red'>" + enemy.hp + "</span> health."; 
                     else {
