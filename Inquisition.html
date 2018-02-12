@@ -22,26 +22,125 @@
             color: red;
         }
         
-        .combatLogContainer {
+        #combatLogContainer {
+            height: 25%;
+            overflow-y: scroll;
+            outline: 5px solid black;
+            padding:5px;
+        }
+        
+        #battleSection {
+            height: 65%;
+            outline: 5px solid black;
+            position:relative;
+        }
+        
+        #movesSection {
+            height: 25%;
+            outline: 5px solid black;
+        }
+        
+        #enemyHPMax {
+            float:right;
+            margin: 5px;
+        }
+        
+        
+        .tabMenu {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        
+        .tab, .tabButton {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+        
+        .tab, .tabButton:hover {
+            background-color: #ddd;
+        }
+        
+        .tab, .tabButton.active {
+            background-color: #ccc;
+        }
+        
+        .tabContent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+        
+        img {
+            max-width:calc(100%);
+            max-height:calc(100% - 10px);
+            margin:5px;
+        }
+        
+        #playerImageContainer {
+            height:400px;
+            position: relative;
+            bottom: 35px;
+        }
+        
+        #playerHPMax {
+            position:absolute;
+            bottom:0;
+            margin: 5px;
+        }
+        
+        #playerContainer {
+            display:inline-block;
+            position:absolute;
+            bottom:0;
+        }
+        
+        #enemyImgContainer {
+            width:100px;
+            height:100px;
+            float:right;
         }
     </style>
     <body>
-        <div class="combatLogContainer">
-            <table class="combatLogContainer">
+        <div id="battleSection">
+            <div class="hpMax" id="enemyHPMax">
+                <div class="hp" id="enemyHP">
+                    <div class="hpText" id="enemyHPText">10/10</div>
+                </div>
+            </div>
+            <div id="enemyImgContainer">
+                <img src="art/enemy.jpg">
+            </div>
+            <div id="playerContainer">
+                <div id="playerImageContainer">
+                    <img src="art/player.jpg">
+                </div>
+                <div class="hpMax" id="playerHPMax">
+                    <div class="hp" id="playerHP">
+                        <div class="hpText" id="playerHPText">20/20</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tabMenu">
+          <button class="tabLinks tabButton" id="movesButton" onclick="openTab(event, 'movesSection')">Actions</button>
+          <button class="tabLinks tabButton" onclick="openTab(event, 'combatLogContainer')">Combat Log</button>
+        </div>
+        <div id = "movesSection" class="tabContent">
+            <button>Attack</button>
+        </div>
+        <div id="combatLogContainer" class="tabContent">
+            <table>
                 <tbody id="combatLog">
                 </tbody>
             </table>
-        </div>
-        <div class="hpMax">
-            <div class="hp" id="playerHP">
-                <div class="hpText" id="playerHPText">20/20</div>
-            </div>
-        </div>
-        <br>
-        <div class="hpMax">
-            <div class="hp" id="enemyHP">
-                <div class="hpText" id="enemyHPText">10/10</div>
-            </div>
         </div>
         <script>
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
@@ -56,9 +155,16 @@
             var dead = 0;
             var characters = [player,enemy];
             
+            startCombat();
+            
             while (!dead) {
                 takeTurn(characters[turn%2],characters[(turn+1)%2]);
                 turn++;
+            }
+            
+            function startCombat() { 
+                document.getElementById("movesSection").style.display = "block";
+                document.getElementById("movesButton").className += " active";
             }
             
             function takeTurn(curr, enemy) {
@@ -116,6 +222,20 @@
             
             function getDamage(x,y) {
                 return parseInt(Math.random()*(y-(x-1))+x);
+            }
+            
+            function openTab(evt, currTab) {
+                var i, tabContent, tabLinks;
+                tabContent = document.getElementsByClassName("tabContent");
+                for (i = 0; i < tabContent.length; i++) {
+                    tabContent[i].style.display = "none";
+                }
+                tabLinks = document.getElementsByClassName("tabLinks");
+                for (i = 0; i < tabLinks.length; i++) {
+                    tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+                }
+                document.getElementById(currTab).style.display = "block";
+                evt.currentTarget.className += " active";
             }
         </script>
     </body>
