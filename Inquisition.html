@@ -38,6 +38,7 @@
         #movesSection {
             height: 25%;
             outline: 5px solid black;
+            padding: 0;
         }
         
         #enemyHPMax {
@@ -102,21 +103,35 @@
             bottom:0;
         }
         
-        #enemyImgContainer {
-            width:100px;
-            height:100px;
+        #enemyContainer {
+            display:inline-block;
             float:right;
+        }
+        
+        #enemyImgContainer {
+            height:400px;
+        }
+        
+        #enemyHPMax {
+            float:right;
+        }
+        
+        .actionButton {
+            font-size: 24px;
+            margin: 2px 4px;
         }
     </style>
     <body>
         <div id="battleSection">
-            <div class="hpMax" id="enemyHPMax">
-                <div class="hp" id="enemyHP">
-                    <div class="hpText" id="enemyHPText">10/10</div>
+            <div id="enemyContainer">
+                <div class="hpMax" id="enemyHPMax">
+                    <div class="hp" id="enemyHP">
+                        <div class="hpText" id="enemyHPText">10/10</div>
+                    </div>
                 </div>
-            </div>
-            <div id="enemyImgContainer">
-                <img src="art/enemy.jpg">
+                <div id="enemyImgContainer">
+                    <img src="art/enemy.jpg">
+                </div>
             </div>
             <div id="playerContainer">
                 <div id="playerImageContainer">
@@ -134,7 +149,9 @@
           <button class="tabLinks tabButton" onclick="openTab(event, 'combatLogContainer')">Combat Log</button>
         </div>
         <div id = "movesSection" class="tabContent">
-            <button>Attack</button>
+            <div class="actionButton">Attack</div>
+            <div class="actionButton">Abilities</div>
+            <div class="actionButton">Items</div>
         </div>
         <div id="combatLogContainer" class="tabContent">
             <table>
