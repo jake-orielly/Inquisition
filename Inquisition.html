@@ -121,7 +121,17 @@
 
             .actionButton {
                 font-size: 24px;
+                font-weight: 900;
                 margin: 2px 4px;
+                cursor: pointer;
+                display: table; /*Makes divs size of text (for mousover purposes)*/ 
+            }
+            
+            .actionButton::selection {
+                background: rgba(0,0,0,0); /*Makes highlight of text invisible*/
+            }
+            .actionButton::-moz-selection {
+                background: rgba(0,0,0,0);
             }
 
             .actionText {
@@ -192,10 +202,10 @@
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
             
-            var frothingHeretic = {hp:10,maxHP:10,ac:12,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
+            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
             var enemy = frothingHeretic;
             
-            var player = {hp:20,maxHP:20,ac:12,weapon:morningStar,name:"Jake",perPronoun:"him",possPronoun:"his"};
+            var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,name:"Jake",perPronoun:"him",possPronoun:"his"};
             
             var turn = 0;
             var dead = 0;
@@ -212,11 +222,17 @@
             function playerTurn() {
                 if (isPlayerTurn && !dead) {
                     isPlayerTurn = false;
+                    $(".actionButton").css("color","grey");
+                    $(".actionButton").css("cursor","default");
                     takeTurn(characters[0],characters[1])
                     if (!dead) {
                         setTimeout(function(){
                             takeTurn(characters[1],characters[0])
-                            isPlayerTurn = true;
+                            setTimeout(function(){
+                                isPlayerTurn = true
+                                $(".actionButton").css("color","black");
+                                $(".actionButton").css("cursor","pointer");
+                            },1000);
                         }, 1000);
                     }
                 }
