@@ -1,126 +1,153 @@
 <html>
-    <style>
-        .hp, .hpMax {
-            height: 30px;
-            width: 250px;
-        }
-        
-        .hp {
-            background-color: green;
-        }
-        
-        .hpMax {
-            outline: 2px solid black;
-        }
-        
-        .hpText {
-            font-size: 18px;
-            font-weight: 900;
-            margin-left: 10px;
-        }
-        .red {
-            color: red;
-        }
-        
-        #combatLogContainer {
-            height: 25%;
-            overflow-y: scroll;
-            outline: 5px solid black;
-            padding:5px;
-        }
-        
-        #battleSection {
-            height: 65%;
-            outline: 5px solid black;
-            position:relative;
-        }
-        
-        #movesSection {
-            height: 25%;
-            outline: 5px solid black;
-            padding: 0;
-        }
-        
-        #enemyHPMax {
-            float:right;
-            margin: 5px;
-        }
-        
-        
-        .tabMenu {
-            overflow: hidden;
-            border: 1px solid #ccc;
-            background-color: #f1f1f1;
-        }
-        
-        .tab, .tabButton {
-            background-color: inherit;
-            float: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 14px 16px;
-            transition: 0.3s;
-            font-size: 17px;
-        }
-        
-        .tab, .tabButton:hover {
-            background-color: #ddd;
-        }
-        
-        .tab, .tabButton.active {
-            background-color: #ccc;
-        }
-        
-        .tabContent {
-            display: none;
-            padding: 6px 12px;
-            border: 1px solid #ccc;
-            border-top: none;
-        }
-        
-        img {
-            max-width:calc(100%);
-            max-height:calc(100% - 10px);
-            margin:5px;
-        }
-        
-        #playerImageContainer {
-            height:400px;
-            position: relative;
-            bottom: 35px;
-        }
-        
-        #playerHPMax {
-            position:absolute;
-            bottom:0;
-            margin: 5px;
-        }
-        
-        #playerContainer {
-            display:inline-block;
-            position:absolute;
-            bottom:0;
-        }
-        
-        #enemyContainer {
-            display:inline-block;
-            float:right;
-        }
-        
-        #enemyImgContainer {
-            height:400px;
-        }
-        
-        #enemyHPMax {
-            float:right;
-        }
-        
-        .actionButton {
-            font-size: 24px;
-            margin: 2px 4px;
-        }
-    </style>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <style>
+            .hp, .hpMax {
+                height: 30px;
+                width: 250px;
+            }
+
+            .hp {
+                background-color: green;
+            }
+
+            .hpMax {
+                outline: 2px solid black;
+            }
+
+            .hpText {
+                font-size: 18px;
+                font-weight: 900;
+                margin-left: 10px;
+            }
+            .red {
+                color: red;
+            }
+
+            #combatLogContainer {
+                height: 25%;
+                overflow-y: scroll;
+                outline: 5px solid black;
+                padding:5px;
+            }
+
+            #battleSection {
+                height: 65%;
+                outline: 5px solid black;
+                position:relative;
+            }
+
+            #movesSection {
+                height: 25%;
+                outline: 5px solid black;
+                padding: 0;
+            }
+
+            #enemyHPMax {
+                float:right;
+                margin: 5px;
+            }
+
+
+            .tabMenu {
+                overflow: hidden;
+                border: 1px solid #ccc;
+                background-color: #f1f1f1;
+            }
+
+            .tab, .tabButton {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 17px;
+            }
+
+            .tab, .tabButton:hover {
+                background-color: #ddd;
+            }
+
+            .tab, .tabButton.active {
+                background-color: #ccc;
+            }
+
+            .tabContent {
+                display: none;
+                padding: 6px 12px;
+                border: 1px solid #ccc;
+                border-top: none;
+            }
+
+            img {
+                max-width:calc(90%);
+                max-height:calc(90% - 10px);
+                margin:5px;
+            }
+
+            #playerImageContainer {
+                height:90%;
+                position: relative;
+                bottom: 35px;
+            }
+
+            #playerHPMax {
+                position:absolute;
+                bottom:0;
+                margin: 5px;
+            }
+
+            #playerContainer {
+                display:inline-block;
+                position:absolute;
+                bottom:0;
+            }
+
+            #enemyContainer {
+                display:inline-block;
+                float:right;
+            }
+
+            #enemyImgContainer {
+                height:90%;
+                position:relative;
+            }
+
+            #enemyHPMax {
+                float:right;
+            }
+
+            .actionButton {
+                font-size: 24px;
+                margin: 2px 4px;
+            }
+
+            .actionText {
+                position:absolute;
+                color:red;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-weight: 900;
+                font-size: 36;
+                text-shadow: 2px 2px 4px black;
+                display: none;
+                transition: 1s;
+                -webkit-transition: 1s;
+            }
+
+            .actionTextMove {
+                top: 30%;
+                left: 50%;
+                transform: translate(-30%, -50%);
+                transition: 1s;
+                -webkit-transition: 1s;
+            }
+        </style>
+    </head>
+
     <body>
         <div id="battleSection">
             <div id="enemyContainer">
@@ -131,11 +158,13 @@
                 </div>
                 <div id="enemyImgContainer">
                     <img src="art/enemy.jpg">
+                    <div id="enemyActionText" class="actionText">MISS</div>
                 </div>
             </div>
             <div id="playerContainer">
                 <div id="playerImageContainer">
                     <img src="art/player.jpg">
+                    <div id="playerActionText" class="actionText">MISS</div>
                 </div>
                 <div class="hpMax" id="playerHPMax">
                     <div class="hp" id="playerHP">
@@ -149,7 +178,7 @@
           <button class="tabLinks tabButton" onclick="openTab(event, 'combatLogContainer')">Combat Log</button>
         </div>
         <div id = "movesSection" class="tabContent">
-            <div class="actionButton">Attack</div>
+            <div class="actionButton" onClick="playerTurn()">Attack</div>
             <div class="actionButton">Abilities</div>
             <div class="actionButton">Items</div>
         </div>
@@ -163,25 +192,34 @@
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
             
-            var frothingHeretic = {hp:10,maxHP:10,ac:14,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
+            var frothingHeretic = {hp:10,maxHP:10,ac:12,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
             var enemy = frothingHeretic;
             
-            var player = {hp:20,maxHP:20,ac:14,weapon:morningStar,name:"Jake",perPronoun:"him",possPronoun:"his"};
+            var player = {hp:20,maxHP:20,ac:12,weapon:morningStar,name:"Jake",perPronoun:"him",possPronoun:"his"};
             
             var turn = 0;
             var dead = 0;
             var characters = [player,enemy];
+            var isPlayerTurn = true;
             
             startCombat();
-            
-            while (!dead) {
-                takeTurn(characters[turn%2],characters[(turn+1)%2]);
-                turn++;
-            }
             
             function startCombat() { 
                 document.getElementById("movesSection").style.display = "block";
                 document.getElementById("movesButton").className += " active";
+            }
+            
+            function playerTurn() {
+                if (isPlayerTurn && !dead) {
+                    isPlayerTurn = false;
+                    takeTurn(characters[0],characters[1])
+                    if (!dead) {
+                        setTimeout(function(){
+                            takeTurn(characters[1],characters[0])
+                            isPlayerTurn = true;
+                        }, 1000);
+                    }
+                }
             }
             
             function takeTurn(curr, enemy) {
@@ -191,16 +229,18 @@
                 
                 if (turn%2 == 1)
                     currName = "player";
-                else 
+                else
                     currName = "enemy";
                 
                 result += "<tr><td>";
 
                 if (attackResult == 0) {
+                    moveText(currName,"MISS");
                     result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " " + curr.weapon.verb + " " + curr.possPronoun + " " + curr.weapon.name + " but missed!";
                 }
                 else {
                     enemy.hp -= attackResult;
+                    moveText(currName,"-" + attackResult);
                     if (enemy.hp/enemy.maxHP < 0.2)
                         document.getElementById(currName + "HP").style.backgroundColor = "red";
                     else if (enemy.hp/enemy.maxHP < 0.4)
@@ -223,7 +263,19 @@
                 }
                 result += "</tr></td>";
                 
+                turn++;
                 document.getElementById("combatLog").innerHTML += result;
+            }
+            
+            function moveText(given,val) {
+                $("#" + given + "ActionText").text(val);
+                $("#" + given + "ActionText").show();
+                $("#" + given + "ActionText").fadeOut(1000,textReset("" + given));
+                $("#" + given + "ActionText").addClass("actionTextMove");
+            }
+            
+            function textReset(given) {
+                $("#" + given + "ActionText").removeClass("actionTextMove");
             }
             
             function makeAttack(attacker,defender) {
