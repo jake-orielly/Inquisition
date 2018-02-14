@@ -119,18 +119,18 @@
                 float:right;
             }
 
-            .actionButton {
+            .actionButton, .abilityButton {
                 font-size: 24px;
                 font-weight: 900;
-                margin: 2px 4px;
                 cursor: pointer;
                 display: table; /*Makes divs size of text (for mousover purposes)*/ 
+                margin-right: 15px;
             }
             
-            .actionButton::selection {
+            .actionButton::selection, .abilityButton::selection {
                 background: rgba(0,0,0,0); /*Makes highlight of text invisible*/
             }
-            .actionButton::-moz-selection {
+            .actionButton::-moz-selection, .abilityButton::-moz-selection {
                 background: rgba(0,0,0,0);
             }
 
@@ -155,6 +155,12 @@
                 transition: 1s;
                 -webkit-transition: 1s;
             }
+            
+            .coolDown {
+                color: grey;
+                cursor: default;
+            }
+            
         </style>
     </head>
 
@@ -187,11 +193,20 @@
           <button class="tabLinks tabButton" id="movesButton" onclick="openTab(event, 'movesSection')">Actions</button>
           <button class="tabLinks tabButton" onclick="openTab(event, 'combatLogContainer')">Combat Log</button>
         </div>
-        <div id = "movesSection" class="tabContent">
-            <div class="actionButton" onClick="playerTurn()">Attack</div>
-            <div class="actionButton">Abilities</div>
-            <div class="actionButton">Items</div>
-        </div>
+        <table id = "movesSection" class="tabContent">
+            <tr>
+                <td><div class="actionButton" onClick="playerTurn()">Attack</div></td>
+                <td><div class="abilityButton">Error</div></td>
+            </tr>
+            <tr>
+                <td><div class="actionButton" onClick="toggleAbilities()">Abilities</div></td>
+                <td><div class="abilityButton">Error</div></td>
+            </tr>
+            <tr>
+                <td><div class="actionButton">Items</div></td>
+                <td><div class="abilityButton" >Error</div></td>
+            </tr>
+        </table>
         <div id="combatLogContainer" class="tabContent">
             <table>
                 <tbody id="combatLog">
@@ -205,14 +220,34 @@
             var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
             var enemy = frothingHeretic;
             
-            var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,name:"Jake",perPronoun:"him",possPronoun:"his"};
-            
             var turn = 0;
             var dead = 0;
-            var characters = [player,enemy];
+            
             var isPlayerTurn = true;
             
+            var retaliation = {name:"Retaliation",cooldown:4};
+            var doubleEdge = {name:"Double Edge",cooldown:1};
+            var flagellate = {name:"Flagellate",cooldown:3};
+            
+            var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
+                         abilities:[retaliation,doubleEdge,flagellate]};
+            var characters = [player,enemy];
             startCombat();
+            
+            for (var i = 0; i < $(".abilityButton").length; i++) {
+                $(".abilityButton")[i].innerHTML = player.abilities[i].name;
+                $(".abilityButton")[i].setAttribute("onClick","javascript: triggerAbility(" + i + ");");
+            }
+            
+            $(".abilityButton").hide();
+            
+            function triggerAbility(given) {
+                if (player.currCools[given] == 0) {
+                    console.log(player.abilities[given]);
+                    player.currCools[given] = player.abilities[given].cooldown;
+                    $(".abilityButton")[given].classList.add("coolDown");
+                }
+            }
             
             function startCombat() { 
                 document.getElementById("movesSection").style.display = "block";
@@ -224,7 +259,7 @@
                     isPlayerTurn = false;
                     $(".actionButton").css("color","grey");
                     $(".actionButton").css("cursor","default");
-                    takeTurn(characters[0],characters[1])
+                    takeTurn(characters[0],characters[1]);
                     if (!dead) {
                         setTimeout(function(){
                             takeTurn(characters[1],characters[0])
@@ -232,9 +267,19 @@
                                 isPlayerTurn = true
                                 $(".actionButton").css("color","black");
                                 $(".actionButton").css("cursor","pointer");
+                                playerCooldownTick();
                             },1000);
                         }, 1000);
                     }
+                }
+            }
+            
+            function playerCooldownTick() {
+                for (var i = 0; i < player.abilities.length; i++) {
+                    if (player.currCools[i] > 0)
+                        player.currCools[i]--;
+                    if (player.currCools[i] == 0)
+                        $(".abilityButton")[i].classList.remove("coolDown");
                 }
             }
             
@@ -249,7 +294,6 @@
                     currName = "enemy";
                 
                 result += "<tr><td>";
-
                 if (attackResult == 0) {
                     moveText(currName,"MISS");
                     result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " " + curr.weapon.verb + " " + curr.possPronoun + " " + curr.weapon.name + " but missed!";
@@ -307,6 +351,10 @@
             
             function getDamage(x,y) {
                 return parseInt(Math.random()*(y-(x-1))+x);
+            }
+            
+            function toggleAbilities() {
+                $(".abilityButton").toggle();
             }
             
             function openTab(evt, currTab) {
