@@ -206,6 +206,9 @@
                 <td><div class="actionButton">Items</div></td>
                 <td><div class="abilityButton" >Error</div></td>
             </tr>
+            <tr>
+                <td><div class="actionButton">Wait</div></td>
+            </tr>
         </table>
         <div id="combatLogContainer" class="tabContent">
             <table>
@@ -214,6 +217,7 @@
             </table>
         </div>
         <script>
+            //TODO: implement functionality for wait and double edge by decomposing takeTurn
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
             
@@ -227,9 +231,9 @@
             
             var retaliation = {name:"Retaliation",cooldown:4};
             var doubleEdge = {name:"Double Edge",cooldown:1};
-            var flagellate = {name:"Flagellate",cooldown:3};
+            var flagellate = {name:"Flagellate",cooldown:3,func:flagellate};
             
-            var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
+            var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],damageBonus:0,name:"Jake",perPronoun:"him",possPronoun:"his",
                          abilities:[retaliation,doubleEdge,flagellate]};
             var characters = [player,enemy];
             startCombat();
@@ -246,7 +250,19 @@
                     console.log(player.abilities[given]);
                     player.currCools[given] = player.abilities[given].cooldown;
                     $(".abilityButton")[given].classList.add("coolDown");
+                    player.abilities[given].func();
                 }
+            }
+            
+            function flagellate() {
+                var selfDamage = 3;
+                var damageBonus = 5;
+                player.hp -= selfDamage;
+                player.damageBonus = damageBonus;
+                moveText("player","-" + selfDamage);
+                document.getElementById("playerHP").style.width = (player.hp/player.maxHP) * 250 + "px";
+                document.getElementById("playerHPText").innerHTML = "" + player.hp + "/" + player.maxHP;
+                document.getElementById("combatLog").innerHTML += "<tr><td>" + player.name + " flogged " + player.perPronoun + "self, inflicting " + selfDamage + " damage, and boosting the damage of " + player.possPronoun + " next attack!</td></tr>";
             }
             
             function startCombat() { 
@@ -257,6 +273,7 @@
             function playerTurn() {
                 if (isPlayerTurn && !dead) {
                     isPlayerTurn = false;
+                    $(".abilityButton").hide();
                     $(".actionButton").css("color","grey");
                     $(".actionButton").css("cursor","default");
                     takeTurn(characters[0],characters[1]);
@@ -284,9 +301,8 @@
             }
             
             function takeTurn(curr, enemy) {
-                var attackResult = makeAttack(curr,enemy);
+                var attackResult = calcAttack(curr,enemy);
                 var result = "";
-                var currHP = "";
                 
                 if (turn%2 == 1)
                     currName = "player";
@@ -338,11 +354,15 @@
                 $("#" + given + "ActionText").removeClass("actionTextMove");
             }
             
-            function makeAttack(attacker,defender) {
-                if (attackRoll() + attacker.weapon.attack > defender.ac)
-                    return getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
-                else 
-                    return 0;
+            function calcAttack(attacker,defender) {
+                var result = 0;
+                if (attackRoll() + attacker.weapon.attack > defender.ac) {
+                    result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
+                    if (attacker.damageBonus)
+                        result += attacker.damageBonus;
+                    attacker.damageBonus = 0;
+                }
+                return result;
             }
             
             function attackRoll() {
