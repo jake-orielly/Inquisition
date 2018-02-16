@@ -161,6 +161,13 @@
                 cursor: default;
             }
             
+            .buffImage {
+                width: 50px;
+                height: 50px;
+                position: absolute;
+                left: 0;
+                border: solid;
+            }
         </style>
     </head>
 
@@ -229,9 +236,9 @@
             
             var isPlayerTurn = true;
             
-            var retaliation = {name:"Retaliation",cooldown:4};
-            var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdge};
-            var flagellate = {name:"Flagellate",cooldown:3,func:flagellate};
+            var retaliation = {name:"Retaliation",cooldown:4,description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike."};
+            var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdge,description:"A wild strike that hits both you and your enemy."};
+            var flagellate = {name:"Flagellate",cooldown:3,func:flagellate,description:"Lash yourself, increasing the damage of your next attack.",buff:{img:"flagellateBuff"}};
             
             var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],damageBonus:0,name:"Jake",perPronoun:"him",possPronoun:"his",
                          abilities:[retaliation,doubleEdge,flagellate],charType:"player"};
@@ -253,6 +260,13 @@
                 }
             }
             
+            function showBuff(image) {
+                var node = document.createElement("img");
+                node.src = "art/" + image + ".jpg";
+                node.classList += "buffImage";
+                document.getElementById("playerImageContainer").appendChild(node);
+            }
+            
             function flagellate() {
                 var selfDamage = 3;
                 var damageBonus = 5;
@@ -264,6 +278,7 @@
                 combatText += player.name + " flogged " + player.perPronoun + "self, inflicting " + selfDamage + " damage, and boosting the damage of " + player.possPronoun + " next attack!";
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
+                showBuff(flagellate.buff.img);
             }
             
             function doubleEdge() {
