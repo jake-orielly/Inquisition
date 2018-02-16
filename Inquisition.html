@@ -221,7 +221,7 @@
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
             
-            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's"};
+            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy"};
             var enemy = frothingHeretic;
             
             var turn = 0;
@@ -230,11 +230,11 @@
             var isPlayerTurn = true;
             
             var retaliation = {name:"Retaliation",cooldown:4};
-            var doubleEdge = {name:"Double Edge",cooldown:1};
+            var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdge};
             var flagellate = {name:"Flagellate",cooldown:3,func:flagellate};
             
             var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],damageBonus:0,name:"Jake",perPronoun:"him",possPronoun:"his",
-                         abilities:[retaliation,doubleEdge,flagellate]};
+                         abilities:[retaliation,doubleEdge,flagellate],charType:"player"};
             var characters = [player,enemy];
             startCombat();
             
@@ -247,7 +247,6 @@
             
             function triggerAbility(given) {
                 if (player.currCools[given] == 0) {
-                    console.log(player.abilities[given]);
                     player.currCools[given] = player.abilities[given].cooldown;
                     $(".abilityButton")[given].classList.add("coolDown");
                     player.abilities[given].func();
@@ -257,12 +256,40 @@
             function flagellate() {
                 var selfDamage = 3;
                 var damageBonus = 5;
+                var combatText = "<tr><td>";
                 player.hp -= selfDamage;
                 player.damageBonus = damageBonus;
                 moveText("player","-" + selfDamage);
-                document.getElementById("playerHP").style.width = (player.hp/player.maxHP) * 250 + "px";
-                document.getElementById("playerHPText").innerHTML = "" + player.hp + "/" + player.maxHP;
-                document.getElementById("combatLog").innerHTML += "<tr><td>" + player.name + " flogged " + player.perPronoun + "self, inflicting " + selfDamage + " damage, and boosting the damage of " + player.possPronoun + " next attack!</td></tr>";
+                updateHP(player);
+                combatText += player.name + " flogged " + player.perPronoun + "self, inflicting " + selfDamage + " damage, and boosting the damage of " + player.possPronoun + " next attack!";
+                combatText += "</td></tr>";
+                document.getElementById("combatLog").innerHTML += combatText;
+            }
+            
+            function doubleEdge() {
+                var playerTemp = player.hp;
+                var enemyTemp = enemy.hp;
+                var combatText = "<tr><td>";
+                
+                makeAttack(player, enemy);
+                makeAttack(player, player);
+                
+                combatText += player.name + " " + player.weapon.verb + " recklessly, inflicting "
+                
+                if (playerTemp == player.hp)
+                    combatText += "no "
+                else
+                    combatText += playerTemp - player.hp;
+                combatText += " damage to " + player.perPronoun + "self, and "
+                
+                if (enemyTemp == enemy.hp)
+                    combatText += "no "
+                else 
+                    combatText += enemyTemp - enemy.hp;
+                combatText += " damage to " + enemy.name + ".";
+                
+                combatText += "</td></tr>";
+                document.getElementById("combatLog").innerHTML += combatText;
             }
             
             function startCombat() { 
@@ -300,47 +327,47 @@
                 }
             }
             
-            function takeTurn(curr, enemy) {
-                var attackResult = calcAttack(curr,enemy);
-                var result = "";
-                
-                if (turn%2 == 1)
-                    currName = "player";
-                else
-                    currName = "enemy";
-                
-                result += "<tr><td>";
-                if (attackResult == 0) {
-                    moveText(currName,"MISS");
-                    result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " " + curr.weapon.verb + " " + curr.possPronoun + " " + curr.weapon.name + " but missed!";
-                }
-                else {
-                    enemy.hp -= attackResult;
-                    moveText(currName,"-" + attackResult);
-                    if (enemy.hp/enemy.maxHP < 0.2)
-                        document.getElementById(currName + "HP").style.backgroundColor = "red";
-                    else if (enemy.hp/enemy.maxHP < 0.4)
-                        document.getElementById(currName + "HP").style.backgroundColor = "yellow";
-                    if (enemy.hp < 0) {
-                        document.getElementById(currName + "HP").style.width = "0px";
-                        document.getElementById(currName + "HPText").innerHTML = "0/" + enemy.maxHP;
-                    }
-                    else {
-                        document.getElementById(currName + "HP").style.width = (enemy.hp/enemy.maxHP) * 250 + "px";
-                        document.getElementById(currName + "HPText").innerHTML = "" + enemy.hp + "/" + enemy.maxHP;
-                    }
-                    
-                    if (enemy.hp > 0)
-                        result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " " + curr.weapon.verb + " " + curr.possPronoun + " " + curr.weapon.name + " at " + enemy.name + " and dealt <span class='red'>" + attackResult + "</span> damage. " + enemy.name.charAt(0).toUpperCase() + enemy.name.slice(1) + " now has <span class='red'>" + enemy.hp + "</span> health."; 
-                    else {
-                        dead = 1 + turn;
-                        result += curr.name.charAt(0).toUpperCase() + curr.name.slice(1) + " dealt <span class='red'>" + + attackResult + "</span> damage and " + curr.weapon.killVerb + " " + enemy.name + " with " + curr.possPronoun + " " + curr.weapon.name;
-                    }
-                }
-                result += "</tr></td>";
+            function takeTurn(curr, target) {
+                var result = "<tr><td>" + makeAttack(curr,target) + "</tr></td>";
                 
                 turn++;
                 document.getElementById("combatLog").innerHTML += result;
+            }
+            
+            function makeAttack(attacker, defender) {
+                var attackResult = calcAttack(attacker,defender);
+                
+                if (attackResult == 0) {
+                    moveText(defender.charType,"MISS");
+                    return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " but missed!";
+                }
+                else {
+                    defender.hp -= attackResult;
+                    updateHP(defender);
+                    moveText(defender.charType,"-" + attackResult);                    
+                    
+                    if (defender.hp > 0)
+                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and dealt <span class='red'>" + attackResult + "</span> damage. " + defender.name.charAt(0).toUpperCase() + defender.name.slice(1) + " now has <span class='red'>" + defender.hp + "</span> health."; 
+                    else {
+                        dead = 1 + turn;
+                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " dealt <span class='red'>" + + attackResult + "</span> damage and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
+                    }
+                }
+            }
+            
+            function updateHP(target) {
+                if (target.hp/target.maxHP < 0.2)
+                    document.getElementById(target.charType + "HP").style.backgroundColor = "red";
+                else if (target.hp/target.maxHP < 0.4)
+                    document.getElementById(target.charType + "HP").style.backgroundColor = "yellow";
+                if (target.hp < 0) {
+                    document.getElementById(target.charType + "HP").style.width = "0px";
+                    document.getElementById(target.charType + "HPText").innerHTML = "0/" + target.maxHP;
+                }
+                else {
+                        document.getElementById(target.charType + "HP").style.width = (target.hp/target.maxHP) * 250 + "px";
+                        document.getElementById(target.charType + "HPText").innerHTML = "" + target.hp + "/" + target.maxHP;
+                    }    
             }
             
             function moveText(given,val) {
@@ -374,7 +401,8 @@
             }
             
             function toggleAbilities() {
-                $(".abilityButton").toggle();
+                if (!dead)
+                    $(".abilityButton").toggle();
             }
             
             function openTab(evt, currTab) {
