@@ -174,11 +174,18 @@
                 border: solid;
             }
             
+            .bigBuffText {
+                left:45%;
+            }
+            
             .buffText {
+                left: 65%;
+            }
+            
+            .buffText, .bigBuffText {
                 color: red;
                 position: absolute;
                 top: 5%;
-                left: 65%;
                 font-weight: 900;
                 text-shadow: 2px 2px 2px black;
                 font-size: 24px;
@@ -257,12 +264,12 @@
             
             var isPlayerTurn = true;
             
-            var retaliation = {name:"Retaliation",cooldown:4,description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike."};
-            var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdge,description:"A wild strike that hits both you and your enemy."};
-            var flagellate = {name:"Flagellate",cooldown:3,func:flagellate,description:"Lash yourself, increasing the damage of your next attack.",buff:{img:"flagellateBuff"}};
+            var retaliation = {name:"Retaliation",cooldown:4,description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike.",buff:{img:"retaliationBuff",count:0}};
+            var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdgeFunc,description:"A wild strike that hits both you and your enemy."};
+            var flagellate = {name:"Flagellate",cooldown:3,func:flagellateFunc,description:"Lash yourself, increasing the damage of your next attack.",buff:{img:"flagellateBuff",count:0}};
             
             var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],damageBonus:0,name:"Jake",perPronoun:"him",possPronoun:"his",
-            abilities:[retaliation,doubleEdge,flagellate],charType:"player",damageTriggers:[bleh]};
+            abilities:[retaliation,doubleEdge,flagellate],charType:"player",damageTriggers:[retaliationFunc]};
             
             var characters = [player,enemy];
             startCombat();
@@ -278,15 +285,24 @@
                 if (sign == "-") {
                     target.hp -= val;
                     
-                    for (var i = 0; i < target.damageTriggers.length; i++) {
+                    for (var i = 0; i < target.damageTriggers.length; i++)
                         target.damageTriggers[i](val);
-                    }
                 }
             }
             
             function bleh(val) {
-                console.log(1);
-                showBuff("retalliationBuff",val);
+                return 1;
+            }
+            
+            function retaliationFunc(val) {
+                retaliation.buff.count += val;
+                if (retaliation.buff.count == val)
+                    showBuff("retalliationBuff",val);
+                else 
+                    document.getElementById("retalliationBuff").innerHTML = retaliation.buff.count;
+                if (retaliation.buff.count > 9) {
+                    document.getElementById("retalliationBuff").classList = "bigBuffText"
+                }
             }
             
             function triggerAbility(given) {
@@ -300,15 +316,18 @@
             function showBuff(image,val) {
                 var result = "<tr><td><img class='buffImage' src=art/" + image + ".jpg >"
                 if (val)
-                    result += "<p class='buffText'>" + val + "</p>"
+                    result += "<p class='buffText' id='" + image + "'>" + val + "</p>"
+                if (val > 9)
+                    document.getElementById(image).classList = "bigBuffText"
                 result += "</td></tr>";
                 document.getElementById("buffTable").innerHTML += result;
             }
             
-            function flagellate() {
+            function flagellateFunc() {
                 var selfDamage = 3;
                 var damageBonus = 5;
                 var combatText = "<tr><td>";
+                flagellate.buff.count += 1;
                 changeHP("-",selfDamage,player);
                 player.damageBonus = damageBonus;
                 moveText("player","-" + selfDamage);
@@ -319,7 +338,7 @@
                 showBuff(flagellate.buff.img);
             }
             
-            function doubleEdge() {
+            function doubleEdgeFunc() {
                 var playerTemp = player.hp;
                 var enemyTemp = enemy.hp;
                 var combatText = "<tr><td>";
