@@ -435,6 +435,39 @@
                 }
             }
             
+            function calcAttack(attacker,defender) {
+                var result = 0;
+                var attack = attackRoll();
+                var critThreshold = 20;
+                var curr;
+                
+                
+                if (attack + attacker.weapon.attack > defender.ac || attack == 20) {
+                    result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
+                    if (attacker.buffs.damage)
+                        for (var i = 0; i < attacker.buffs.damage.length; i++) {
+                            curr = attacker.buffs.damage[i];
+                            if(curr.count) {
+                                result += curr.count * curr.bonus;
+                                curr.count = 0;
+                                hideBuff(curr.image);
+                            }
+                        }
+                }
+                
+                if (attack >= critThreshold)
+                    result = result * 2;
+                return result;
+            }
+            
+            function attackRoll() {
+                return parseInt(Math.random()*20+1);
+            }
+            
+            function getDamage(x,y) {
+                return parseInt(Math.random()*(y-(x-1))+x);
+            }
+            
             function updateHP(target) {
                 if (target.hp/target.maxHP < 0.2)
                     document.getElementById(target.charType + "HP").style.backgroundColor = "red";
@@ -459,33 +492,6 @@
             
             function textReset(given) {
                 $("#" + given + "ActionText").removeClass("actionTextMove");
-            }
-            
-            function calcAttack(attacker,defender) {
-                var result = 0;
-                var curr;
-                
-                if (attackRoll() + attacker.weapon.attack > defender.ac) {
-                    result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
-                    if (attacker.buffs.damage)
-                        for (var i = 0; i < attacker.buffs.damage.length; i++) {
-                            curr = attacker.buffs.damage[i];
-                            if(curr.count) {
-                                result += curr.count * curr.bonus;
-                                curr.count = 0;
-                                hideBuff(curr.image);
-                            }
-                        }
-                }
-                return result;
-            }
-            
-            function attackRoll() {
-                return parseInt(Math.random()*20+1);
-            }
-            
-            function getDamage(x,y) {
-                return parseInt(Math.random()*(y-(x-1))+x);
             }
             
             function toggleAbilities() {
