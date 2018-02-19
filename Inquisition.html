@@ -136,6 +136,7 @@
 
             .actionText {
                 position:absolute;
+                text-align: center;
                 color:red;
                 top: 50%;
                 left: 50%;
@@ -262,7 +263,7 @@
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
             
-            var frothingHeretic = {hp:50,maxHP:50,ac:100,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],buffs:{}};
+            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],buffs:{}};
             var enemy = frothingHeretic;
             
             var turn = 0;
@@ -416,6 +417,17 @@
             
             function makeAttack(attacker, defender) {
                 var attackResult = calcAttack(attacker,defender);
+                var crit = false;
+                var critAddon = "";
+                var critLogAddon = "dealt";
+                
+                if (attackResult[1]) {
+                    attackResult = attackResult[0];
+                    crit = true;
+                    critAddon = "<br>CRIT!"
+                    critLogAddon = "crit, dealing"
+                }
+                    
                 
                 if (attackResult == 0) {
                     moveText(defender.charType,"MISS");
@@ -424,24 +436,23 @@
                 else {
                     changeHP("-",attackResult,defender);
                     updateHP(defender);
-                    moveText(defender.charType,"-" + attackResult);                    
+                    moveText(defender.charType,"-" + attackResult + critAddon);                    
                     
                     if (defender.hp > 0)
-                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and dealt <span class='red'>" + attackResult + "</span> damage. " + defender.name.charAt(0).toUpperCase() + defender.name.slice(1) + " now has <span class='red'>" + defender.hp + "</span> health."; 
+                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and " + critLogAddon + " <span class='red'>" + attackResult + "</span> damage. " + defender.name.charAt(0).toUpperCase() + defender.name.slice(1) + " now has <span class='red'>" + defender.hp + "</span> health."; 
                     else {
                         dead = 1 + turn;
-                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " dealt <span class='red'>" + + attackResult + "</span> damage and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
+                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + critLogAddon + " <span class='red'>" + + attackResult + "</span> damage, and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
                     }
                 }
             }
             
-            function calcAttack(attacker,defender) {
+            function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
                 var result = 0;
                 var attack = attackRoll();
                 var critThreshold = 20;
                 var curr;
-                
-                
+                   
                 if (attack + attacker.weapon.attack > defender.ac || attack == 20) {
                     result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
                     if (attacker.buffs.damage)
@@ -455,8 +466,9 @@
                         }
                 }
                 
-                if (attack >= critThreshold)
-                    result = result * 2;
+                if (attack >= critThreshold) {
+                    result = [result * 2,true];
+                }
                 return result;
             }
             
@@ -484,7 +496,7 @@
             }
             
             function moveText(given,val) {
-                $("#" + given + "ActionText").text(val);
+                document.getElementById(given + "ActionText").innerHTML = val; //JQuery .text() doesn't work
                 $("#" + given + "ActionText").show();
                 $("#" + given + "ActionText").fadeOut(1000,textReset("" + given));
                 $("#" + given + "ActionText").addClass("actionTextMove");
