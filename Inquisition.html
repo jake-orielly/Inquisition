@@ -263,7 +263,7 @@
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
             
-            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],buffs:{}};
+            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{}};
             var enemy = frothingHeretic;
             
             var turn = 0;
@@ -271,12 +271,13 @@
             
             var isPlayerTurn = true;
             
-            var retaliation = {name:"Retaliation",cooldown:4,description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike.",buff:{image:"retaliationBuff",bonus:1,count:0}};
+            var retaliation = {name:"Retaliation",description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike.",buff:{image:"retaliationBuff",bonus:1,count:0}};
             var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdgeFunc,description:"A wild strike that hits both you and your enemy."};
             var flagellate = {name:"Flagellate",cooldown:3,func:flagellateFunc,description:"Lash yourself, increasing the damage of your next attack.",buff:{image:"flagellateBuff",bonus:5,count:0}};
+            var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:{image:"woundedFuryBuff",bonus:1,count:0}}
             
             var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
-            abilities:[retaliation,doubleEdge,flagellate],charType:"player",damageTriggers:[retaliationFunc],buffs:{damage:[flagellate.buff,retaliation.buff]}};
+            abilities:[retaliation,doubleEdge,flagellate,woundedFury],charType:"player",damageTriggers:[retaliationFunc],hpTriggers:[woundedFuryFunc],buffs:{damage:[flagellate.buff,retaliation.buff],critChance:[woundedFury.buff]}};
             
             var characters = [player,enemy];
             startCombat();
@@ -291,10 +292,17 @@
             function changeHP(sign,val,target) {
                 if (sign == "-") {
                     target.hp -= val;
-                    
+
                     for (var i = 0; i < target.damageTriggers.length; i++)
                         target.damageTriggers[i](val);
                 }
+                
+                if (sign == "+") {
+                    target.hp += val;
+                }
+                
+                for (var i = 0; i < target.hpTriggers.length; i++)
+                        target.hpTriggers[i]();
             }
             
             function triggerAbility(given) {
@@ -306,18 +314,23 @@
             }
             
             function showBuff(buff) {
-                console.log(buff.count);
+                console.log(buff + " : " + !document.getElementById(buff.image) + " : " + (document.getElementById(buff.image) && !document.getElementById(buff.image).style.display == ""));
                 if (!document.getElementById(buff.image) || (document.getElementById(buff.image) && !document.getElementById(buff.image).style.display == "")) {
                     var result = "<tr id='" + buff.image + "Row'><td><div class='relative'><img class='buffImage' src=art/" + buff.image + ".jpg >"
+                    
                     if (buff.count)
-                        result += "<p class='buffText' id='" + buff.image + "'>" + buff.count + "</p>"
+                        result += "<p class='buffText' id='" + buff.image + "'>" + buff.count + "</p>";
                     result += "</div></td></tr>";
                     document.getElementById("buffTable").innerHTML += result;
                 }
-                else 
+                else { 
                     document.getElementById(buff.image).innerHTML = buff.count;
-                if (buff.val > 9)
-                    document.getElementById(buff.image).classList = "bigBuffText"
+                    if (buff.count < 1)
+                        hideBuff(buff.image);
+                }
+                
+                if (buff.count > 9)
+                    document.getElementById(buff.image).classList = "bigBuffText";
             }
             
             function hideBuff(given) {
@@ -366,9 +379,11 @@
             function retaliationFunc(val) {
                 retaliation.buff.count += val;
                 showBuff(retaliation.buff);
-                if (retaliation.buff.count > 9) {
-                    document.getElementById("retaliationBuff").classList = "bigBuffText"
-                }
+            }
+            
+            function woundedFuryFunc() {
+                woundedFury.buff.count = parseInt(10*(1-(player.hp/player.maxHP)));
+                showBuff(woundedFury.buff);
             }
             
             function startCombat() { 
@@ -471,6 +486,8 @@
                 var critThreshold = 20;
                 var curr;
                    
+                for (var i = 0; i < player.buffs.critChance.length; i++)
+                    critThreshold -= player.buffs.critChance[i].count;
                 if (attack + attacker.weapon.attack > defender.ac || attack == 20) {
                     result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
                     if (attacker.buffs.damage)
