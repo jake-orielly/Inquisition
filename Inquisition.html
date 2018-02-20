@@ -249,7 +249,7 @@
                 <td><div class="abilityButton" >Error</div></td>
             </tr>
             <tr>
-                <td><div class="actionButton">Wait</div></td>
+                <td><div class="actionButton" onClick="wait()">Wait</div></td>
             </tr>
         </table>
         <div id="combatLogContainer" class="tabContent">
@@ -307,7 +307,7 @@
             
             function showBuff(buff) {
                 console.log(buff.count);
-                if (!document.getElementById(buff.image)) {
+                if (!document.getElementById(buff.image) || (document.getElementById(buff.image) && !document.getElementById(buff.image).style.display == "")) {
                     var result = "<tr id='" + buff.image + "Row'><td><div class='relative'><img class='buffImage' src=art/" + buff.image + ".jpg >"
                     if (buff.count)
                         result += "<p class='buffText' id='" + buff.image + "'>" + buff.count + "</p>"
@@ -396,6 +396,24 @@
                             },1000);
                         }, 1000);
                     }
+                }
+            }
+            
+            function wait() {
+                if (isPlayerTurn && !dead) {
+                    isPlayerTurn = false;
+                    $(".abilityButton").hide();
+                    $(".actionButton").css("color","grey");
+                    $(".actionButton").css("cursor","default");
+                    setTimeout(function(){
+                        takeTurn(characters[1],characters[0])
+                        setTimeout(function(){
+                            isPlayerTurn = true
+                            $(".actionButton").css("color","black");
+                            $(".actionButton").css("cursor","pointer");
+                            playerCooldownTick();
+                        },1000);
+                    }, 1000);
                 }
             }
             
