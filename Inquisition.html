@@ -303,6 +303,8 @@
                 
                 for (var i = 0; i < target.hpTriggers.length; i++)
                         target.hpTriggers[i]();
+                
+                updateHP(target);
             }
             
             function triggerAbility(given) {
@@ -314,19 +316,19 @@
             }
             
             function showBuff(buff) {
-                console.log(buff + " : " + !document.getElementById(buff.image) + " : " + (document.getElementById(buff.image) && !document.getElementById(buff.image).style.display == ""));
-                if (!document.getElementById(buff.image) || (document.getElementById(buff.image) && !document.getElementById(buff.image).style.display == "")) {
+                if (buff.count < 1) {
+                        hideBuff(buff.image);
+                }
+                else if (!document.getElementById(buff.image)) {
                     var result = "<tr id='" + buff.image + "Row'><td><div class='relative'><img class='buffImage' src=art/" + buff.image + ".jpg >"
-                    
-                    if (buff.count)
-                        result += "<p class='buffText' id='" + buff.image + "'>" + buff.count + "</p>";
+                    result += "<p class='buffText' id='" + buff.image + "'>" + buff.count + "</p>";
                     result += "</div></td></tr>";
                     document.getElementById("buffTable").innerHTML += result;
                 }
                 else { 
+                    if(!$("#" + buff.image + "Row").is(":visible"))
+                        $("#" + buff.image + "Row").show();
                     document.getElementById(buff.image).innerHTML = buff.count;
-                    if (buff.count < 1)
-                        hideBuff(buff.image);
                 }
                 
                 if (buff.count > 9)
@@ -334,6 +336,7 @@
             }
             
             function hideBuff(given) {
+                console.log(given);
                 $("#" + given + "Row").hide();
             }
             
@@ -343,7 +346,6 @@
                 flagellate.buff.count += 1;
                 changeHP("-",selfDamage,player);
                 moveText("player","-" + selfDamage);
-                updateHP(player);
                 combatText += player.name + " flogged " + player.perPronoun + "self, inflicting " + selfDamage + " damage, and boosting the damage of " + player.possPronoun + " next attack!";
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
@@ -468,7 +470,6 @@
                 }
                 else {
                     changeHP("-",attackResult,defender);
-                    updateHP(defender);
                     moveText(defender.charType,"-" + attackResult + critAddon);                    
                     
                     if (defender.hp > 0)
@@ -520,6 +521,8 @@
                     document.getElementById(target.charType + "HP").style.backgroundColor = "red";
                 else if (target.hp/target.maxHP < 0.4)
                     document.getElementById(target.charType + "HP").style.backgroundColor = "yellow";
+                else
+                    document.getElementById(target.charType + "HP").style.backgroundColor = "green";
                 if (target.hp < 0) {
                     document.getElementById(target.charType + "HP").style.width = "0px";
                     document.getElementById(target.charType + "HPText").innerHTML = "0/" + target.maxHP;
