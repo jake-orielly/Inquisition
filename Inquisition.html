@@ -262,9 +262,12 @@
             //TODO: implement functionality for wait and double edge by decomposing takeTurn
             var morningStar = {attack:2,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
+            var shortSword = {attack:4,damage:[3,5],name:"short sword",verb:"swung",killVerb:"sliced"};
             
-            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{}};
-            var enemy = frothingHeretic;
+            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
+            
+            var fallenKnight = {hp:25,maxHP:25,ac:17,weapon:shortSword,name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};
+            var enemy = fallenKnight;
             
             var turn = 0;
             var dead = 0;
@@ -274,10 +277,11 @@
             var retaliation = {name:"Retaliation",description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike.",buff:{image:"retaliationBuff",bonus:1,count:0}};
             var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdgeFunc,description:"A wild strike that hits both you and your enemy."};
             var flagellate = {name:"Flagellate",cooldown:3,func:flagellateFunc,description:"Lash yourself, increasing the damage of your next attack.",buff:{image:"flagellateBuff",bonus:5,count:0}};
-            var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:{image:"woundedFuryBuff",bonus:1,count:0}}
+            var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:{image:"woundedFuryBuff",bonus:1,count:0}};
+            var secondWind = {name:"Second Wind", description:"Regain half your missing health.",cooldown:5,func:secondWindFunc};
             
             var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
-            abilities:[retaliation,doubleEdge,flagellate,woundedFury],charType:"player",damageTriggers:[retaliationFunc],hpTriggers:[woundedFuryFunc],buffs:{damage:[flagellate.buff,retaliation.buff],critChance:[woundedFury.buff]}};
+            abilities:[secondWind,doubleEdge,flagellate,woundedFury,retaliation],charType:"player",damageTriggers:[retaliationFunc],hpTriggers:[woundedFuryFunc],buffs:{damage:[flagellate.buff,retaliation.buff],critChance:[woundedFury.buff]}};
             
             var characters = [player,enemy];
             startCombat();
@@ -388,11 +392,17 @@
                 showBuff(woundedFury.buff);
             }
             
+            function secondWindFunc() {
+                var amount = parseInt((player.maxHP - player.hp)/2)
+                changeHP("+",amount,player);
+            }
+            
             function startCombat() { 
                 for (var i = 0; i < characters.length; i++)
                     updateHP(characters[i]);
                 document.getElementById("movesSection").style.display = "block";
                 document.getElementById("movesButton").className += " active";
+                document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + enemy.image + ".jpg";
             }
             
             function playerTurn() {
