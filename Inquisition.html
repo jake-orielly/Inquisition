@@ -264,9 +264,9 @@
             var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
             var shortSword = {attack:4,damage:[3,5],name:"short sword",verb:"swung",killVerb:"sliced"};
             
-            var frothingHeretic = {hp:10,maxHP:10,ac:10,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
+            var frothingHeretic = {hp:10,maxHP:10,ac:13,attack:1,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
             
-            var fallenKnight = {hp:25,maxHP:25,ac:17,weapon:shortSword,name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};
+            var fallenKnight = {hp:25,maxHP:25,ac:20,attack:3,weapon:shortSword,name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};
             var enemy = fallenKnight;
             
             var turn = 0;
@@ -280,7 +280,7 @@
             var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:{image:"woundedFuryBuff",bonus:1,count:0}};
             var secondWind = {name:"Second Wind", description:"Regain half your missing health.",cooldown:5,func:secondWindFunc};
             
-            var player = {hp:20,maxHP:20,ac:10,weapon:morningStar,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
+            var player = {hp:20,maxHP:20,ac:113,attack:13,weapon:morningStar,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
             abilities:[secondWind,doubleEdge,flagellate,woundedFury,retaliation],charType:"player",damageTriggers:[retaliationFunc],hpTriggers:[woundedFuryFunc],buffs:{damage:[flagellate.buff,retaliation.buff],critChance:[woundedFury.buff]}};
             
             var characters = [player,enemy];
@@ -499,7 +499,7 @@
                    
                 for (var i = 0; i < player.buffs.critChance.length; i++)
                     critThreshold -= player.buffs.critChance[i].count;
-                if (attack + attacker.weapon.attack > defender.ac || attack == 20) {
+                if (attack + attacker.weapon.attack +attacker.attack > defender.ac || attack == 20) {
                     result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
                     if (attacker.buffs.damage)
                         for (var i = 0; i < attacker.buffs.damage.length; i++) {
