@@ -259,19 +259,25 @@
             </table>
         </div>
         <script>
-            //var morningStar = {attack:3,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
-            //var cleaver = {attack:4,damage:[3,4],name:"cleaver",verb:"chopped",killVerb:"sliced"};
-            //var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
-            /*var shortSword = {attack:5,damage:[3,5],name:"short sword",verb:"swung",killVerb:"sliced"};
-            var longSword = {attack:4,damage:[4,6],name:"long sword",verb:"swung",killVerb:"sliced"};*/
+            function ShortSword() {
+                return new Weapon(5,[3,5],"short sword","swung","sliced");
+            }
+            
+            function morningStar() {
+                return new Weapon(3,[4,7],"morningstar","swung","crushed");
+            }
+            
+            function cleaver() {
+                return new Weapon(4,[3,4],"cleaver","chopped","sliced");
+            }
             
             var frothingHeretic = {hp:10,maxHP:10,ac:13,attack:1,weapon:new Weapon(2,[2,3],"rusty dagger","lunged with","skewered"),name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
             
-            /*var ravenousGlutton = {hp:45,maxHP:45,ac:15,attack:2,weapon:cleaver,name:"the ravenous glutton",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"ravenousGlutton"};
+            var ravenousGlutton = {hp:45,maxHP:45,ac:15,attack:2,weapon:cleaver(),name:"the ravenous glutton",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"ravenousGlutton"};
             
-            var fallenKnight = {hp:25,maxHP:25,ac:20,attack:3,weapon:shortSword,name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};*/
+            var fallenKnight = {hp:25,maxHP:25,ac:20,attack:3,weapon:new ShortSword(),name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};
             
-            var enemy = frothingHeretic;
+            var enemy = fallenKnight;
             
             var turn = 0;
             var dead = 0;
@@ -284,10 +290,8 @@
             var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:{image:"woundedFuryBuff",bonus:1,count:0}};
             var secondWind = {name:"Second Wind", description:"Regain half your missing health.",cooldown:5,func:secondWindFunc};
             
-            //var morningStar = {attack:3,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
-            
             var player = {hp:20,maxHP:20,ac:13,attack:3,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
-            weapon:new Weapon(3,[4,7],"morningstar","swung","crushed"),
+            weapon:morningStar(),
             abilities:[secondWind,doubleEdge,flagellate,woundedFury,retaliation],charType:"player",damageTriggers:[retaliationFunc],hpTriggers:[woundedFuryFunc],buffs:{damage:[flagellate.buff,retaliation.buff],critChance:[woundedFury.buff]}};
             
             var characters = [player,enemy];
@@ -306,23 +310,23 @@
                 this.name = name;
                 this.verb = verb;
                 this.killVerb = killVerb;
-                //this.buffs = [wellBalanced,sharp];
+                this.buffs = [];
 
-                /*this.getAttribute = function(given) {
+                this.getAttribute = function(given) {
                     if (!this[given])
                         console.log("Error 1: Requested invalid attribute");
                     else {
-                    var curr;
-                    var result = this[given];
-                    for (var i = 0; i < this.buffs.length; i++) {
-                        curr = Object.keys(this.buffs[i]);
-                        for (var j = 0; j < curr.length; j++)
-                            if(curr[j] == given)
-                                result += this.buffs[i][curr[j]];
-                    }
+                        var curr;
+                        var result = this[given];
+                        for (var i = 0; i < this.buffs.length; i++) {
+                            curr = Object.keys(this.buffs[i]);
+                            for (var j = 0; j < curr.length; j++)
+                                if(curr[j] == given)
+                                    result += this.buffs[i][curr[j]];
+                        }
                     }
                     return result;
-                }*/
+                }
             }
             
             function changeHP(val,target) {
@@ -411,7 +415,7 @@
             }
             
             function retaliationFunc(val) {
-                retaliation.buff.count += val;
+                retaliation.buff.count += val*-1;
                 showBuff(retaliation.buff);
             }
             
@@ -489,7 +493,7 @@
             }
             
             function makeAttack(attacker, defender) {
-                var attackResult = calcAttack(attacker,defender)*-1;
+                var attackResult = calcAttack(attacker,defender);
                 var crit = false;
                 var critAddon = "";
                 var critLogAddon = "dealt";
@@ -501,6 +505,7 @@
                     critLogAddon = "crit, dealing"
                 }
                     
+                attackResult = attackResult*-1;
                 
                 if (attackResult == 0) {
                     moveText(defender.charType,"MISS");
@@ -533,6 +538,7 @@
                         for (var i = 0; i < attacker.buffs.damage.length; i++) {
                             curr = attacker.buffs.damage[i];
                             if(curr.count) {
+                                console.log(curr.count);
                                 result += curr.count * curr.bonus;
                                 curr.count = 0;
                                 hideBuff(curr.image);
