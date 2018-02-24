@@ -211,7 +211,7 @@
                     </div>
                 </div>
                 <div id="enemyImgContainer">
-                    <img src="art/enemy.jpg">
+                    <img>
                     <div id="enemyActionText" class="actionText">MISS</div>
                 </div>
             </div>
@@ -259,19 +259,19 @@
             </table>
         </div>
         <script>
-            var morningStar = {attack:3,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
-            var cleaver = {attack:4,damage:[3,4],name:"cleaver",verb:"chopped",killVerb:"sliced"};
-            var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
-            var shortSword = {attack:5,damage:[3,5],name:"short sword",verb:"swung",killVerb:"sliced"};
-            var longSword = {attack:4,damage:[4,6],name:"long sword",verb:"swung",killVerb:"sliced"};
+            //var morningStar = {attack:3,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
+            //var cleaver = {attack:4,damage:[3,4],name:"cleaver",verb:"chopped",killVerb:"sliced"};
+            //var rustyDagger = {attack:2,damage:[2,3],name:"rusty dagger",verb:"lunged with",killVerb:"skewered"};
+            /*var shortSword = {attack:5,damage:[3,5],name:"short sword",verb:"swung",killVerb:"sliced"};
+            var longSword = {attack:4,damage:[4,6],name:"long sword",verb:"swung",killVerb:"sliced"};*/
             
-            var frothingHeretic = {hp:10,maxHP:10,ac:13,attack:1,weapon:rustyDagger,name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
+            var frothingHeretic = {hp:10,maxHP:10,ac:13,attack:1,weapon:new Weapon(2,[2,3],"rusty dagger","lunged with","skewered"),name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
             
-            var ravenousGlutton = {hp:45,maxHP:45,ac:15,attack:2,weapon:cleaver,name:"the ravenous glutton",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"ravenousGlutton"};
+            /*var ravenousGlutton = {hp:45,maxHP:45,ac:15,attack:2,weapon:cleaver,name:"the ravenous glutton",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"ravenousGlutton"};
             
-            var fallenKnight = {hp:25,maxHP:25,ac:20,attack:3,weapon:shortSword,name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};
+            var fallenKnight = {hp:25,maxHP:25,ac:20,attack:3,weapon:shortSword,name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};*/
             
-            var enemy = ravenousGlutton;
+            var enemy = frothingHeretic;
             
             var turn = 0;
             var dead = 0;
@@ -284,7 +284,10 @@
             var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:{image:"woundedFuryBuff",bonus:1,count:0}};
             var secondWind = {name:"Second Wind", description:"Regain half your missing health.",cooldown:5,func:secondWindFunc};
             
-            var player = {hp:20,maxHP:20,ac:13,attack:3,weapon:morningStar,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
+            //var morningStar = {attack:3,damage:[4,7],name:"morningstar",verb:"swung",killVerb:"crushed"};
+            
+            var player = {hp:20,maxHP:20,ac:13,attack:3,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
+            weapon:new Weapon(3,[4,7],"morningstar","swung","crushed"),
             abilities:[secondWind,doubleEdge,flagellate,woundedFury,retaliation],charType:"player",damageTriggers:[retaliationFunc],hpTriggers:[woundedFuryFunc],buffs:{damage:[flagellate.buff,retaliation.buff],critChance:[woundedFury.buff]}};
             
             var characters = [player,enemy];
@@ -296,6 +299,31 @@
             }
             
             $(".abilityButton").hide();
+            
+            function Weapon(attack,damage,name,verb,killVerb) {
+                this.attack = attack;
+                this.damage = damage;
+                this.name = name;
+                this.verb = verb;
+                this.killVerb = killVerb;
+                //this.buffs = [wellBalanced,sharp];
+
+                /*this.getAttribute = function(given) {
+                    if (!this[given])
+                        console.log("Error 1: Requested invalid attribute");
+                    else {
+                    var curr;
+                    var result = this[given];
+                    for (var i = 0; i < this.buffs.length; i++) {
+                        curr = Object.keys(this.buffs[i]);
+                        for (var j = 0; j < curr.length; j++)
+                            if(curr[j] == given)
+                                result += this.buffs[i][curr[j]];
+                    }
+                    }
+                    return result;
+                }*/
+            }
             
             function changeHP(val,target) {
                 target.hp += val;
