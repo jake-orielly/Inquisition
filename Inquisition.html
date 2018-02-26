@@ -259,25 +259,31 @@
             </table>
         </div>
         <script>
-            function ShortSword() {
-                return new Weapon(5,[3,5],"short sword","swung","sliced");
+            function shortSword(modifiers) {
+                return new Weapon(5,[3,5],"short sword","swung with","sliced",modifiers);
             }
             
-            function morningStar() {
-                return new Weapon(3,[4,7],"morningstar","swung","crushed");
+            function morningStar(modifiers) {
+                return new Weapon(3,[4,7],"morningstar","swung with","crushed",modifiers);
             }
             
-            function cleaver() {
-                return new Weapon(4,[3,4],"cleaver","chopped","sliced");
+            function cleaver(modifiers) {
+                return new Weapon(4,[4,5],"cleaver","chopped with","sliced",modifiers);
             }
             
-            var frothingHeretic = {hp:10,maxHP:10,ac:13,attack:1,weapon:new Weapon(2,[2,3],"rusty dagger","lunged with","skewered"),name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
+            function dagger(modifiers) {
+                return new Weapon(3,[3,4],"dagger","lunged with","skewered",modifiers);
+            }
+            
+            var rusty = {attack:-1,damage:-1};
+            
+            var frothingHeretic = {hp:10,maxHP:10,ac:13,attack:1,weapon:dagger([rusty]),name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
             
             var ravenousGlutton = {hp:45,maxHP:45,ac:15,attack:2,weapon:cleaver(),name:"the ravenous glutton",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"ravenousGlutton"};
             
-            var fallenKnight = {hp:25,maxHP:25,ac:20,attack:3,weapon:new ShortSword(),name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};
+            var fallenKnight = {hp:25,maxHP:25,ac:20,attack:3,weapon:new shortSword(),name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};
             
-            var enemy = fallenKnight;
+            var enemy = frothingHeretic;
             
             var turn = 0;
             var dead = 0;
@@ -304,13 +310,13 @@
             
             $(".abilityButton").hide();
             
-            function Weapon(attack,damage,name,verb,killVerb) {
+            function Weapon(attack,damage,name,verb,killVerb,modifiers = []) {
                 this.attack = attack;
                 this.damage = damage;
                 this.name = name;
                 this.verb = verb;
                 this.killVerb = killVerb;
-                this.buffs = [];
+                this.modifiers = modifiers;
 
                 this.getAttribute = function(given) {
                     if (!this[given])
@@ -318,11 +324,17 @@
                     else {
                         var curr;
                         var result = this[given];
-                        for (var i = 0; i < this.buffs.length; i++) {
-                            curr = Object.keys(this.buffs[i]);
+                        for (var i = 0; i < this.modifiers.length; i++) {
+                            curr = Object.keys(this.modifiers[i]);
                             for (var j = 0; j < curr.length; j++)
-                                if(curr[j] == given)
-                                    result += this.buffs[i][curr[j]];
+                                if(curr[j] == given) {
+                                    if (given == "damage") {
+                                        result[0] += this.modifiers[i][curr[j]];
+                                        result[1] += this.modifiers[i][curr[j]];
+                                    }
+                                    else 
+                                        result += this.modifiers[i][curr[j]];
+                                }
                         }
                     }
                     return result;
@@ -372,7 +384,6 @@
             }
             
             function hideBuff(given) {
-                console.log(given);
                 $("#" + given + "Row").hide();
             }
             
@@ -532,6 +543,7 @@
                    
                 for (var i = 0; i < player.buffs.critChance.length; i++)
                     critThreshold -= player.buffs.critChance[i].count;
+                console.log(attacker.weapon.getAttribute("damage"));
                 if (attack + attacker.weapon.attack +attacker.attack > defender.ac || attack == 20) {
                     result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
                     if (attacker.buffs.damage)
