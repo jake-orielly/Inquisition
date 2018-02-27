@@ -20,8 +20,13 @@
                 font-weight: 900;
                 margin-left: 10px;
             }
+            
             .red {
                 color: red;
+            }
+            
+            .green {
+                color: green;
             }
 
             #combatLogContainer {
@@ -137,7 +142,6 @@
             .actionText {
                 position:absolute;
                 text-align: center;
-                color:red;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
@@ -198,6 +202,7 @@
             
             td{
                 padding:0;
+                font-size: 18px;
             }
         </style>
     </head>
@@ -233,7 +238,7 @@
         </div>
         <div class="tabMenu">
           <button class="tabLinks tabButton" id="movesButton" onclick="openTab(event, 'movesSection')">Actions</button>
-          <button class="tabLinks tabButton" onclick="openTab(event, 'combatLogContainer')">Combat Log</button>
+          <button class="tabLinks tabButton" onclick="openCombatLog(event)">Combat Log</button>
         </div>
         <table id = "movesSection" class="tabContent">
             <tr>
@@ -261,7 +266,7 @@
         <script src="weapons.js"></script>
         <script src="enemies.js"></script>
         <script>
-            var curEnemy = ravenousGlutton();
+            var curEnemy = frothingHeretic();
             
             var turn = 0;
             var dead = 0;
@@ -385,6 +390,11 @@
             function secondWindFunc() {
                 var amount = parseInt((player.maxHP - player.hp)/2)
                 changeHP(amount,player);
+                moveText("player",amount);
+                var combatText = "<tr><td>";
+                combatText += player.name + " got " + player.possPronoun + " second wind, healing for <span class='green'>" + amount + "</span> hp.";
+                combatText += "</td></tr>";
+                document.getElementById("combatLog").innerHTML += combatText;
             }
             
             function startCombat() { 
@@ -536,7 +546,12 @@
             }
             
             function moveText(given,val) {
-                document.getElementById(given + "ActionText").innerHTML = val; //JQuery .text() doesn't work
+                var span;
+                if (val > 0)
+                    span = "<span class='green'>";
+                else
+                    span = "<span class='red'>";
+                document.getElementById(given + "ActionText").innerHTML = span + val + "</span>"; //JQuery .text() doesn't work
                 $("#" + given + "ActionText").show();
                 $("#" + given + "ActionText").fadeOut(1000,textReset("" + given));
                 $("#" + given + "ActionText").addClass("actionTextMove");
@@ -549,6 +564,13 @@
             function toggleAbilities() {
                 if (!dead)
                     $(".abilityButton").toggle();
+            }
+            
+            function openCombatLog(event) {
+                openTab(event, 'combatLogContainer');
+                console.log(1);
+                document.getElementById("combatLogContainer").scrollTop = document.getElementById("combatLogContainer").scrollHeight;
+                console.log(2);
             }
             
             function openTab(evt, currTab) {
