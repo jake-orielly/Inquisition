@@ -340,7 +340,7 @@
                 flagellate.buff.count += 1;
                 changeHP(selfDamage,player);
                 moveText("player",selfDamage);
-                combatText += player.name + " flogged " + player.perPronoun + "self, inflicting " + selfDamage + " damage, and boosting the damage of " + player.possPronoun + " next attack!";
+                combatText += player.name + " flogged " + player.perPronoun + "self, inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + player.possPronoun + " next attack!";
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
                 showBuff(flagellate.buff);
@@ -359,13 +359,13 @@
                 if (playerTemp == player.hp)
                     combatText += "no "
                 else
-                    combatText += playerTemp - player.hp;
+                    combatText += "<span class='red'>" + (playerTemp - player.hp) + "</span>";
                 combatText += " damage to " + player.perPronoun + "self, and "
                 
                 if (enemyTemp == curEnemy.hp)
                     combatText += "no "
                 else 
-                    combatText += enemyTemp - curEnemy.hp;
+                    combatText += "<span class='red'>" + (enemyTemp - curEnemy.hp) + "</span>";
                 combatText += " damage to " + curEnemy.name + ".";
                 
                 combatText += "</td></tr>";
@@ -445,7 +445,6 @@
             
             function takeTurn(curr, target) {
                 var result = "<tr><td>" + makeAttack(curr,target) + "</tr></td>";
-                
                 turn++;
                 document.getElementById("combatLog").innerHTML += result;
             }
@@ -474,10 +473,10 @@
                     moveText(defender.charType,attackResult + critAddon);                    
                     
                     if (defender.hp > 0)
-                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and " + critLogAddon + " <span class='red'>" + attackResult + "</span> damage. " + defender.name.charAt(0).toUpperCase() + defender.name.slice(1) + " now has <span class='red'>" + defender.hp + "</span> health."; 
+                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and " + critLogAddon + " <span class='red'>" + Math.abs(attackResult) + "</span> damage. " + defender.name.charAt(0).toUpperCase() + defender.name.slice(1) + " now has <span class='red'>" + defender.hp + "</span> health."; 
                     else {
                         dead = 1 + turn;
-                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + critLogAddon + " <span class='red'>" + + attackResult + "</span> damage, and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
+                        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + critLogAddon + " <span class='red'>" + + Math.abs(attackResult) + "</span> damage, and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
                     }
                 }
             }
