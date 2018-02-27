@@ -259,14 +259,9 @@
             </table>
         </div>
         <script src="weapons.js"></script>
+        <script src="enemies.js"></script>
         <script>
-            var frothingHeretic = {hp:10,maxHP:10,ac:13,attack:1,weapon:dagger([rusty]),name:"the frothing heretic",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"frothingHeretic"};
-            
-            var ravenousGlutton = {hp:45,maxHP:45,ac:15,attack:2,weapon:cleaver(),name:"the ravenous glutton",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"ravenousGlutton"};
-            
-            var fallenKnight = {hp:25,maxHP:25,ac:20,attack:3,weapon:new shortSword(),name:"the fallen knight",perPronoun:"it",possPronoun:"it's",charType:"enemy",damageTriggers:[],hpTriggers:[],buffs:{},image:"fallenKnight"};
-            
-            var enemy = frothingHeretic;
+            var curEnemy = ravenousGlutton();
             
             var turn = 0;
             var dead = 0;
@@ -279,11 +274,11 @@
             var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:{image:"woundedFuryBuff",bonus:1,count:0}};
             var secondWind = {name:"Second Wind", description:"Regain half your missing health.",cooldown:5,func:secondWindFunc};
             
-            var player = {hp:20,maxHP:20,ac:13,attack:3,name:"Jake",perPronoun:"him",possPronoun:"his",
+            var player = {hp:20,maxHP:20,ac:13,attack:3,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
             weapon:morningStar(),
             abilities:[secondWind,doubleEdge,flagellate,woundedFury,retaliation],charType:"player",damageTriggers:[retaliationFunc],hpTriggers:[woundedFuryFunc],buffs:{damage:[flagellate.buff,retaliation.buff],critChance:[woundedFury.buff]}};
             
-            var characters = [player,enemy];
+            var characters = [player,curEnemy];
             startCombat();
             
             for (var i = 0; i < $(".abilityButton").length; i++) {
@@ -308,11 +303,11 @@
             }
             
             function triggerAbility(given) {
-                /*if (player.currCools[given] == 0) {
+                if (player.currCools[given] == 0) {
                     player.currCools[given] = player.abilities[given].cooldown;
                     $(".abilityButton")[given].classList.add("coolDown");
                     player.abilities[given].func();
-                }*/
+                }
             }
             
             function showBuff(buff) {
@@ -353,10 +348,10 @@
             
             function doubleEdgeFunc() {
                 var playerTemp = player.hp;
-                var enemyTemp = enemy.hp;
+                var enemyTemp = curEnemy.hp;
                 var combatText = "<tr><td>";
                 
-                makeAttack(player, enemy);
+                makeAttack(player, curEnemy);
                 makeAttack(player, player);
                 
                 combatText += player.name + " " + player.weapon.verb + " recklessly, inflicting "
@@ -367,11 +362,11 @@
                     combatText += playerTemp - player.hp;
                 combatText += " damage to " + player.perPronoun + "self, and "
                 
-                if (enemyTemp == enemy.hp)
+                if (enemyTemp == curEnemy.hp)
                     combatText += "no "
                 else 
-                    combatText += enemyTemp - enemy.hp;
-                combatText += " damage to " + enemy.name + ".";
+                    combatText += enemyTemp - curEnemy.hp;
+                combatText += " damage to " + curEnemy.name + ".";
                 
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
@@ -397,7 +392,7 @@
                     updateHP(characters[i]);
                 document.getElementById("movesSection").style.display = "block";
                 document.getElementById("movesButton").className += " active";
-                document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + enemy.image + ".jpg";
+                document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + curEnemy.image + ".jpg";
             }
             
             function playerTurn() {
@@ -440,12 +435,12 @@
             }
             
             function playerCooldownTick() {
-                /*for (var i = 0; i < player.abilities.length; i++) {
+                for (var i = 0; i < player.abilities.length; i++) {
                     if (player.currCools[i] > 0)
                         player.currCools[i]--;
                     if (player.currCools[i] == 0)
                         $(".abilityButton")[i].classList.remove("coolDown");
-                }*/
+                }
             }
             
             function takeTurn(curr, target) {
@@ -487,17 +482,17 @@
                 }
             }
             
-            function calcAttack(attacker,defender) {
+            function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
                 var result = 0;
                 var attack = attackRoll();
                 var critThreshold = 20;
-                var damage = attacker.weapon.getAttribute("damage");
                 var curr;
                    
                 for (var i = 0; i < player.buffs.critChance.length; i++)
                     critThreshold -= player.buffs.critChance[i].count;
-                if (attack + attacker.weapon.getAttribute("attack") + attacker.attack > defender.ac || attack == 20) {
-                    result = getDamage(parseInt(damage[0]),parseInt(damage[1]));
+                console.log(attacker.weapon.getAttribute("damage"));
+                if (attack + attacker.weapon.attack +attacker.attack > defender.ac || attack == 20) {
+                    result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
                     if (attacker.buffs.damage)
                         for (var i = 0; i < attacker.buffs.damage.length; i++) {
                             curr = attacker.buffs.damage[i];
