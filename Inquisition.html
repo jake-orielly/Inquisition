@@ -295,20 +295,32 @@
             
             function changeHP(val,target) {
                 target.hp += val;
-
-                if (val < 0) {
-                    for (var i = 0; i < target.damageTriggers.length; i++)
-                        target.damageTriggers[i](val);
-                }
                 
-                for (var i = 0; i < target.hpTriggers.length; i++)
-                        target.hpTriggers[i]();
+                if (target.hp <= 0)
+                    endCombat(target);
+                
+                else {
+                    if (val < 0) {
+                        for (var i = 0; i < target.damageTriggers.length; i++)
+                            target.damageTriggers[i](val);
+                    }
+
+                    for (var i = 0; i < target.hpTriggers.length; i++)
+                            target.hpTriggers[i]();
+                }
                 
                 updateHP(target);
             }
             
+            function endCombat(target) {
+                for (var i = 0; i < $(".abilityButton").length; i++)
+                    $(".abilityButton")[i].classList.add("coolDown");
+                console.log(target);
+                dead = target;
+            }
+            
             function triggerAbility(given) {
-                if (player.currCools[given] == 0) {
+                if (player.currCools[given] == 0 && !dead) {
                     player.currCools[given] = player.abilities[given].cooldown;
                     $(".abilityButton")[given].classList.add("coolDown");
                     player.abilities[given].func();
@@ -485,7 +497,6 @@
                     if (defender.hp > 0)
                         return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and " + critLogAddon + " <span class='red'>" + Math.abs(attackResult) + "</span> damage. " + defender.name.charAt(0).toUpperCase() + defender.name.slice(1) + " now has <span class='red'>" + defender.hp + "</span> health."; 
                     else {
-                        dead = 1 + turn;
                         return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + critLogAddon + " <span class='red'>" + + Math.abs(attackResult) + "</span> damage, and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
                     }
                 }
@@ -500,8 +511,8 @@
                 for (var i = 0; i < player.buffs.critChance.length; i++)
                     critThreshold -= player.buffs.critChance[i].count;
                 console.log(attacker.weapon.getAttribute("damage"));
-                if (attack + attacker.weapon.attack +attacker.attack > defender.ac || attack == 20) {
-                    result = getDamage(attacker.weapon.damage[0],attacker.weapon.damage[1]);
+                if (attack + attacker.weapon.getAttribute("attack") +attacker.attack > defender.ac || attack == 20) {
+                    result = getDamage(attacker.weapon.getAttribute("damage")[0],attacker.weapon.getAttribute("damage")[1]);
                     if (attacker.buffs.damage)
                         for (var i = 0; i < attacker.buffs.damage.length; i++) {
                             curr = attacker.buffs.damage[i];
