@@ -273,9 +273,13 @@
             
             var isPlayerTurn = true;
             
-            var retaliation = {name:"Retaliation",description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike.",buff:{image:"retaliationBuff",bonus:1,count:0},categories:{damageTriggers:retaliationFunc}};
+            var retaliationBuff = {image:"retaliationBuff",bonus:1,count:0};
+            var retaliation = {name:"Retaliation",description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike.",buff:retaliationBuff,categories:{damageTriggers:retaliationFunc,buffs:{damage:retaliationBuff}}};
+            
             var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdgeFunc,description:"A wild strike that hits both you and your enemy.",categories:[]};
-            var flagellate = {name:"Flagellate",cooldown:3,func:flagellateFunc,description:"Lash yourself, increasing the damage of your next attack.",buff:{image:"flagellateBuff",bonus:5,count:0}};
+            
+            var flagellateBuff = {image:"flagellateBuff",bonus:5,count:0};
+            var flagellate = {name:"Flagellate",cooldown:3,func:flagellateFunc,description:"Lash yourself, increasing the damage of your next attack.",buff:flagellateBuff,categories:{buffs:{damage:flagellateBuff}}};
             
             var woundedFuryBuff = {image:"woundedFuryBuff",bonus:1,count:0};
             var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:woundedFuryBuff,categories:{hpTriggers:woundedFuryFunc,buffs:{critChance:woundedFuryBuff}}};
@@ -284,21 +288,21 @@
             
             var player = {hp:20,maxHP:20,ac:13,attack:3,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
             weapon:morningStar(),
-            abilities:[secondWind,doubleEdge,flagellate,woundedFury,retaliation],charType:"player",damageTriggers:[],hpTriggers:[],buffs:{damage:[flagellate.buff,retaliation.buff],critChance:[woundedFury.buff]}};
+            abilities:[secondWind,doubleEdge,flagellate,woundedFury,retaliation],charType:"player",damageTriggers:[],hpTriggers:[],buffs:{damage:[],critChance:[]}};
             
             function initCharacter(given) {
                 var curr;
                 var curr2;
                 
-                for (var i = 0; i < given.abilities.length; i++) { //ToDo clean up var names
+                for (var i = 0; i < given.abilities.length; i++) { //ToDo clean up var names and make that else readable . . . somehow
                     if (given.abilities[i].categories){
                         curr = given.abilities[i].categories;
                         for (var j = 0; j < Object.keys(curr).length; j++) {
                             curr2 = Object.keys(curr)[j];
                             if (curr2 != "buffs")
                                 given[curr2].push(curr[curr2]);
-                            else
-                                console.log(curr2);
+                            else //Push the buff onto the right buff sub category
+                                given[curr2][Object.keys(curr[curr2])].push(curr[curr2][Object.keys(curr[curr2])]);
                         }
                     }
                 }
