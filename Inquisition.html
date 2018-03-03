@@ -266,7 +266,7 @@
         <script src="weapons.js"></script>
         <script src="enemies.js"></script>
         <script>
-            var curEnemy = frothingHeretic();
+            var currEnemy = fallenKnight();
             
             var turn = 0;
             var dead = 0;
@@ -286,9 +286,13 @@
             
             var secondWind = {name:"Second Wind", description:"Regain half your missing health.",cooldown:5,func:secondWindFunc};
             
-            var player = {hp:20,maxHP:20,ac:13,attack:3,currCools:[0,0,0],name:"Jake",perPronoun:"him",possPronoun:"his",
+            var player = {hp:20,maxHP:20,ac:13,attack:3,currCools:makeCooldowns(),name:"Jake",perPronoun:"him",possPronoun:"his",
             weapon:morningStar(),
             abilities:[secondWind,doubleEdge,flagellate,woundedFury,retaliation],charType:"player",damageTriggers:[],hpTriggers:[],buffs:{damage:[],critChance:[]}};
+            
+            function makeCooldowns() {
+                return [0,0,0];
+            }
             
             function initCharacter(given) {
                 var curr;
@@ -310,7 +314,7 @@
             
             initCharacter(player);
             
-            var characters = [player,curEnemy];
+            var characters = [player,currEnemy];
             startCombat();
             
             for (var i = 0; i < $(".abilityButton").length; i++) {
@@ -392,10 +396,10 @@
             
             function doubleEdgeFunc() {
                 var playerTemp = player.hp;
-                var enemyTemp = curEnemy.hp;
+                var enemyTemp = currEnemy.hp;
                 var combatText = "<tr><td>";
                 
-                makeAttack(player, curEnemy);
+                makeAttack(player, currEnemy);
                 makeAttack(player, player);
                 
                 combatText += player.name + " " + player.weapon.verb + " recklessly, inflicting "
@@ -406,11 +410,11 @@
                     combatText += "<span class='red'>" + (playerTemp - player.hp) + "</span>";
                 combatText += " damage to " + player.perPronoun + "self, and "
                 
-                if (enemyTemp == curEnemy.hp)
+                if (enemyTemp == currEnemy.hp)
                     combatText += "no "
                 else 
-                    combatText += "<span class='red'>" + (enemyTemp - curEnemy.hp) + "</span>";
-                combatText += " damage to " + curEnemy.name + ".";
+                    combatText += "<span class='red'>" + (enemyTemp - currEnemy.hp) + "</span>";
+                combatText += " damage to " + currEnemy.name + ".";
                 
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
@@ -441,7 +445,7 @@
                     updateHP(characters[i]);
                 document.getElementById("movesSection").style.display = "block";
                 document.getElementById("movesButton").className += " active";
-                document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + curEnemy.image + ".jpg";
+                document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + currEnemy.image + ".jpg";
             }
             
             function playerTurn() {
