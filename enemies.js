@@ -11,7 +11,7 @@ function fallenKnight() {
 }
 
 function createPlayer() {
-    var player = new Character(20,13,3,morningStar,"Jake",["him","his"],"player","player",[secondWind,doubleEdge,flagellate,woundedFury,retaliation]);
+    var player = new Character(20,13,3,morningStar(),"Jake",["him","his"],"player","player",[secondWind,doubleEdge,flagellate,woundedFury,retaliation]);
     initCharacter(player);
     return player;
 }
@@ -31,6 +31,7 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
     this.damageTriggers = damageTriggers;
     this.hpTriggers = hpTriggers;
     this.buffs = buffs;
+    this.currCools = [0,0,0];
 }
 
 function initCharacter(given) {
