@@ -16,7 +16,7 @@ function createPlayer() {
     return player;
 }
 
-var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,abilities = [],damageTriggers = [],hpTriggers = [],buffs = {}) {
+var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,abilities = []) {
     this.hp = maxHP;
     this.maxHP = maxHP;
     this.ac = ac;
@@ -28,10 +28,14 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
     this.possPronoun = pronounSet[1];
     this.image = image;
     this.abilities = abilities;
-    this.damageTriggers = damageTriggers;
-    this.hpTriggers = hpTriggers;
-    this.buffs = buffs;
     this.currCools = [0,0,0];
+    this.damageTriggers = [];
+    this.hpTriggers = [];
+    this.buffs = {};
+    this.makeMove = function (target) {
+        console.log(this.hp);
+        return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
+    }
 }
 
 function initCharacter(given) {

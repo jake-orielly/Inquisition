@@ -32,8 +32,7 @@ function Weapon(attack,damage,name,verb,killVerb,modifiers = []) {
         if (!this[given])
             console.log("Error 1: Requested invalid attribute");
         else {
-            var result;
-            console.log(this.given);    
+            var result;   
             if (Array.isArray(this[given])) //Prevents the array from being aliased 
                 result = [this[given][0],this[given][1]];
             else

@@ -266,7 +266,7 @@
         <script src="weapons.js"></script>
         <script src="enemies.js"></script>
         <script>
-            var currEnemy = frothingHeretic();
+            var currEnemy = fallenKnight();
             
             var turn = 0;
             var dead = 0;
@@ -287,10 +287,6 @@
             var secondWind = {name:"Second Wind", description:"Regain half your missing health.",cooldown:5,func:secondWindFunc};
             
             var player = createPlayer();
-            
-            function makeCooldowns() {
-                return [0,0,0];
-            }
             
             var characters = [player,currEnemy];
             startCombat();
@@ -324,7 +320,6 @@
             function endCombat(target) {
                 for (var i = 0; i < $(".abilityButton").length; i++)
                     $(".abilityButton")[i].classList.add("coolDown");
-                console.log(target);
                 dead = target;
             }
             
@@ -475,7 +470,11 @@
             }
             
             function takeTurn(curr, target) {
-                var result = "<tr><td>" + makeAttack(curr,target) + "</tr></td>";
+                var result;
+                if (curr == currEnemy)
+                    result = currEnemy.makeMove(target);
+                else
+                    result = "<tr><td>" + makeAttack(curr,target) + "</tr></td>";
                 turn++;
                 document.getElementById("combatLog").innerHTML += result;
             }
@@ -519,14 +518,12 @@
                    
                 for (var i = 0; i < player.buffs.critChance.length; i++)
                     critThreshold -= player.buffs.critChance[i].count;
-                console.log(attacker.weapon);
                 if (attack + attacker.weapon.getAttribute("attack") +attacker.attack > defender.ac || attack == 20) {
                     result = getDamage(attacker.weapon.getAttribute("damage")[0],attacker.weapon.getAttribute("damage")[1]);
                     if (attacker.buffs.damage)
                         for (var i = 0; i < attacker.buffs.damage.length; i++) {
                             curr = attacker.buffs.damage[i];
                             if(curr.count) {
-                                console.log(curr.count);
                                 result += curr.count * curr.bonus;
                                 curr.count = 0;
                                 hideBuff(curr.image);
@@ -560,7 +557,6 @@
                     document.getElementById(target.charType + "HPText").innerHTML = "0/" + target.maxHP;
                 }
                 else {
-                    console.log(target.hp);
                     document.getElementById(target.charType + "HP").style.width = (target.hp/target.maxHP) * 250 + "px";
                     document.getElementById(target.charType + "HPText").innerHTML = "" + target.hp + "/" + target.maxHP;
                 }    
@@ -589,9 +585,7 @@
             
             function openCombatLog(event) {
                 openTab(event, 'combatLogContainer');
-                console.log(1);
                 document.getElementById("combatLogContainer").scrollTop = document.getElementById("combatLogContainer").scrollHeight;
-                console.log(2);
             }
             
             function openTab(evt, currTab) {
