@@ -274,17 +274,60 @@
             var isPlayerTurn = true;
             
             var retaliationBuff = {image:"retaliationBuff",bonus:1,count:0};
-            var retaliation = {name:"Retaliation",description:"Every time you take damage, you gain bonus attack, which is expended the next time you strike.",buff:retaliationBuff,categories:{damageTriggers:retaliationFunc,buffs:{damage:retaliationBuff}}};
-            
-            var doubleEdge = {name:"Double Edge",cooldown:1,func:doubleEdgeFunc,description:"A wild strike that hits both you and your enemy.",categories:[]};
-            
-            var flagellateBuff = {image:"flagellateBuff",bonus:5,count:0};
-            var flagellate = {name:"Flagellate",cooldown:3,func:flagellateFunc,description:"Lash yourself, increasing the damage of your next attack.",buff:flagellateBuff,categories:{buffs:{damage:flagellateBuff}}};
-            
             var woundedFuryBuff = {image:"woundedFuryBuff",bonus:1,count:0};
-            var woundedFury = {name:"Wounded Fury",description:"The lower your health, the higher your crit chance.",buff:woundedFuryBuff,categories:{hpTriggers:woundedFuryFunc,buffs:{critChance:woundedFuryBuff}}};
+            var flagellateBuff = {image:"flagellateBuff",bonus:5,count:0};
             
-            var secondWind = {name:"Second Wind", description:"Regain half your missing health.",cooldown:5,func:secondWindFunc};
+            function Ability(charType,name,description,maxCooldown,buff,categories,func) {
+                this.charType = charType;
+                this.name = name; 
+                this.description = description;
+                this.maxCooldown = maxCooldown;
+                this.cooldown = 0;
+                this.buff = buff;
+                this.categories = categories;
+                this.func = func;
+            }
+            
+            function secondWind(charType) {
+                return new Ability(charType,"Second Wind","Regain half your missing health.",5,{},{},secondWindFunc)
+            }
+            
+            function retaliation(charType) {
+                return new Ability(charType,"Retaliation","Every time you take damage, you gain bonus attack, which is expended the next time you strike.",0,retaliationBuff,{damageTriggers:retaliationFunc,buffs:{damage:retaliationBuff}},noFunc);
+            }
+            
+            function doubleEdge(charType) {
+                return new Ability(charType,"Double Edge","A wild strike that hits both you and your enemy.",1,{},{},doubleEdgeFunc)
+            }
+            
+            function woundedFury(charType) {
+                return new Ability(charType,"Wounded Fury","The lower your health, the higher your crit chance.",0,woundedFuryBuff,{hpTriggers:woundedFuryFunc,buffs:{critChance:woundedFuryBuff}},noFunc);
+            }
+            
+            function flagellate(charType) {
+                return new Ability(charType, "Flagellate","Lash yourself, increasing the damage of your next attack.",3,flagellateBuff,{buffs:{damage:flagellateBuff}},flagellateFunc);
+            }
+            
+            function noFunc() {
+                console.log("Error 2: Bad Ability Function","The lower your health, the higher your crit chance.");
+            }
+            
+            function secondWindFunc() {
+                var combatText = "<tr><td>";
+                var target;
+                var amount;
+                if (this.charType == "player")
+                    target = player;
+                else
+                    target = enemy;
+                amount = parseInt((target.maxHP - target.hp)/2);
+                changeHP(amount,target);
+                moveText(this.charType,amount);
+                combatText += target.name + " got " + target.possPronoun + " second wind, healing for <span class='green'>" + amount + "</span> hp.";
+                combatText += "</td></tr>";
+                document.getElementById("combatLog").innerHTML += combatText;
+            }
+            
             
             var player = createPlayer();
             
@@ -324,14 +367,15 @@
             }
             
             function triggerAbility(given) {
-                if (player.currCools[given] == 0 && !dead) {
-                    player.currCools[given] = player.abilities[given].cooldown;
+                if (player.abilities[given].cooldown == 0 && !dead) {
+                    player.abilities[given].cooldown = player.abilities[given].maxCooldown;
                     $(".abilityButton")[given].classList.add("coolDown");
                     player.abilities[given].func();
                 }
             }
             
             function showBuff(buff) {
+                console.log(buff);
                 if (buff.count < 1) {
                         hideBuff(buff.image);
                 }
@@ -358,13 +402,13 @@
             function flagellateFunc() {
                 var selfDamage = -3;
                 var combatText = "<tr><td>";
-                flagellate.buff.count += 1;
+                this.buff.count += 1;
                 changeHP(selfDamage,player);
                 moveText("player",selfDamage);
                 combatText += player.name + " flogged " + player.perPronoun + "self, inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + player.possPronoun + " next attack!";
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
-                showBuff(flagellate.buff);
+                showBuff(this.buff);
             }
             
             function doubleEdgeFunc() {
@@ -394,23 +438,13 @@
             }
             
             function retaliationFunc(val) {
-                retaliation.buff.count += val*-1;
-                showBuff(retaliation.buff);
+                retaliationBuff.count += val*-1;
+                showBuff(retaliationBuff);
             }
             
             function woundedFuryFunc() {
-                woundedFury.buff.count = parseInt(10*(1-(player.hp/player.maxHP)));
-                showBuff(woundedFury.buff);
-            }
-            
-            function secondWindFunc() {
-                var amount = parseInt((player.maxHP - player.hp)/2)
-                changeHP(amount,player);
-                moveText("player",amount);
-                var combatText = "<tr><td>";
-                combatText += player.name + " got " + player.possPronoun + " second wind, healing for <span class='green'>" + amount + "</span> hp.";
-                combatText += "</td></tr>";
-                document.getElementById("combatLog").innerHTML += combatText;
+                woundedFuryBuff.count = parseInt(10*(1-(player.hp/player.maxHP)));
+                showBuff(woundedFuryBuff);
             }
             
             function startCombat() { 
@@ -462,9 +496,9 @@
             
             function playerCooldownTick() {
                 for (var i = 0; i < player.abilities.length; i++) {
-                    if (player.currCools[i] > 0)
-                        player.currCools[i]--;
-                    if (player.currCools[i] == 0)
+                    if (player.abilities[i].cooldown > 0)
+                        player.abilities[i].cooldown--;
+                    if (player.abilities[i].cooldown == 0)
                         $(".abilityButton")[i].classList.remove("coolDown");
                 }
             }

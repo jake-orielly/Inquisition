@@ -7,11 +7,14 @@ function ravenousGlutton() {
 }
 
 function fallenKnight() {
-    return new Character(25,20,3,shortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight",[secondWind]);
+    var fallenKnight = new Character(25,20,3,shortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
+    fallenKnight.abilities = [secondWind()];
+    return fallenKnight;
 }
 
 function createPlayer() {
-    var player = new Character(20,13,3,morningStar(),"Jake",["him","his"],"player","player",[secondWind,doubleEdge,flagellate,woundedFury,retaliation]);
+    var player = new Character(20,13,3,morningStar(),"Jake",["him","his"],"player","player");
+    player.abilities = [secondWind(player.charType),doubleEdge(player.charType),flagellate(player.charType),woundedFury(player.charType),retaliation(player.charType)];
     initCharacter(player);
     return player;
 }
@@ -28,7 +31,6 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
     this.possPronoun = pronounSet[1];
     this.image = image;
     this.abilities = abilities;
-    this.currCools = [0,0,0];
     this.damageTriggers = [];
     this.hpTriggers = [];
     this.buffs = {};
