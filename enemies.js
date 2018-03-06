@@ -7,8 +7,9 @@ function ravenousGlutton() {
 }
 
 function fallenKnight() {
-    var fallenKnight = new Character(25,20,3,shortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
+    var fallenKnight = new Character(25,10,3,shortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
     fallenKnight.abilities = [secondWind()];
+    fallenKnight.makeMove = fallenKnightAI;
     return fallenKnight;
 }
 
@@ -34,10 +35,14 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
     this.damageTriggers = [];
     this.hpTriggers = [];
     this.buffs = {};
-    this.makeMove = function (target) {
-        console.log(this.hp);
-        return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
+}
+
+function fallenKnightAI(target) {
+    if(this.hp < this.maxHP) {
+        console.log(0);
+        triggerAbility(currEnemy,0);
     }
+    return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
 }
 
 function initCharacter(given) {

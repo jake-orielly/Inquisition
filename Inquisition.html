@@ -322,10 +322,10 @@
                 if (this.charType == "player")
                     target = player;
                 else
-                    target = enemy;
+                    target = currEnemy;
                 amount = parseInt((target.maxHP - target.hp)/2);
                 changeHP(amount,target);
-                moveText(this.charType,amount);
+                moveText(target.charType,amount);
                 combatText += target.name + " got " + target.possPronoun + " second wind, healing for <span class='green'>" + amount + "</span> hp.";
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
@@ -339,7 +339,7 @@
             
             for (var i = 0; i < $(".abilityButton").length; i++) {
                 $(".abilityButton")[i].innerHTML = player.abilities[i].name;
-                $(".abilityButton")[i].setAttribute("onClick","javascript: triggerAbility(" + i + ");");
+                $(".abilityButton")[i].setAttribute("onClick","javascript: triggerAbility(player," + i + ");");
             }
             
             $(".abilityButton").hide();
@@ -369,11 +369,12 @@
                 dead = target;
             }
             
-            function triggerAbility(given) {
-                if (player.abilities[given].cooldown == 0 && !dead) {
-                    player.abilities[given].cooldown = player.abilities[given].maxCooldown;
-                    $(".abilityButton")[given].classList.add("coolDown");
-                    player.abilities[given].func();
+            function triggerAbility(owner,given) {
+                if (owner.abilities[given].cooldown == 0 && !dead) {
+                    owner.abilities[given].cooldown = owner.abilities[given].maxCooldown;
+                    owner.abilities[given].func();
+                    if (owner = player)
+                        $(".abilityButton")[given].classList.add("coolDown");
                 }
             }
             
@@ -606,7 +607,7 @@
                     span = "<span class='red'>";
                 document.getElementById(given + "ActionText").innerHTML = span + val + "</span>"; //JQuery .text() doesn't work
                 $("#" + given + "ActionText").show();
-                $("#" + given + "ActionText").fadeOut(1000,textReset("" + given));
+                $("#" + given + "ActionText").fadeOut(700,textReset("" + given));
                 $("#" + given + "ActionText").addClass("actionTextMove");
             }
             
