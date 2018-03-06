@@ -282,7 +282,10 @@
                 this.name = name; 
                 this.description = description;
                 this.maxCooldown = maxCooldown;
-                this.cooldown = 0;
+                if (maxCooldown == -1)
+                    this.cooldown = -1;
+                else 
+                    this.cooldown = 0;
                 this.buff = buff;
                 this.categories = categories;
                 this.func = func;
@@ -293,7 +296,7 @@
             }
             
             function retaliation(charType) {
-                return new Ability(charType,"Retaliation","Every time you take damage, you gain bonus attack, which is expended the next time you strike.",0,retaliationBuff,{damageTriggers:retaliationFunc,buffs:{damage:retaliationBuff}},noFunc);
+                return new Ability(charType,"Retaliation","Every time you take damage, you gain bonus attack, which is expended the next time you strike.",-1,retaliationBuff,{damageTriggers:retaliationFunc,buffs:{damage:retaliationBuff}},noFunc);
             }
             
             function doubleEdge(charType) {
@@ -301,7 +304,7 @@
             }
             
             function woundedFury(charType) {
-                return new Ability(charType,"Wounded Fury","The lower your health, the higher your crit chance.",0,woundedFuryBuff,{hpTriggers:woundedFuryFunc,buffs:{critChance:woundedFuryBuff}},noFunc);
+                return new Ability(charType,"Wounded Fury","The lower your health, the higher your crit chance.",-1,woundedFuryBuff,{hpTriggers:woundedFuryFunc,buffs:{critChance:woundedFuryBuff}},noFunc);
             }
             
             function flagellate(charType) {
@@ -375,7 +378,6 @@
             }
             
             function showBuff(buff) {
-                console.log(buff);
                 if (buff.count < 1) {
                         hideBuff(buff.image);
                 }
