@@ -266,7 +266,7 @@
         <script src="weapons.js"></script>
         <script src="enemies.js"></script>
         <script>
-            var currEnemy = fallenKnight();
+            var currEnemy = frothingHeretic();
             
             var turn = 0;
             var dead = 0;
@@ -406,9 +406,16 @@
                 var selfDamage = -3;
                 var combatText = "<tr><td>";
                 this.buff.count += 1;
-                changeHP(selfDamage,player);
-                moveText("player",selfDamage);
-                combatText += player.name + " flogged " + player.perPronoun + "self, inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + player.possPronoun + " next attack!";
+                var target;
+                console.log(this);
+                if (this.charType == "player")
+                    target = player;
+                else
+                    target = currEnemy;
+                console.log(target);
+                changeHP(selfDamage,target);
+                moveText(target.charType,selfDamage);
+                combatText += target.name + " flogged " + target.perPronoun + "self, inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + target.possPronoun + " next attack!";
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
                 showBuff(this.buff);

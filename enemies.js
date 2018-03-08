@@ -1,5 +1,8 @@
 function frothingHeretic() {
-    return new Character(10,13,1,dagger([rusty]),"the frothing heretic",hisHers(),"enemy","frothingHeretic");
+    var frothingHeretic = new Character(10,13,1,dagger([rusty]),"the frothing heretic",hisHers(),"enemy","frothingHeretic");
+    frothingHeretic.abilities = [flagellate()];
+    frothingHeretic.makeMove = frothingHereticAI;
+    return frothingHeretic; 
 }
 
 function ravenousGlutton() {
@@ -39,7 +42,13 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
 
 function fallenKnightAI(target) {
     if(this.hp < this.maxHP) {
-        console.log(0);
+        triggerAbility(currEnemy,0);
+    }
+    return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
+}
+
+function frothingHereticAI(target) {
+    if(this.abilities[0].cooldown == 0) {
         triggerAbility(currEnemy,0);
     }
     return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
