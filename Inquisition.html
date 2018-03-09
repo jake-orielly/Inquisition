@@ -179,11 +179,11 @@
                 border: solid;
             }
             
-            .bigBuffText {
+            .playerBigBuffText {
                 left:45%;
             }
             
-            .buffText {
+            .playerBuffText {
                 left: 65%;
             }
             
@@ -266,8 +266,6 @@
         <script src="weapons.js"></script>
         <script src="enemies.js"></script>
         <script>
-            var currEnemy = frothingHeretic();
-            
             var turn = 0;
             var dead = 0;
             
@@ -333,6 +331,7 @@
             
             
             var player = createPlayer();
+            var currEnemy = frothingHeretic();
             
             var characters = [player,currEnemy];
             startCombat();
@@ -378,13 +377,14 @@
                 }
             }
             
-            function showBuff(buff) {
+            function showBuff(buff,charType) {
+                charType = "player";
                 if (buff.count < 1) {
                         hideBuff(buff.image);
                 }
                 else if (!document.getElementById(buff.image)) {
                     var result = "<tr id='" + buff.image + "Row'><td><div class='relative'><img class='buffImage' src=art/" + buff.image + ".jpg >"
-                    result += "<p class='buffText' id='" + buff.image + "'>" + buff.count + "</p>";
+                    result += "<p class='buffText " + charType + "BuffText' id='" + buff.image + "'>" + buff.count + "</p>";
                     result += "</div></td></tr>";
                     document.getElementById("buffTable").innerHTML += result;
                 }
@@ -394,8 +394,10 @@
                     document.getElementById(buff.image).innerHTML = buff.count;
                 }
                 
-                if (buff.count > 9)
+                if (buff.count > 9) {
                     document.getElementById(buff.image).classList = "bigBuffText";
+                    document.getElementById(buff.image).classList += charType + "BigBuffText";
+                }
             }
             
             function hideBuff(given) {
@@ -405,20 +407,19 @@
             function flagellateFunc() {
                 var selfDamage = -3;
                 var combatText = "<tr><td>";
+                
                 this.buff.count += 1;
                 var target;
-                console.log(this);
                 if (this.charType == "player")
                     target = player;
                 else
                     target = currEnemy;
-                console.log(target);
                 changeHP(selfDamage,target);
                 moveText(target.charType,selfDamage);
                 combatText += target.name + " flogged " + target.perPronoun + "self, inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + target.possPronoun + " next attack!";
                 combatText += "</td></tr>";
                 document.getElementById("combatLog").innerHTML += combatText;
-                showBuff(this.buff);
+                showBuff(this.buff,this.charType);
             }
             
             function doubleEdgeFunc() {
@@ -449,12 +450,12 @@
             
             function retaliationFunc(val) {
                 retaliationBuff.count += val*-1;
-                showBuff(retaliationBuff);
+                showBuff(retaliationBuff,this.charType);
             }
             
             function woundedFuryFunc() {
                 woundedFuryBuff.count = parseInt(10*(1-(player.hp/player.maxHP)));
-                showBuff(woundedFuryBuff);
+                showBuff(woundedFuryBuff,this.charType);
             }
             
             function startCombat() { 

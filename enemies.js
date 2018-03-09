@@ -1,7 +1,8 @@
 function frothingHeretic() {
     var frothingHeretic = new Character(10,13,1,dagger([rusty]),"the frothing heretic",hisHers(),"enemy","frothingHeretic");
-    frothingHeretic.abilities = [flagellate()];
+    frothingHeretic.abilities = [flagellate(frothingHeretic.charType)];
     frothingHeretic.makeMove = frothingHereticAI;
+    initCharacter(frothingHeretic);
     return frothingHeretic; 
 }
 
@@ -11,7 +12,7 @@ function ravenousGlutton() {
 
 function fallenKnight() {
     var fallenKnight = new Character(25,10,3,shortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
-    fallenKnight.abilities = [secondWind()];
+    fallenKnight.abilities = [secondWind(fallenKnight.charType)];
     fallenKnight.makeMove = fallenKnightAI;
     return fallenKnight;
 }
@@ -57,7 +58,6 @@ function frothingHereticAI(target) {
 function initCharacter(given) {
     var curr;
     var curr2;
-
     for (var i = 0; i < given.abilities.length; i++) { //ToDo clean up var names and make that else readable . . . somehow
         if (given.abilities[i].categories){
             curr = given.abilities[i].categories;
