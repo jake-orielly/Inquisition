@@ -17,6 +17,7 @@ function dagger(modifiers) {
 
 //Weapon modifiers
 var rusty = {attack:-1,damage:-1};
+var steel = {attack:2,damage:1};
 
 
 //Base weapon code
