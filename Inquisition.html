@@ -166,7 +166,7 @@
                 cursor: default;
             }
             
-            #buffTable {
+            #playerBuffTable, enemyBuffTable {
                 position: absolute;
                 margin-left: 3;
                 top: 3;
@@ -218,6 +218,10 @@
                 <div id="enemyImgContainer">
                     <img>
                     <div id="enemyActionText" class="actionText">MISS</div>
+                    <table>
+                        <tbody id="enemyBuffTable">
+                        <tr id="retaliationBuffRow"><td><div class="relative"><img class="buffImage" src="art/retaliationBuff.jpg"><p class="buffText playerBuffText" id="retaliationBuff">3</p></div></td></tr><tr id="woundedFuryBuffRow"><td><div class="relative"><img class="buffImage" src="art/woundedFuryBuff.jpg"><p class="buffText playerBuffText" id="woundedFuryBuff">1</p></div></td></tr><tr id="flagellateBuffRow"><td><div class="relative"><img class="buffImage" src="art/flagellateBuff.jpg"><p class="buffText playerBuffText" id="flagellateBuff">1</p></div></td></tr></tbody>
+                    </table>
                 </div>
             </div>
             <div id="playerContainer">
@@ -225,7 +229,7 @@
                     <img src="art/player.jpg">
                     <div id="playerActionText" class="actionText">MISS</div>
                     <table>
-                        <tbody id="buffTable">
+                        <tbody id="playerBuffTable">
                         </tbody>
                     </table>
                 </div>
@@ -386,7 +390,7 @@
                     var result = "<tr id='" + buff.image + "Row'><td><div class='relative'><img class='buffImage' src=art/" + buff.image + ".jpg >"
                     result += "<p class='buffText " + charType + "BuffText' id='" + buff.image + "'>" + buff.count + "</p>";
                     result += "</div></td></tr>";
-                    document.getElementById("buffTable").innerHTML += result;
+                    document.getElementById("playerBuffTable").innerHTML += result;
                 }
                 else { 
                     if(!$("#" + buff.image + "Row").is(":visible"))
