@@ -27,9 +27,14 @@
         }
         
         #kill {
-            width: 20%;
+            width: 25%;
             background-color: #ddd;
             position:relative;
+        }
+        
+        #kill p {
+            position: relative;
+            text-align: center;
         }
 
         #myBar {
@@ -61,17 +66,18 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
-    var gold = new Item("Gold",1);
-	var wolfskin = new Item("Woflskin",4);
-    var meat = new Item("Meat",1);
-    var dagger = new Item("Dagger",15);
-    var leather = new Item("Leather",9,[{item:wolfskin,amount:1}]);
-    var leatherHelm = new Item("Leather Helm",20,[{item:leather,amount:4}]);
+    var gold = new Item("gold",1);
+	var wolfskin = new Item("woflskin",4);
+    var meat = new Item("meat",1);
+    var dagger = new Item("dagger",15);
+    var leather = new Item("leather",9,[{item:wolfskin,amount:1}]);
+    var leather_helm = new Item("leather_helm",20,[{item:leather,amount:4}]);
     var rat = {loot:[{item:meat,odds:100,amount:1}]};
     var wolf = {loot:[{item:wolfskin,odds:50,amount:1},{item:meat,odds:80,amount:[1,3]}]};
     var inventory = [];
     var playerGold = 0;
     var killCooldown = 0;
+    var killRegenRate = 1;
     
     displayInventory();
     
@@ -91,6 +97,15 @@
         this.name = name;
         this.value = value;
         this.recipe = recipe;
+        
+        this.getName = function() {
+            var result = name;
+            result = result.charAt(0).toUpperCase() + result.substr(1);
+            for (var i = 0; i < result.length; i++)
+                if (result.charAt(i) == "_")
+                    result = result.substr(0,i) + " " + result.charAt(i+1).toUpperCase() + result.substr(i+2);
+            return result;
+        }
     }
     
     function InventoryItem(item,amount) {
@@ -103,8 +118,8 @@
         for (var i = 0; i < inventory.length; i++) {
             if (inventory[i].amount > 0) {
                 $("#inventory").append("<tr>");
-                $("#inventory").append("<td>" + inventory[i].item.name + " x" + inventory[i].amount + "</td>");
-                $("#inventory").append("<td class='sell unselectable' onclick='sell(meat)'>(Sell)</td>");
+                $("#inventory").append("<td>" + inventory[i].item.getName() + " x" + inventory[i].amount + "</td>");
+                $("#inventory").append("<td class='sell unselectable' onclick='sell(" + inventory[i].item.name + ")'>(Sell)</td>");
                 $("#inventory").append("</tr>");
             }
         }
@@ -120,7 +135,7 @@
     });
     
     $("#kill").click(function() {
-        if (killCooldown == 0)
+        if (killCooldown <= 0)
             kill(rat);
     });
     
@@ -138,19 +153,22 @@
         function frame() {
             if (width >= 100) {
                 clearInterval(id);
-                killCooldown = 0;
             } else {
-                width++; 
+                killCooldown -= killRegenRate;
+                width = 100 - killCooldown; 
                 elem.style.width = width + '%'; 
             }
         }
     }
     
     function buy(given) {
-        if (playerGold > given.value) {
+        if (playerGold >= given.value) {
             addItem(given,1);
             playerGold -= given.value;
             displayInventory();
+            
+            if (given == dagger)
+                killRegenRate = 2;
         }
         
         else
