@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background: grey;
+        }
+        table, p {
+            color: black;
+            font-size:32px;
+            font-family: monospace;
+        }
+        
+        .unselectable {
+            -webkit-user-select: none; /* Safari 3.1+ */
+            -moz-user-select: none; /* Firefox 2+ */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none; /* Standard syntax */
+        }
+        
+        .sell {
+            padding-left: 30px;
+        }
+        
+        #playerGold {
+            display:none;
+        }
+        
+        #kill {
+            width: 20%;
+            background-color: #ddd;
+            position:relative;
+        }
+
+        #myBar {
+            width: 0%;
+            height: 100%;
+            background-color: #4CAF50;
+            position:absolute;
+        }
+    </style>
+</head>
+<body>
+    <p class="unselectable" id="status">You are in a small village.</p>
+    <div class="unselectable" id="kill">
+        <div id="myBar"></div>
+        <p>Kill Rat</p>
+    </div>
+    <p class="unselectable" id="inventoryText">Inventory</p>
+    <table id="inventory">
+    </table>
+    <p class="unselectable" id="playerGold">Gold: 0</p>
+    <p class="unselectable" id="shopText">Shop</p>
+    <table id="shop">
+        <tr>
+            <td>Dagger: 15g</td>
+            <td class="sell" onclick="buy(dagger)">(Buy)</td>
+        </tr>
+    </table>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    var gold = new Item("Gold",1);
+	var wolfskin = new Item("Woflskin",4);
+    var meat = new Item("Meat",1);
+    var dagger = new Item("Dagger",15);
+    var leather = new Item("Leather",9,[{item:wolfskin,amount:1}]);
+    var leatherHelm = new Item("Leather Helm",20,[{item:leather,amount:4}]);
+    var rat = {loot:[{item:meat,odds:100,amount:1}]};
+    var wolf = {loot:[{item:wolfskin,odds:50,amount:1},{item:meat,odds:80,amount:[1,3]}]};
+    var inventory = [];
+    var playerGold = 0;
+    var killCooldown = 0;
+    
+    displayInventory();
+    
+    function craft(given) {
+    	for (var i = 0; i < given.recipe.length; i++) {
+        	for (var j = 0; j < inventory.length; j++) {
+            	if (inventory[j].item == given.recipe[i].item && inventory[j].amount >= given.recipe[i].amount) {
+                	inventory[j].amount -= given.recipe[i].amount;
+                	addItem(given,1);
+            	}
+        	}
+        }
+        displayInventory();
+    }
+    
+    function Item(name,value,recipe) {
+        this.name = name;
+        this.value = value;
+        this.recipe = recipe;
+    }
+    
+    function InventoryItem(item,amount) {
+    	this.item = item;
+        this.amount = amount;
+    }
+    
+    function displayInventory() {
+        $("#inventory").text("");
+        for (var i = 0; i < inventory.length; i++) {
+            if (inventory[i].amount > 0) {
+                $("#inventory").append("<tr>");
+                $("#inventory").append("<td>" + inventory[i].item.name + " x" + inventory[i].amount + "</td>");
+                $("#inventory").append("<td class='sell unselectable' onclick='sell(meat)'>(Sell)</td>");
+                $("#inventory").append("</tr>");
+            }
+        }
+        
+        if (playerGold > 0)
+            $("#playerGold").show();
+        else
+            $("#playerGold").hide();
+    }
+    
+    $("#inventoryText").click(function() {
+        $("#inventory").toggle();
+    });
+    
+    $("#kill").click(function() {
+        if (killCooldown == 0)
+            kill(rat);
+    });
+    
+    function kill(given) {
+        loot(given);
+        displayInventory();
+        killCooldown = 100;
+        move();
+    }
+    
+    function move() {
+        var elem = document.getElementById("myBar");   
+        var width = 0;
+        var id = setInterval(frame, 10);
+        function frame() {
+            if (width >= 100) {
+                clearInterval(id);
+                killCooldown = 0;
+            } else {
+                width++; 
+                elem.style.width = width + '%'; 
+            }
+        }
+    }
+    
+    function buy(given) {
+        if (playerGold > given.value) {
+            addItem(given,1);
+            playerGold -= given.value;
+            displayInventory();
+        }
+        
+        else
+            flash('#playerGold',['black','red'],6)
+    }
+    
+    function flash(name,colors,repetitions) {
+        $(name).css('color',colors[repetitions%2]);
+        if (repetitions > 0)
+            setTimeout(function(){flash(name,colors,repetitions-1)},200);
+    }
+    
+    function sell(given) {
+        changeGold(given.value);
+        removeItem(given,1);
+        displayInventory();
+    }
+    
+    function changeGold(amount) {
+        playerGold += amount;
+        $("#playerGold").text("Gold: " + playerGold);
+    }
+    
+    function loot(given) {
+        var curr;
+        for (var i = 0; i < given.loot.length; i++) {
+            curr = given.loot[i];
+            if (percentile() <= curr.odds) {
+                if (Array.isArray(curr.amount))
+                    addItem(curr.item,rangeVal(curr.amount));
+                else 
+                    addItem(curr.item,curr.amount);
+            }
+        }
+    }
+    
+    function addItem (item,amount) {
+        var newAmount;
+        for (var i = 0; i < inventory.length; i++) {
+            if (item == inventory[i].item) {
+                newAmount = inventory[i].amount + amount;
+                inventory[i] = new InventoryItem(item, newAmount);
+                return;
+            }
+        }
+        
+        inventory.push(new InventoryItem(item,amount));
+    }
+    
+    function removeItem (item,amount) {
+        for (var i = 0; i < inventory.length; i++) {
+            if (item == inventory[i].item) {
+                if (inventory[i].amount >= amount)
+                    inventory[i].amount -= amount;
+                else
+                    alert("Error 2: Tried to remove more of item than is in inventory.")
+                return;
+            }
+        }
+        
+        alert("Error 1: Tried to remove item not in inventory.")
+    }
+    
+    function rangeVal(given) {
+        return parseInt(Math.random()*(given[1]-(given[0]-1))+given[0]);
+    }
+    
+    function percentile() {
+        return parseInt(Math.random()*100+1);
+    }
+</script>
+</html>
