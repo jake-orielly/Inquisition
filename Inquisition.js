@@ -5,27 +5,44 @@ var player;
 var currEnemy;
 var characters;
 
-startCombat();
-
 var retaliationBuff = {image:"retaliationBuff",bonus:1,count:0};
 var woundedFuryBuff = {image:"woundedFuryBuff",bonus:1,count:0};
 var flagellateBuff = {image:"flagellateBuff",bonus:5,count:0};
+
+player = createPlayer();
 
 function startCombat() {
     turn = 0;
     dead = 0;
     isPlayerTurn = true;
-    player = createPlayer();
     currEnemy = rat();
     characters = [player,currEnemy];
     
+    var types;
+    types = Object.keys(player.buffs);
+    for (var i = 0; i < types.length; i++) {
+        for (var j = 0; j < player.buffs[types[i]].length; j++) {
+            player.buffs[types[i]][j].count = 0;
+            showBuff(player.buffs[types[i]][j]);
+        }
+    }
+    
+    for (var i = 0; i < player.hpTriggers.length; i++)
+                player.hpTriggers[i]();
+    
     for (var i = 0; i < characters.length; i++)
         updateHP(characters[i]);
+    
+    for (var i = 0; i < player.abilities.length; i++) {
+        if(player.abilities[i].cooldown > 0)
+            player.abilities[i].cooldown = 0;
+    }
     
     $("#combatLogContainer").hide();
     document.getElementById("movesSection").style.display = "block";
     document.getElementById("movesButton").className += " active";
     document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + currEnemy.image + ".jpg";
+    
     for (var i = 0; i < $(".abilityButton").length; i++)
         $(".abilityButton")[i].classList.remove("coolDown");
 }
@@ -119,7 +136,8 @@ function endCombat(target) {
         $(".inquisition").hide();
         $(".actionButton").css("color","black");
         $(".actionButton").css("cursor","pointer");
-        nextEncounter = parseInt(Math.random()*206)+50;
+        nextEncounter = parseInt(Math.random()*100)+50;
+        inCombat = false;
     },1000);
 }
 
@@ -150,7 +168,7 @@ function showBuff(buff,charType) {
     }
 
     if (buff.count > 9) {
-        document.getElementById(buff.image).classList = "bigBuffText";
+        document.getElementById(buff.image).classList = "bigBuffText ";
         document.getElementById(buff.image).classList += charType + "BigBuffText";
     }
 }
@@ -220,9 +238,7 @@ function playerTurn() {
         $(".actionButton").css("color","grey");
         $(".actionButton").css("cursor","default");
         takeTurn(characters[0],characters[1]);
-        console.log(0);
         if (!dead) {
-            console.log(1);
             setTimeout(function(){
                 takeTurn(characters[1],characters[0])
                 setTimeout(function(){

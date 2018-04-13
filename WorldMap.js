@@ -6,6 +6,7 @@ var villageHTML = "<img class='village tileItem' id='villageHTML' src='art/villa
 var playerX = 2;
 var playerY = 2;
 var nextEncounter = 50;
+var inCombat = false;
 
 $(".inquisition").hide();
 
@@ -50,6 +51,7 @@ function movePlayer(x,y) {
 function startEncounter() {
     $("#board").hide();
     $(".inquisition").show();
+    inCombat = true;
     startCombat();
 }
 
@@ -58,12 +60,14 @@ $("#5-5").append(villageHTML);
 $("#" + playerY + "-" + playerX).append(playerHTML);
 
 document.addEventListener('keydown', function(event) {
-    if (event.keyCode == 87)
-        movePlayer(0,-1);
-    else if (event.keyCode == 68)
-        movePlayer(1,0);
-    else if (event.keyCode == 83)
-        movePlayer(0,1);
-    else if (event.keyCode == 65)
-        movePlayer(-1,0);
+    if (!inCombat) {
+        if (event.keyCode == 87)
+            movePlayer(0,-1);
+        else if (event.keyCode == 68)
+            movePlayer(1,0);
+        else if (event.keyCode == 83)
+            movePlayer(0,1);
+        else if (event.keyCode == 65)
+            movePlayer(-1,0);
+    }
 });
