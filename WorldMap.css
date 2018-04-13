@@ -1,0 +1,13 @@
+.boardTile {
+    width:64px;
+    height:64px;
+}
+
+.tileItem {
+    position:absolute;
+}
+
+#board td {
+    padding:0;
+    display:inline-block;
+}

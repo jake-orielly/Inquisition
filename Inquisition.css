@@ -1,0 +1,202 @@
+.hp, .hpMax {
+    height: 30px;
+    width: 250px;
+}
+
+.hp {
+    background-color: green;
+}
+
+.hpMax {
+    outline: 2px solid black;
+}
+
+.hpText {
+    font-size: 18px;
+    font-weight: 900;
+    margin-left: 10px;
+}
+
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+#combatLogContainer {
+    height: 25%;
+    overflow-y: scroll;
+    outline: 5px solid black;
+    padding:5px;
+}
+
+#battleSection {
+    height: 65%;
+    outline: 5px solid black;
+    position:relative;
+}
+
+#movesSection {
+    height: 25%;
+    outline: 5px solid black;
+    padding: 0;
+}
+
+#enemyHPMax {
+    float:right;
+    margin: 5px;
+}
+
+
+.tabMenu {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+.tab, .tabButton {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+.tab, .tabButton:hover {
+    background-color: #ddd;
+}
+
+.tab, .tabButton.active {
+    background-color: #ccc;
+}
+
+.tabContent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.inquisition td {
+        padding:0;
+        font-size: 18px;
+    }
+
+.inquisition img {
+        max-width:calc(90%);
+        max-height:calc(90% - 10px);
+        margin:5px;
+    }
+
+#playerImageContainer {
+    height:90%;
+    position: relative;
+    bottom: 35px;
+}
+
+#playerHPMax {
+    position:absolute;
+    bottom:0;
+    margin: 5px;
+}
+
+#playerContainer {
+    display:inline-block;
+    position:absolute;
+    bottom:0;
+}
+
+#enemyContainer {
+    display:inline-block;
+    float:right;
+}
+
+#enemyImgContainer {
+    height:90%;
+    position:relative;
+}
+
+#enemyHPMax {
+    float:right;
+}
+
+.actionButton, .abilityButton {
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    display: table; /*Makes divs size of text (for mousover purposes)*/ 
+    margin-right: 15px;
+}
+
+.actionButton::selection, .abilityButton::selection {
+    background: rgba(0,0,0,0); /*Makes highlight of text invisible*/
+}
+.actionButton::-moz-selection, .abilityButton::-moz-selection {
+    background: rgba(0,0,0,0);
+}
+
+.actionText {
+    position:absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 900;
+    font-size: 36;
+    text-shadow: 2px 2px 4px black;
+    display: none;
+    transition: 1s;
+    -webkit-transition: 1s;
+}
+
+.actionTextMove {
+    top: 30%;
+    left: 50%;
+    transform: translate(-30%, -50%);
+    transition: 1s;
+    -webkit-transition: 1s;
+}
+
+.coolDown {
+    color: grey;
+    cursor: default;
+}
+
+#playerBuffTable, enemyBuffTable {
+    position: absolute;
+    margin-left: 3;
+    top: 3;
+}
+
+.buffImage {
+    width: 50px;
+    height: 50px;
+    margin: 0px;
+    border: solid;
+}
+
+.playerBigBuffText {
+    left:45%;
+}
+
+.playerBuffText {
+    left: 65%;
+}
+
+.buffText, .bigBuffText {
+    color: red;
+    position: absolute;
+    top: 5%;
+    font-weight: 900;
+    text-shadow: 2px 2px 2px black;
+    font-size: 24px;
+}
+
+.relative {
+    position:relative;
+}
