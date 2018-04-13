@@ -46,10 +46,11 @@ function movePlayer(x,y) {
         startEncounter();
 }
 
+
 function startEncounter() {
     $("#board").hide();
     $(".inquisition").show();
-    $("#combatLogContainer").hide();
+    startCombat();
 }
 
 $("#board").html(board);

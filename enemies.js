@@ -11,7 +11,9 @@ function ravenousGlutton() {
 }
 
 function rat() {
-    return new Character(5,5,2,cleaver(),"the rat",["it","it's"],"enemy","rat");
+    var rat = new Character(5,5,2,cleaver(),"the rat",["it","it's"],"enemy","rat");
+    rat.makeMove = baseAI;
+    return rat;
 }
 
 function fallenKnight() {
@@ -58,6 +60,11 @@ function frothingHereticAI(target) {
     }
     return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
 }
+
+function baseAI(target) {
+    return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
+}
+
 
 function initCharacter(given) {
     var curr;
