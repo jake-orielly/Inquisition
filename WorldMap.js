@@ -7,6 +7,8 @@ var playerX = 2;
 var playerY = 2;
 var nextEncounter = 50;
 
+$(".inquisition").hide();
+
 for (var i = 0; i < boardRows; i++) {
     board += "<tr>";
     for (var j = 0; j < boardCols; j++) {
@@ -41,7 +43,13 @@ function movePlayer(x,y) {
     }
 
     if (nextEncounter <= 0)
-        console.log(1);
+        startEncounter();
+}
+
+function startEncounter() {
+    $("#board").hide();
+    $(".inquisition").show();
+    $("#combatLogContainer").hide();
 }
 
 $("#board").html(board);

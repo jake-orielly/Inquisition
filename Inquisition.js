@@ -63,7 +63,7 @@ function secondWindFunc() {
 
 
 var player = createPlayer();
-var currEnemy = frothingHeretic();
+var currEnemy = rat();
 
 var characters = [player,currEnemy];
 startCombat();
@@ -98,6 +98,8 @@ function endCombat(target) {
     for (var i = 0; i < $(".abilityButton").length; i++)
         $(".abilityButton")[i].classList.add("coolDown");
     dead = target;
+    $("#board").show();
+    $(".inquisition").hide();
 }
 
 function triggerAbility(owner,given) {

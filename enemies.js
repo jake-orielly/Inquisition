@@ -10,6 +10,10 @@ function ravenousGlutton() {
     return new Character(45,15,2,cleaver(),"the ravenous glutton",hisHers(),"enemy","ravenousGlutton");
 }
 
+function rat() {
+    return new Character(5,5,2,cleaver(),"the rat",["it","it's"],"enemy","rat");
+}
+
 function fallenKnight() {
     var fallenKnight = new Character(25,10,3,shortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
     fallenKnight.abilities = [secondWind(fallenKnight.charType)];
