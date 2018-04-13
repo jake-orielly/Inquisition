@@ -131,8 +131,9 @@ function endCombat(target) {
     for (var i = 0; i < $(".abilityButton").length; i++)
         $(".abilityButton")[i].classList.add("coolDown");
     dead = target;
+    loot(currEnemy);
     setTimeout(function(){
-        $("#board").show();
+        $("#worldMapContainer").show();
         $(".inquisition").hide();
         $(".actionButton").css("color","black");
         $(".actionButton").css("cursor","pointer");

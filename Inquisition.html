@@ -61,8 +61,16 @@
                 </tbody>
             </table>
         </div>
-        <table id="board" cellspacing=0>
-        </table>
+        <div>
+        <div id="worldMapContainer">
+            <table id="board" cellspacing=0>
+            </table>
+            <div id="inventory">
+                <img id="inventoryBackground" src="art/inventoryBackground.png">
+                <table id="inventoryTable"></table>
+            </div>
+            <img id="inventoryButton" onclick="toggleInventory()" src="art/inventory.png">
+        </div>
         <script src="weapons.js"></script>
         <script src="enemies.js"></script>
         <script src="Inquisition.js"></script>

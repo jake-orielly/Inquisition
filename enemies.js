@@ -13,6 +13,7 @@ function ravenousGlutton() {
 function rat() {
     var rat = new Character(5,5,2,cleaver(),"the rat",["it","it's"],"enemy","rat");
     rat.makeMove = baseAI;
+    rat.loot = [{item:meat,odds:100,amount:1}];
     return rat;
 }
 

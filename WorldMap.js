@@ -8,6 +8,9 @@ var playerY = 2;
 var nextEncounter = 50;
 var inCombat = false;
 
+var meat = new Item("Meat",2);
+var inventory = [];
+
 $(".inquisition").hide();
 
 for (var i = 0; i < boardRows; i++) {
@@ -18,6 +21,17 @@ for (var i = 0; i < boardRows; i++) {
         board += "</td>";
     }
     board += "</tr>";
+}
+
+$("#board").html(board);
+$("#5-5").append(villageHTML);
+$("#" + playerY + "-" + playerX).append(playerHTML);
+
+function startEncounter() {
+    $("#worldMapContainer").hide();
+    $(".inquisition").show();
+    inCombat = true;
+    startCombat();
 }
 
 function movePlayer(x,y) {
@@ -47,17 +61,26 @@ function movePlayer(x,y) {
         startEncounter();
 }
 
-
-function startEncounter() {
-    $("#board").hide();
-    $(".inquisition").show();
-    inCombat = true;
-    startCombat();
+function toggleInventory() {
+    var result;
+    var curr;
+    
+    for (var i = 0; i < 5; i++) {
+        result += "<tr>";
+        for (var j = 0; j < 3; j++) {
+            curr = i*3 + j+1;
+            result += "<td>";
+            if(curr < inventory.length+1) {
+                result += "<img class='inventoryItem' src='art/" + "meat" + ".jpg'>";
+                console.log(1);
+            }
+            result += "</td>";
+        }
+        result += "</tr>";
+    }
+    $("#inventoryTable").html(result);
+    $("#inventory").toggle();
 }
-
-$("#board").html(board);
-$("#5-5").append(villageHTML);
-$("#" + playerY + "-" + playerX).append(playerHTML);
 
 document.addEventListener('keydown', function(event) {
     if (!inCombat) {
@@ -71,3 +94,44 @@ document.addEventListener('keydown', function(event) {
             movePlayer(-1,0);
     }
 });
+
+function loot(given) {
+    var curr;
+    for (var i = 0; i < given.loot.length; i++) {
+        curr = given.loot[i];
+        if (percentile() <= curr.odds) {
+            if (Array.isArray(curr.amount))
+                addItem(curr.item,rangeVal(curr.amount));
+            else 
+                addItem(curr.item,curr.amount);
+        }
+    }
+}
+
+function percentile() {
+    return parseInt(Math.random()*100+1);
+}
+
+function Item(name,value,recipe) {
+    this.name = name;
+    this.value = value;
+    this.recipe = recipe;
+}
+
+function InventoryItem(item,amount) {
+    this.item = item;
+    this.amount = amount;
+}
+
+function addItem (item,amount) {
+    var newAmount;
+    for (var i = 0; i < inventory.length; i++) {
+        if (item == inventory[i].item) {
+            newAmount = inventory[i].amount + amount;
+            inventory[i] = new InventoryItem(item, newAmount);
+            return;
+        }
+    }
+
+    inventory.push(new InventoryItem(item,amount));
+}

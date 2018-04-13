@@ -11,3 +11,48 @@
     padding:0;
     display:inline-block;
 }
+
+#worldMapContainer {
+    position: relative;
+    display: inline-block;
+}
+
+#inventoryButton {
+    position:absolute;
+    bottom:8px;
+    right:8px;
+}
+
+#inventoryTable {
+    position:absolute;
+    right: 18px;
+    bottom:78px;
+}
+
+#inventoryBackground {
+    position: absolute;
+    bottom:66px;
+    right:8px;
+    height: 357px;
+    width: 221px;
+}
+
+#inventory {
+    position: absolute;
+    display:none;
+    bottom:10px;
+    right:0px;
+}
+
+#inventoryTable img {
+    width: 50px;
+    height: 50px;
+    padding: 6px;
+}
+
+.unselectable {
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+}
