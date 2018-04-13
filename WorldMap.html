@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .boardTile {
+            width:64px;
+            height:64px;
+        }
+        
+        .tileItem {
+            position:absolute;
+        }
+        
+        td {
+            padding:0;
+            display:inline-block;
+        }
+    </style>
+</head>
+<body>
+    <table id="board" cellspacing=0>
+    </table>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+	var board = "";
+    var boardCols = 12; 
+    var boardRows = 12;
+    var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
+    var playerX = 2;
+    var playerY = 2;
+    
+    for (var i = 0; i < boardRows; i++) {
+        board += "<tr>";
+        for (var j = 0; j < boardCols; j++) {
+            board += "<td class='boardTile' id='" + i + "-" + j + "'>";
+            board += "<img class='tileItem' src='art/grass.png'>";
+            board += "</td>";
+        }
+        board += "</tr>";
+    }
+    
+    function movePlayer(x,y) {
+        var newX = playerX + x;
+        var newY = playerY + y;
+        
+        if (newX >= 0 && newX < boardCols && newY >= 0 && newY < boardRows){
+            playerX = newX;
+            playerY = newY;
+            $("#playerHTML").remove();
+            $("#" + playerY + "-" + playerX).append(playerHTML);
+        }
+    }
+    
+    $("#board").html(board);
+    $("#" + playerY + "-" + playerX).append(playerHTML);
+    
+    document.addEventListener('keydown', function(event) {
+        if (event.keyCode == 87)
+            movePlayer(0,-1);
+        else if (event.keyCode == 68)
+            movePlayer(1,0);
+        else if (event.keyCode == 83)
+            movePlayer(0,1);
+        else if (event.keyCode == 65)
+            movePlayer(-1,0);
+    });
+</script>
+</html>
