@@ -75,6 +75,12 @@
     margin-right: 4px;
 }
 
+.inventoryAmountContainer {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+}
+
 .absolute {
     position: absolute;
 }

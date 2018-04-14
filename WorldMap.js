@@ -10,11 +10,12 @@ var inCombat = false;
 var inventoryMax = 15;
 
 var meat = new Item("meat",false,2);
-var axe = new Item("axe",false,2);
+var axe = new Item("axe",false,15);
 var gold = new Item("gold",true,1);
+var flint_box = new Item("flint_box",true,5);
 
 var inventory = [];
-var shopInventory = [new InventoryItem(axe,1)];
+var shopInventory = [new InventoryItem(axe,1),new InventoryItem(flint_box,1)];
 
 $(".inquisition").hide();
 
@@ -45,6 +46,11 @@ function movePlayer(x,y) {
     var newLocation;
     var tileType = "empty";
 
+    if ($("#shop").is(":visible")) {
+        $("#shop").hide();
+        $("#inventory").hide();
+    }
+    
     if (newX >= 0 && newX < boardCols && newY >= 0 && newY < boardRows){
         playerX = newX;
         playerY = newY;
@@ -85,7 +91,9 @@ function showShop() {
             result += "<td>";
             result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
             if(curr < shopInventory.length+1) {
-                result += "<img class='inventoryItem' src='art/" + shopInventory[curr-1].item.name + ".png'>";
+                result += "<img class='inventoryItem' onclick='buy(" + (curr-1) + ")' src='art/" + shopInventory[curr-1].item.name + ".png'>";
+                if (shopInventory[curr-1].amount > 1)
+                    result += "<div class='inventoryAmountContainer'><p class='inventoryItemAmount'>" + shopInventory[curr-1].amount + "</p></div>";
             }
             result += "</td>";
         }
@@ -98,7 +106,6 @@ function showShop() {
 function showInventory() {
     var result;
     var curr;
-    
     for (var i = 0; i < 5; i++) {
         result += "<tr>";
         for (var j = 0; j < 3; j++) {
@@ -106,9 +113,9 @@ function showInventory() {
             result += "<td>";
             result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
             if(curr < inventory.length+1) {
-                result += "<img class='inventoryItem' onclick='itemClick(" + (curr-1) + ")' src='art/" + inventory[curr-1].item.name + ".png'>";
+                result += "<img class='inventoryItem' onclick='sell(" + (curr-1) + ")' src='art/" + inventory[curr-1].item.name + ".png'>";
                 if (inventory[curr-1].amount > 1)
-                    result += "<p class='inventoryItemAmount'>" + inventory[curr-1].amount + "</p>";
+                    result += "<div class='inventoryAmountContainer'><p class='inventoryItemAmount'>" + inventory[curr-1].amount + "</p></div>";
             }
             result += "</td>";
         }
@@ -118,7 +125,23 @@ function showInventory() {
     $("#inventory").show();
 }
 
-function itemClick(given) {
+function buy(given) {
+    if ($("#shop").is(":visible")) {
+        var playerGold = 0;
+        for (var i = 0; i < inventory.length; i++) {
+            if(inventory[i].item.name == "gold") {
+                playerGold = inventory[i].amount;
+            }
+        }
+        if(playerGold > shopInventory[given].item.value) {
+            addItem(shopInventory[given].item,1);
+            removeItem(gold,shopInventory[given].item.value);
+            showInventory();
+        }   
+    }
+}
+
+function sell(given) {
     if ($("#shop").is(":visible")) {
         if(inventory[given].item.name != "gold") {
             addItem(gold,(inventory[given].item.value*inventory[given].amount));
