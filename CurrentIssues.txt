@@ -1,2 +1,2 @@
-Item amount not showing up because behind item pic
+Can only buy 1 item at a time from shop
 Player Death

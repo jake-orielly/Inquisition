@@ -3,16 +3,48 @@ var boardCols = 15;
 var boardRows = 10;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var villageHTML = "<img class='village tileItem' id='villageHTML' src='art/village.png'>";
+var treeHTML = "<img class='tree tileItem' src='art/tree.png'>";
+var fireHTML = "<img class='fire tileItem' src='art/fire.png'>";
 var playerX = 2;
 var playerY = 2;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
 
-var meat = new Item("meat",false,2);
+var meat = new Item("meat",false,4);
 var axe = new Item("axe",false,15);
 var gold = new Item("gold",true,1);
-var flint_box = new Item("flint_box",true,5);
+var flint_box = new Item("flint_box",false,5);
+var logs = new Item("logs",false,3);
+var cooked_meat = new Item("cooked_meat",false,7,[{item:meat,amount:1}]);
+
+flint_box.clickFunc = function() {
+    var loc = $("#" + playerY + "-" + playerX);
+    var curr = $("#" + playerY + "-" + playerX).children();
+    var hasLogs = false;
+    var validSpace = true;
+    var currClassList;
+
+    for (var i = 0; i < curr.length; i++) {
+        currClassList = curr[i].classList;
+        for (var j = 0; j < currClassList.length; j++) {
+            if(currClassList[j] == "vilage" || currClassList[j] == "fire" || currClassList[j] == "tree" || currClassList[j] == "stump")
+                validSpace = false;
+        }
+    }
+    
+    for (var i = 0; i < inventory.length; i++) {
+        if(inventory[i].item == logs)
+            hasLogs = true;
+    }
+    
+    if (hasLogs && validSpace) {
+        removeItem(logs);
+        $("#playerHTML").remove();
+        loc.append(fireHTML);
+        loc.append(playerHTML);
+    }
+}
 
 var inventory = [];
 var shopInventory = [new InventoryItem(axe,1),new InventoryItem(flint_box,1)];
@@ -31,7 +63,14 @@ for (var i = 0; i < boardRows; i++) {
 
 $("#board").html(board);
 $("#5-5").append(villageHTML);
+
+addItem(meat);
+addItem(flint_box);
+var trees = ["3-3","3-4","4-3","8-8","3-8","3-9"];
+for (var i = 0; i < trees.length; i++)
+    $("#" + trees[i]).append(treeHTML);
 $("#" + playerY + "-" + playerX).append(playerHTML);
+addItem(axe);
 
 function startEncounter() {
     $("#worldMapContainer").hide();
@@ -104,6 +143,11 @@ function showShop() {
 }
 
 function showInventory() {
+    updateInventory();
+    $("#inventory").show();
+}
+
+function updateInventory() {
     var result;
     var curr;
     for (var i = 0; i < 5; i++) {
@@ -113,7 +157,7 @@ function showInventory() {
             result += "<td>";
             result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
             if(curr < inventory.length+1) {
-                result += "<img class='inventoryItem' onclick='sell(" + (curr-1) + ")' src='art/" + inventory[curr-1].item.name + ".png'>";
+                result += "<img class='inventoryItem' onclick='itemClick(" + (curr-1) + ")' src='art/" + inventory[curr-1].item.name + ".png'>";
                 if (inventory[curr-1].amount > 1)
                     result += "<div class='inventoryAmountContainer'><p class='inventoryItemAmount'>" + inventory[curr-1].amount + "</p></div>";
             }
@@ -122,7 +166,6 @@ function showInventory() {
         result += "</tr>";
     }
     $("#inventoryTable").html(result);
-    $("#inventory").show();
 }
 
 function buy(given) {
@@ -134,21 +177,28 @@ function buy(given) {
             }
         }
         if(playerGold > shopInventory[given].item.value) {
-            addItem(shopInventory[given].item,1);
+            addItem(shopInventory[given].item);
             removeItem(gold,shopInventory[given].item.value);
-            showInventory();
+            updateInventory();
         }   
     }
 }
 
-function sell(given) {
+function itemClick(given) {
     if ($("#shop").is(":visible")) {
-        if(inventory[given].item.name != "gold") {
-            addItem(gold,(inventory[given].item.value*inventory[given].amount));
-            removeItem(inventory[given].item,inventory[given].amount);
-            showInventory();
-        }   
+        sell(given);
     }
+    else if (inventory[given].item.clickFunc) {
+        inventory[given].item.clickFunc();
+    }
+}
+
+function sell(given) {
+    if(inventory[given].item.name != "gold") {
+        addItem(gold,(inventory[given].item.value*inventory[given].amount));
+        removeItem(inventory[given].item,inventory[given].amount);
+        updateInventory();
+    }   
 }
 
 document.addEventListener('keydown', function(event) {
@@ -161,8 +211,47 @@ document.addEventListener('keydown', function(event) {
             movePlayer(0,1);
         else if (event.keyCode == 65)
             movePlayer(-1,0);
+        else if (event.keyCode == 69)
+            tileAction();
     }
 });
+
+function tileAction() {
+    var curr = $("#"+playerY + "-" + playerX).children();
+    var currClassList;
+    var hasAxe = false;
+    
+    for (var i = 0; i < inventory.length; i++)
+        if (inventory[i].item == axe)
+            hasAxe = true;
+    
+    for (var i = 0; i < curr.length; i++) {
+        currClassList = curr[i].classList;
+        for (var j = 0; j < currClassList.length; j++) {
+            if(currClassList[j] == "tree" && hasAxe) {
+                curr[i].src = "art/stump.png";
+                currClassList.remove("tree");
+                currClassList.add("stump");
+                addItem(logs);
+            }
+            
+            else if (currClassList[j] == "fire")
+                console.log(1);
+        }
+    }
+}
+
+function craft(given) {
+    for (var i = 0; i < given.recipe.length; i++) {
+        for (var j = 0; j < inventory.length; j++) {
+            if (inventory[j].item == given.recipe[i].item && inventory[j].amount >= given.recipe[i].amount) {
+                removeItem(given.recipe[i].item,given.recipe[i].amount);
+                addItem(given);
+            }
+        }
+    }
+    updateInventory();
+}
 
 function loot(given) {
     var curr;
@@ -206,7 +295,7 @@ function InventoryItem(item,amount) {
     this.amount = amount;
 }
 
-function addItem (item,amount) {
+function addItem (item,amount = 1) {
     var newAmount;
     if (item.stackable) {
         for (var i = 0; i < inventory.length; i++) {
@@ -219,9 +308,10 @@ function addItem (item,amount) {
     }
 
     inventory.push(new InventoryItem(item,amount));
+    updateInventory();
 }
 
-function removeItem (item,amount) {
+function removeItem (item,amount = 1) {
     for (var i = 0; i < inventory.length; i++) {
         if (item == inventory[i].item) {
             if (inventory[i].amount >= amount) {
@@ -229,6 +319,7 @@ function removeItem (item,amount) {
                 
                 if (inventory[i].amount == 0)
                     inventory.splice(i,1);
+                updateInventory();
             }
             else
                 alert("Error 2: Tried to remove more of item than is in inventory.")
