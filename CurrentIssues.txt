@@ -1,1 +1,2 @@
+Item amount not showing up because behind item pic
 Player Death

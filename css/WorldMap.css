@@ -23,31 +23,60 @@
     right:8px;
 }
 
-#inventoryTable {
+#inventoryTable, #shopTable {
     position:absolute;
-    right: 18px;
-    bottom:78px;
+    bottom:70px;
+    padding: 5px;
+    background-color: rgb(204,204,204);
+    border: 8px solid rgb(61,61,61);
 }
 
-#inventoryBackground {
-    position: absolute;
-    bottom:66px;
-    right:8px;
-    height: 357px;
-    width: 221px;
+#inventoryTable {
+    right: 12px;
 }
 
-#inventory {
-    position: absolute;
+#shopTable {
+    right: 312px;
+}
+
+#inventory, #shop {
+    position: relative;
     display:none;
     bottom:10px;
     right:0px;
 }
 
-#inventoryTable img {
+#inventoryTable td, #shopTable td {
+    display: inline-block;
+    padding: 1px;
+    width: 64px;
+    height: 64px;
+}
+
+.inventoryItem {
+    position: absolute;
     width: 50px;
     height: 50px;
-    padding: 6px;
+    padding: 7px;
+}
+
+.inventorySlot {
+    width: 64px;
+    height: 64px;
+    position:absolute;
+}
+
+.inventoryItemAmount {
+    font-size: 22px;
+    font-weight: 900;
+    text-shadow: 1px 1px 1px white;
+    float: right;
+    margin-top: 35px;
+    margin-right: 4px;
+}
+
+.absolute {
+    position: absolute;
 }
 
 .unselectable {
