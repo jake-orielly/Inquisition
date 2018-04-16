@@ -1,5 +1,5 @@
 function frothingHeretic() {
-    var frothingHeretic = new Character(10,13,1,dagger([rusty]),"the frothing heretic",hisHers(),"enemy","frothingHeretic");
+    var frothingHeretic = new Character(10,13,1,makeDagger([rusty]),"the frothing heretic",hisHers(),"enemy","frothingHeretic");
     frothingHeretic.abilities = [flagellate(frothingHeretic.charType)];
     frothingHeretic.makeMove = frothingHereticAI;
     initCharacter(frothingHeretic);
@@ -7,25 +7,25 @@ function frothingHeretic() {
 }
 
 function ravenousGlutton() {
-    return new Character(45,15,2,cleaver(),"the ravenous glutton",hisHers(),"enemy","ravenousGlutton");
+    return new Character(45,15,2,makeCleaver(),"the ravenous glutton",hisHers(),"enemy","ravenousGlutton");
 }
 
 function rat() {
-    var rat = new Character(5,5,2,cleaver(),"the rat",["it","it's"],"enemy","rat");
+    var rat = new Character(5,5,2,makeCleaver(),"the rat",["it","it's"],"enemy","rat");
     rat.makeMove = baseAI;
     rat.loot = [{item:meat,odds:100,amount:1}];
     return rat;
 }
 
 function fallenKnight() {
-    var fallenKnight = new Character(25,10,3,shortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
+    var fallenKnight = new Character(25,10,3,makeShortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
     fallenKnight.abilities = [secondWind(fallenKnight.charType)];
     fallenKnight.makeMove = fallenKnightAI;
     return fallenKnight;
 }
 
 function createPlayer() {
-    var player = new Character(20,13,3,morningStar(),"Jake",["him","his"],"player","player");
+    var player = new Character(20,13,3,makeMorningStar(),"Jake",["him","his"],"player","player");
     player.abilities = [secondWind(player.charType),doubleEdge(player.charType),flagellate(player.charType),woundedFury(player.charType),retaliation(player.charType)];
     initCharacter(player);
     return player;

@@ -11,12 +11,12 @@ var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
 
-var meat = new Item("meat",false,4);
-var axe = new Item("axe",false,15);
-var gold = new Item("gold",true,1);
-var flint_box = new Item("flint_box",false,5);
-var logs = new Item("logs",false,3);
-var cooked_meat = new Item("cooked_meat",false,7,[{item:meat,amount:1}]);
+var meat = new Item("meat",false,false,4);
+var axe = new Item("axe",false,makeAxe(),15);
+var gold = new Item("gold",true,false,1);
+var flint_box = new Item("flint_box",false,false,5);
+var logs = new Item("logs",false,false,3);
+var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
 
 flint_box.clickFunc = function() {
     var loc = $("#" + playerY + "-" + playerX);
@@ -47,6 +47,7 @@ flint_box.clickFunc = function() {
 }
 
 var inventory = [];
+var equipment = [];
 var shopInventory = [new InventoryItem(axe,1),new InventoryItem(flint_box,1)];
 
 $(".inquisition").hide();
@@ -168,6 +169,14 @@ function updateInventory() {
     $("#inventoryTable").html(result);
 }
 
+function updateEquipment() {
+    var itemImage;
+    for (var i = 0; i < equipment.length; i++) {
+        itemImage = "<div><img class='inventoryItem' style='right: 108px; top:147px;' src='art/" + equipment[i].item.name + ".png'></div>";
+        $("#equipment").append(itemImage);
+    }
+}
+
 function buy(given) {
     if ($("#shop").is(":visible")) {
         var playerGold = 0;
@@ -187,6 +196,10 @@ function buy(given) {
 function itemClick(given) {
     if ($("#shop").is(":visible")) {
         sell(given);
+    }
+    else if (inventory[given].item.equipment && inventory[given].item.equipment.constructor.name == "Weapon") {
+        equipItem(inventory[given].item);
+        updateInventory();
     }
     else if (inventory[given].item.clickFunc) {
         inventory[given].item.clickFunc();
@@ -274,11 +287,12 @@ function percentile() {
     return parseInt(Math.random()*100+1);
 }
 
-function Item(name,stackable,value,recipe) {
+function Item(name,stackable,equipment,value,recipe) {
     this.name = name;
     this.stackable = stackable;
     this.value = value;
     this.recipe = recipe;
+    this.equipment = equipment;
     
     this.getName = function() {
         var result = name;
@@ -309,6 +323,12 @@ function addItem (item,amount = 1) {
 
     inventory.push(new InventoryItem(item,amount));
     updateInventory();
+}
+
+function equipItem (given) {
+    removeItem(given);
+    equipment.push(new InventoryItem(given, 1));
+    updateEquipment();
 }
 
 function removeItem (item,amount = 1) {
