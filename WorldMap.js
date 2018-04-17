@@ -19,6 +19,8 @@ var flint_box = new Item("flint_box",false,false,5);
 var logs = new Item("logs",false,false,3);
 var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
 
+var foodList = [cooked_meat];
+
 flint_box.clickFunc = function() {
     var loc = $("#" + playerY + "-" + playerX);
     var curr = $("#" + playerY + "-" + playerX).children();
@@ -152,7 +154,18 @@ function toggleCookMenu() {
 }
 
 function showCookMenu() {
-    var result = "<tr><td> HI </td></tr>";
+    var result = "";
+    for (var i = 0; i < foodList.length; i++) {
+        if (canCraft(foodList[i])) {
+            result += "<tr>";
+            result += "<td><img onclick='craft(" + foodList[i].name + ")' src='art/" + foodList[i].name + ".png'><td>";
+            result += "<td>" + foodList[i].getName() + "<td>";
+            result += "</tr>";
+        }
+    }
+    
+    if (result == "")
+        result = "No recipes "
     $("#cookMenuTable").html(result);
     $("#cookMenu").show();
 }
@@ -288,23 +301,31 @@ function tileAction() {
                 currClassList.add("stump");
                 addItem(logs);
             }
-            
-            else if (currClassList[j] == "fire")
-                console.log(1);
         }
     }
 }
 
 function craft(given) {
-    for (var i = 0; i < given.recipe.length; i++) {
-        for (var j = 0; j < inventory.length; j++) {
-            if (inventory[j].item == given.recipe[i].item && inventory[j].amount >= given.recipe[i].amount) {
+    if (canCraft(given)) {
+        for (var i = 0; i < given.recipe.length; i++)
                 removeItem(given.recipe[i].item,given.recipe[i].amount);
-                addItem(given);
+        addItem(given);
+        showCookMenu();
+        updateInventory();
+    }
+}
+
+function canCraft(given) {
+    var recipe = given.recipe;
+    for (var i = 0; i < recipe.length; i++) {
+        for (var j = 0; j < inventory.length; j++) {
+            if (recipe[i] && inventory[j].item == recipe[i].item && inventory[j].amount >= recipe[i].amount) {
+                recipe = recipe.slice(0,i).concat(recipe.slice(i+1))
             }
         }
     }
-    updateInventory();
+    
+    return (recipe == false);
 }
 
 function loot(given) {
