@@ -47,7 +47,7 @@ flint_box.clickFunc = function() {
 }
 
 var inventory = [];
-var equipment = [];
+var equipment = {};
 var shopInventory = [new InventoryItem(axe,1),new InventoryItem(flint_box,1)];
 
 $(".inquisition").hide();
@@ -171,9 +171,14 @@ function updateInventory() {
 
 function updateEquipment() {
     var itemImage;
-    for (var i = 0; i < equipment.length; i++) {
-        itemImage = "<div><img class='inventoryItem' style='right: 108px; top:147px;' src='art/" + equipment[i].item.name + ".png'></div>";
-        $("#equipment").append(itemImage);
+    for (var i = 2; i < $("#equipment").children().length; i++) {
+	    $("#equipment").children()[i].remove();
+    }
+    for (var curr in equipment) {
+	    if (equipment[curr]){
+	        itemImage = "<div><img class='inventoryItem' onclick='unEquipItem(\"" + curr + "\")' style='right: 108px; top:147px;' src='art/" + equipment[curr].item.name + ".png'></div>";
+	        $("#equipment").append(itemImage);
+        }
     }
 }
 
@@ -326,8 +331,16 @@ function addItem (item,amount = 1) {
 }
 
 function equipItem (given) {
+	player[given.equipment.constructor.name.toLowerCase()] = given.equipment;
     removeItem(given);
-    equipment.push(new InventoryItem(given, 1));
+    equipment[given.equipment.constructor.name] = new InventoryItem(given, 1);
+    updateEquipment();
+}
+
+function unEquipItem (given) {
+    addItem(equipment[given].item);
+    player[given.toLowerCase()] = null;
+    equipment[given] = null;
     updateEquipment();
 }
 
