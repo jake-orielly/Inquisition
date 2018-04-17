@@ -23,7 +23,14 @@
     right:8px;
 }
 
-#inventoryTable, #shopTable {
+#cookMenuButton {
+    display: none;
+    position: absolute;
+    bottom: 8px;
+    right: 72px;
+}
+
+#inventoryTable, #shopTable, #cookMenuTable {
     position:absolute;
     bottom:70px;
     padding: 5px;
@@ -39,7 +46,11 @@
     right: 312px;
 }
 
-#inventory, #shop {
+#cookMenuTable {
+    right: 500px;
+}
+
+#inventory, #shop, #cookMenu {
     position: relative;
     display:none;
     bottom:10px;

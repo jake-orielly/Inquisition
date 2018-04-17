@@ -10,6 +10,7 @@ var playerY = 2;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
+var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
 
 var meat = new Item("meat",false,false,4);
 var axe = new Item("axe",false,makeAxe(),15);
@@ -43,6 +44,8 @@ flint_box.clickFunc = function() {
         $("#playerHTML").remove();
         loc.append(fireHTML);
         loc.append(playerHTML);
+        if (checkCanCook())
+            $("#cookMenuButton").show();
     }
 }
 
@@ -108,10 +111,30 @@ function movePlayer(x,y) {
 
         $("#playerHTML").remove();
         newLocation.append(playerHTML);
+        
+        if (checkCanCook())
+            $("#cookMenuButton").show();
+        else {
+            $("#cookMenu").hide();
+            $("#cookMenuButton").hide();
+        }
     }
 
     if (nextEncounter <= 0)
         startEncounter();
+}
+
+function checkCanCook() {
+    var curr = $("#" + playerY + "-" + playerX).children();
+    var currClassList;
+    
+    for (var i = 0; i < curr.length; i++) {
+        currClassList = curr[i].classList;
+        for (var j = 0; j < currClassList.length; j++) {
+            if(currClassList[j] == "fire")
+                return true;
+        }
+    }
 }
 
 function toggleInventory() {
@@ -119,6 +142,19 @@ function toggleInventory() {
         $("#inventory").hide();
     else 
         showInventory();
+}
+
+function toggleCookMenu() {
+    if ($("#cookMenu").is(":visible"))
+        $("#cookMenu").hide();
+    else 
+        showCookMenu();
+}
+
+function showCookMenu() {
+    var result = "<tr><td> HI </td></tr>";
+    $("#cookMenuTable").html(result);
+    $("#cookMenu").show();
 }
 
 function showShop() {

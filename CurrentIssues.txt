@@ -1,3 +1,4 @@
 Can only buy 1 item at a time from shop
 Combat log doesn’t clear between combats
+If you have 2 pieces of meat, both get cooked, if 3 pieces, 2 cooked, if 4 pieces, 3
 Player Death
