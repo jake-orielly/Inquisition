@@ -72,7 +72,7 @@ $("#5-5").append(villageHTML);
 
 addItem(meat);
 addItem(flint_box);
-var trees = ["3-3","3-4","4-3","8-8","3-8","3-9"];
+var trees = ["3-3","3-4","4-3","8-4","8-5","8-6","7-4","7-5","8-8","3-10","3-8","4-8","4-9","2-8","2-9","2-10","3-9"];
 for (var i = 0; i < trees.length; i++)
     $("#" + trees[i]).append(treeHTML);
 $("#" + playerY + "-" + playerX).append(playerHTML);
@@ -242,13 +242,8 @@ function updateEquipment() {
 
 function buy(given) {
     if ($("#shop").is(":visible")) {
-        var playerGold = 0;
-        for (var i = 0; i < inventory.length; i++) {
-            if(inventory[i].item.name == "gold") {
-                playerGold = inventory[i].amount;
-            }
-        }
-        if(playerGold > shopInventory[given].item.value) {
+        var playerGold = inventoryCount(gold);
+        if(playerGold >= shopInventory[given].item.value) {
             addItem(shopInventory[given].item);
             removeItem(gold,shopInventory[given].item.value);
             updateInventory();
@@ -300,6 +295,8 @@ function tileAction() {
     for (var i = 0; i < inventory.length; i++)
         if (inventory[i].item == axe)
             hasAxe = true;
+    if (equipment.Weapon && equipment.Weapon.item == axe)
+        hasAxe = true;
     
     for (var i = 0; i < curr.length; i++) {
         currClassList = curr[i].classList;
@@ -308,7 +305,7 @@ function tileAction() {
                 curr[i].src = "art/stump.png";
                 currClassList.remove("tree");
                 currClassList.add("stump");
-                addItem(logs);
+                chopTree();
             }
         }
     }
