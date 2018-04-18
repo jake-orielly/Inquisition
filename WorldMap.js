@@ -146,6 +146,15 @@ function toggleInventory() {
         showInventory();
 }
 
+function inventoryCount(given) {
+    var total = 0;
+    for (var i = 0; i < inventory.length; i++) {
+        if (inventory[i].item == given)
+            total += inventory[i].amount;
+    }
+    return total;
+}
+
 function toggleCookMenu() {
     if ($("#cookMenu").is(":visible"))
         $("#cookMenu").hide();
@@ -318,14 +327,10 @@ function craft(given) {
 function canCraft(given) {
     var recipe = given.recipe;
     for (var i = 0; i < recipe.length; i++) {
-        for (var j = 0; j < inventory.length; j++) {
-            if (recipe[i] && inventory[j].item == recipe[i].item && inventory[j].amount >= recipe[i].amount) {
-                recipe = recipe.slice(0,i).concat(recipe.slice(i+1))
-            }
-        }
+        if (!inventoryCount(recipe[i].item,recipe[i].amount))
+            return false;
     }
-    
-    return (recipe == false);
+    return true;
 }
 
 function loot(given) {
@@ -402,20 +407,25 @@ function unEquipItem (given) {
 }
 
 function removeItem (item,amount = 1) {
-    for (var i = 0; i < inventory.length; i++) {
-        if (item == inventory[i].item) {
-            if (inventory[i].amount >= amount) {
-                inventory[i].amount -= amount;
-                
-                if (inventory[i].amount == 0)
+    if (inventoryCount(item) < amount)
+        alert("Error 2: Tried to remove more of item than is in inventory.");
+    else {
+        for (var i = 0; i < inventory.length; i++) {
+            if (item == inventory[i].item) {
+                if (inventory[i].amount >= amount) {
+                    inventory[i].amount -= amount;
+                    amount = 0;
+                    if (inventory[i].amount == 0)
+                        inventory.splice(i,1);
+                    break;
+                }
+                else {
+                    amount -= inventory[i].amount;
+                    inventory.amount = 0;
                     inventory.splice(i,1);
-                updateInventory();
+                }
             }
-            else
-                alert("Error 2: Tried to remove more of item than is in inventory.")
-            return;
         }
+        updateInventory();
     }
-
-    alert("Error 1: Tried to remove item not in inventory.")
 }
