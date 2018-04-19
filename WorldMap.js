@@ -1,6 +1,8 @@
 var boardHTML = "";
 var boardCols = 15; 
 var boardRows = 10;
+var visibleCols = 15;
+var visibleRows = 10;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 7;
 var playerY = 4;
@@ -22,18 +24,13 @@ var foodList = [cooked_meat];
 
 flint_box.clickFunc = function() {
     var loc = $("#" + playerY + "-" + playerX);
-    var curr = $("#" + playerY + "-" + playerX).children();
+    var curr = board[playerY][playerX];
     var hasLogs = false;
     var validSpace = true;
-    var currClassList;
 
-    for (var i = 0; i < curr.length; i++) {
-        currClassList = curr[i].classList;
-        for (var j = 0; j < currClassList.length; j++) {
-            if(currClassList[j] == "vilage" || currClassList[j] == "fire" || currClassList[j] == "tree" || currClassList[j] == "stump")
-                validSpace = false;
-        }
-    }
+    for (var i = 0; i < curr.length; i++)
+        if(curr[i] == "vilage" || curr[i] == "fire" || curr[i] == "tree" || curr[i] == "stump")
+            validSpace = false;
     
     for (var i = 0; i < inventory.length; i++) {
         if(inventory[i].item == logs)
@@ -42,11 +39,11 @@ flint_box.clickFunc = function() {
     
     if (hasLogs && validSpace) {
         removeItem(logs);
-        $("#playerHTML").remove();
         addBoardObject("fire",playerY,playerX);
-        loc.append(playerHTML);
+        curr += "fire";
         if (checkCanCook())
             $("#cookMenuButton").show();
+        updateBoard();
     }
 }
 
@@ -58,28 +55,47 @@ $(".inquisition").hide();
 
 for (var i = 0; i < boardRows; i++) {
 	board[i] = [];
-    boardHTML += "<tr>";
     for (var j = 0; j < boardCols; j++) {
 	    board[i][j] = ["grass"];
-        boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
-        boardHTML += "<img class='tileItem' src='art/grass.png'>";
-        boardHTML += "</td>";
     }
-    boardHTML += "</tr>";
 }
-
-$("#board").html(boardHTML);
-
-
-addItem(meat);
-addItem(flint_box);
-addItem(axe);
 
 var trees = [[3,3],[3,4],[4,3],[8,4],[8,5],[8,6],[7,4],[7,5],[8,8],[3,10],[3,8],[4,8],[4,9],[2,8],[2,9],[2,10],[3,9]];
 for (var i = 0; i < trees.length; i++)
     addBoardObject("tree",trees[i][0],trees[i][1]);
 $("#" + playerY + "-" + playerX).append(playerHTML);
 addBoardObject("village",5,5);
+
+updateBoard();
+
+function updateBoard() {
+    var visX = parseInt(visibleRows/2);
+    var visY = parseInt(visibleCols/2);
+    visX = 3;
+    visY = 3;
+    
+    boardHTML = "";
+    for (var i = playerY-visY; i < playerY+visY+1; i++) {
+        boardHTML += "<tr>";
+        for (var j = playerX-visX; j < playerX+visX+1; j++) {
+            boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
+            console.log(i + " : " + j)
+            for (var k = 0; k < board[i][j].length; k++) {
+                boardHTML += "<img class='" + board[i][j][k] + " tileItem' src='art/" + board[i][j][k] + ".png'>";
+            }
+            boardHTML += "</td>";
+        }
+        boardHTML += "</tr>";
+    }
+    
+    $("#board").html(boardHTML);
+    $("#" + playerY + "-" + playerX).append(playerHTML);
+}
+
+
+addItem(meat);
+addItem(flint_box);
+addItem(axe);
 
 function startEncounter() {
     $("#worldMapContainer").hide();
@@ -113,9 +129,6 @@ function movePlayer(x,y) {
             showInventory();
             showShop();
         }
-
-        $("#playerHTML").remove();
-        newLocation.append(playerHTML);
         
         if (checkCanCook())
             $("#cookMenuButton").show();
@@ -123,6 +136,8 @@ function movePlayer(x,y) {
             $("#cookMenu").hide();
             $("#cookMenuButton").hide();
         }
+        
+        updateBoard();
     }
 
     if (nextEncounter <= 0)
@@ -291,8 +306,7 @@ document.addEventListener('keydown', function(event) {
 });
 
 function tileAction() {
-    var curr = $("#"+playerY + "-" + playerX).children();
-    var currClassList;
+    var curr = board[playerY][playerX];
     var hasAxe = false;
     
     for (var i = 0; i < inventory.length; i++)
@@ -302,14 +316,10 @@ function tileAction() {
         hasAxe = true;
     
     for (var i = 0; i < curr.length; i++) {
-        currClassList = curr[i].classList;
-        for (var j = 0; j < currClassList.length; j++) {
-            if(currClassList[j] == "tree" && hasAxe) {
-                curr[i].src = "art/stump.png";
-                currClassList.remove("tree");
-                currClassList.add("stump");
-                chopTree();
-            }
+        if(curr[i] == "tree" && hasAxe) {
+            curr[i] = "stump";
+            chopTree();
+            updateBoard();
         }
     }
 }
@@ -431,7 +441,5 @@ function removeItem (item,amount = 1) {
 }
 
 function addBoardObject(given,x,y) {
-	var html = "<img class='" + given + " tileItem' src='art/" + given + ".png'>";
-	$("#" + x + "-" + y).append(html);
     board[x][y].push(given);
 }
