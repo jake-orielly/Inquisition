@@ -1,16 +1,15 @@
-var board = "";
+var boardHTML = "";
 var boardCols = 15; 
 var boardRows = 10;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
-var villageHTML = "<img class='village tileItem' id='villageHTML' src='art/village.png'>";
-var treeHTML = "<img class='tree tileItem' src='art/tree.png'>";
-var fireHTML = "<img class='fire tileItem' src='art/fire.png'>";
-var playerX = 2;
-var playerY = 2;
+var playerX = 7;
+var playerY = 4;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
 var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
+
+var board = [];
 
 var meat = new Item("meat",false,false,4);
 var axe = new Item("axe",false,makeAxe(),15);
@@ -44,7 +43,7 @@ flint_box.clickFunc = function() {
     if (hasLogs && validSpace) {
         removeItem(logs);
         $("#playerHTML").remove();
-        loc.append(fireHTML);
+        addBoardObject("fire",playerY,playerX);
         loc.append(playerHTML);
         if (checkCanCook())
             $("#cookMenuButton").show();
@@ -58,25 +57,29 @@ var shopInventory = [new InventoryItem(axe,1),new InventoryItem(flint_box,1)];
 $(".inquisition").hide();
 
 for (var i = 0; i < boardRows; i++) {
-    board += "<tr>";
+	board[i] = [];
+    boardHTML += "<tr>";
     for (var j = 0; j < boardCols; j++) {
-        board += "<td class='boardTile' id='" + i + "-" + j + "'>";
-        board += "<img class='tileItem' src='art/grass.png'>";
-        board += "</td>";
+	    board[i][j] = ["grass"];
+        boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
+        boardHTML += "<img class='tileItem' src='art/grass.png'>";
+        boardHTML += "</td>";
     }
-    board += "</tr>";
+    boardHTML += "</tr>";
 }
 
-$("#board").html(board);
-$("#5-5").append(villageHTML);
+$("#board").html(boardHTML);
+
 
 addItem(meat);
 addItem(flint_box);
-var trees = ["3-3","3-4","4-3","8-4","8-5","8-6","7-4","7-5","8-8","3-10","3-8","4-8","4-9","2-8","2-9","2-10","3-9"];
-for (var i = 0; i < trees.length; i++)
-    $("#" + trees[i]).append(treeHTML);
-$("#" + playerY + "-" + playerX).append(playerHTML);
 addItem(axe);
+
+var trees = [[3,3],[3,4],[4,3],[8,4],[8,5],[8,6],[7,4],[7,5],[8,8],[3,10],[3,8],[4,8],[4,9],[2,8],[2,9],[2,10],[3,9]];
+for (var i = 0; i < trees.length; i++)
+    addBoardObject("tree",trees[i][0],trees[i][1]);
+$("#" + playerY + "-" + playerX).append(playerHTML);
+addBoardObject("village",5,5);
 
 function startEncounter() {
     $("#worldMapContainer").hide();
@@ -425,4 +428,10 @@ function removeItem (item,amount = 1) {
         }
         updateInventory();
     }
+}
+
+function addBoardObject(given,x,y) {
+	var html = "<img class='" + given + " tileItem' src='art/" + given + ".png'>";
+	$("#" + x + "-" + y).append(html);
+    board[x][y].push(given);
 }
