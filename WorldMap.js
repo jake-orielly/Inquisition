@@ -1,8 +1,8 @@
 var boardHTML = "";
 var boardCols = 15; 
 var boardRows = 10;
-var visibleCols = 15;
-var visibleRows = 10;
+var visibleCols = 7;
+var visibleRows = 7;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 7;
 var playerY = 4;
@@ -69,20 +69,41 @@ addBoardObject("village",5,5);
 updateBoard();
 
 function updateBoard() {
-    var visX = parseInt(visibleRows/2);
+    var visX = parseInt(visibleRows/2);  //Visibility in each direction is half total visibility
     var visY = parseInt(visibleCols/2);
-    visX = 3;
-    visY = 3;
+    var botX = playerX-visX; //Lowest X player can see, followed by highest X, lowest Y, etc
+    var topX = playerX+visX+1;
+    var botY = playerY - visY;
+    var topY = playerY + visY + 1;
+    
+    if (topX > boardCols) {  //If the highest X player can see is off the board
+        botX = boardCols - visibleCols;
+        topX = boardCols; //They should only be able to see the highest X on the board
+    }
+    
+    else if (botX < 0) { //If the lowest X the player can see is off the board
+        botX = 0; //They should only be able to see the lowest X on the board
+        topX = visibleCols;
+    }
+    
+    if (topY > boardRows) {
+        botY = boardRows - visibleRows;
+        topY = boardRows;
+    }
+    
+    else if (botY < 0) {
+        botY = 0;
+        topY = visibleRows;
+    }
     
     boardHTML = "";
-    for (var i = playerY-visY; i < playerY+visY+1; i++) {
+    for (var i = botY; i < topY; i++) {
         boardHTML += "<tr>";
-        for (var j = playerX-visX; j < playerX+visX+1; j++) {
-            boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
-            console.log(i + " : " + j)
-            for (var k = 0; k < board[i][j].length; k++) {
-                boardHTML += "<img class='" + board[i][j][k] + " tileItem' src='art/" + board[i][j][k] + ".png'>";
-            }
+        for (var j = botX; j < topX; j++) {
+                boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
+                for (var k = 0; k < board[i][j].length; k++) {
+                    boardHTML += "<img class='" + board[i][j][k] + " tileItem' src='art/" + board[i][j][k] + ".png'>";
+                }
             boardHTML += "</td>";
         }
         boardHTML += "</tr>";
@@ -140,8 +161,8 @@ function movePlayer(x,y) {
         updateBoard();
     }
 
-    if (nextEncounter <= 0)
-        startEncounter();
+    //if (nextEncounter <= 0)
+      //  startEncounter();
 }
 
 function checkCanCook() {
