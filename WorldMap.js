@@ -161,8 +161,8 @@ function movePlayer(x,y) {
         updateBoard();
     }
 
-    //if (nextEncounter <= 0)
-      //  startEncounter();
+    if (nextEncounter <= 0)
+        startEncounter();
 }
 
 function checkCanCook() {

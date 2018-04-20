@@ -46,6 +46,7 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
     this.damageTriggers = [];
     this.hpTriggers = [];
     this.buffs = {};
+    this.unarmed = new Weapon(2,[1,3],"fist","punched with","pummeled");
 }
 
 function fallenKnightAI(target) {
