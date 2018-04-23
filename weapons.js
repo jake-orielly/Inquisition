@@ -20,7 +20,11 @@ function makeAxe(modifiers) {
 }
 
 //Weapon modifiers
-var modifiers = {rusty:{attack:-1,damage:-1},steel:{attack:2,damage:1}};
+var modifiers = {
+    rusty:{attack:-1,damage:-1},
+    copper: {attack:1},
+    iron: {attack:2, damage:1},
+    steel:{attack:3,damage:2}};
 
 
 //Base weapon code

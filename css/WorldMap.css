@@ -46,10 +46,6 @@
     right: 312px;
 }
 
-#cookMenuTable {
-    right: 500px;
-}
-
 #inventory, #shop, #cookMenu {
     position: relative;
     display:none;

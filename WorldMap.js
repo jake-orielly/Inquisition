@@ -14,42 +14,48 @@ var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
 var board = [];
 
 var meat = new Item("meat",false,false,4);
-var axe = new Item("axe",false,makeAxe(),15);
+var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15);
+var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45);
+var steel_axe = new Item("iron_axe",false,makeAxe(["steel"]),115);
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
-var logs = new Item("logs",false,false,3);
+var oak_logs = new Item("oak_logs",false,false,3);
+var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
 
 var foodList = [cooked_meat];
+var toolModifierLevel = {copper:1,iron:2,steel:3};
+var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
 
 flint_box.clickFunc = function() {
     var loc = $("#" + playerY + "-" + playerX);
     var curr = board[playerY][playerX];
-    var hasLogs = false;
+    var playerLogs = false;
     var validSpace = true;
 
     for (var i = 0; i < curr.length; i++)
-        if(curr[i] == "vilage" || curr[i] == "fire" || curr[i] == "tree" || curr[i] == "stump")
+        if(curr[i] != "grass")
             validSpace = false;
     
     for (var i = 0; i < inventory.length; i++) {
-        if(inventory[i].item == logs)
-            hasLogs = true;
+        for (var curr in treeList)
+            if(inventory[i].item == treeList[curr].resource)
+                playerLogs = treeList[curr].resource;
     }
     
-    if (hasLogs && validSpace) {
-        removeItem(logs);
+    if (playerLogs && validSpace) {
+        removeItem(playerLogs);
         addBoardObject("fire",playerY,playerX);
         curr += "fire";
+        updateBoard();
         if (checkCanCook())
             $("#cookMenuButton").show();
-        updateBoard();
     }
 }
 
 var inventory = [];
 var equipment = {};
-var shopInventory = [new InventoryItem(axe,1),new InventoryItem(flint_box,1)];
+var shopInventory = [new InventoryItem(copper_axe,1),new InventoryItem(iron_axe,1),new InventoryItem(flint_box,1)];
 
 $(".inquisition").hide();
 
@@ -60,9 +66,13 @@ for (var i = 0; i < boardRows; i++) {
     }
 }
 
-var trees = [[3,3],[3,4],[4,3],[8,4],[8,5],[8,6],[7,4],[7,5],[8,8],[3,10],[3,8],[4,8],[4,9],[2,8],[2,9],[2,10],[3,9]];
+var trees = [[3,3],[3,4],[4,3],[8,4],[8,5],[8,6],[7,4],[7,5],[3,10],[3,8],[4,8],[4,9],[2,8],[2,9],[2,10],[3,9]];
 for (var i = 0; i < trees.length; i++)
-    addBoardObject("tree",trees[i][0],trees[i][1]);
+    addBoardObject("oak",trees[i][0],trees[i][1]);
+trees = [[6,8],[7,8],[6,9],[8,8],[7,9],[8,9],[9,9],[7,10],[7,9],[8,10]];
+for (var i = 0; i < trees.length; i++)
+    addBoardObject("evergreen",trees[i][0],trees[i][1]);
+
 $("#" + playerY + "-" + playerX).append(playerHTML);
 addBoardObject("village",5,5);
 
@@ -116,7 +126,7 @@ function updateBoard() {
 
 addItem(meat);
 addItem(flint_box);
-addItem(axe);
+addItem(copper_axe);
 
 function startEncounter() {
     $("#worldMapContainer").hide();
@@ -161,8 +171,8 @@ function movePlayer(x,y) {
         updateBoard();
     }
 
-    if (nextEncounter <= 0)
-        startEncounter();
+    //if (nextEncounter <= 0)
+        //startEncounter();
 }
 
 function checkCanCook() {
@@ -328,19 +338,30 @@ document.addEventListener('keydown', function(event) {
 
 function tileAction() {
     var curr = board[playerY][playerX];
-    var hasAxe = false;
+    var currResource;
+    var currTool;
+    var axeLevel = 0;
+    var currAxe;
     
-    for (var i = 0; i < inventory.length; i++)
-        if (inventory[i].item == axe)
-            hasAxe = true;
+    for (var i = 0; i < inventory.length; i++) {
+        currTool = inventory[i].item.equipment;
+        if (currTool && currTool.name == "axe")
+            for (var j = 0; j < currTool.modifierNames.length; j++)
+                axeLevel = Math.max(axeLevel, toolModifierLevel[currTool.modifierNames[j]]);
+    }
+    
     if (equipment.Weapon && equipment.Weapon.item == axe)
-        hasAxe = true;
+        for (var j = 0; j < equipment.Weapon.modifierNames.length; j++)
+                axeLevel = Math.max(axeLevel, toolModifierLevel[equipment.Weapon.modifierNames[j]]);
     
     for (var i = 0; i < curr.length; i++) {
-        if(curr[i] == "tree" && hasAxe) {
-            curr[i] = "stump";
-            chopTree();
+        if (Object.keys(treeList).includes(curr[i]))
+            currResource = treeList[curr[i]];
+        if(currResource && axeLevel >= currResource.toolLevel && playerSkills.woodcutting.level >= currResource.playerLevel) {
+            chopTree(curr[i]);
+            curr[i] = curr[i].toString() + "_stump";
             updateBoard();
+            break;
         }
     }
 }
@@ -439,7 +460,7 @@ function unEquipItem (given) {
 
 function removeItem (item,amount = 1) {
     if (inventoryCount(item) < amount)
-        alert("Error 2: Tried to remove more of item than is in inventory.");
+        alert("Error 2: Tried to remove more of item than is in inventory. " + item.name + " : " + amount);
     else {
         for (var i = 0; i < inventory.length; i++) {
             if (item == inventory[i].item) {

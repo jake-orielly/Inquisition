@@ -1,3 +1,4 @@
 Can only buy 1 item at a time from shop
 Combat log doesn’t clear between combats
+When inventory fills you just can’t put more items in it, no alert or anything
 Player Death
