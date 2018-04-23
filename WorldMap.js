@@ -394,10 +394,10 @@ function Item(name,stackable,equipment,value,recipe) {
     
     this.getName = function() {
         var result = name;
-        result = result.charAt(0).toUpperCase() + result.substr(1);
+        result = capitalize(result);
         for (var i = 0; i < result.length; i++)
             if (result.charAt(i) == "_")
-                result = result.substr(0,i) + " " + result.charAt(i+1).toUpperCase() + result.substr(i+2);
+                result = result.substr(0,i) + " " + capitalize(result.substr(i+1));
         return result;
     }
 }

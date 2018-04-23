@@ -20,18 +20,20 @@ function makeAxe(modifiers) {
 }
 
 //Weapon modifiers
-var rusty = {attack:-1,damage:-1};
-var steel = {attack:2,damage:1};
+var modifiers = {rusty:{attack:-1,damage:-1},steel:{attack:2,damage:1}};
 
 
 //Base weapon code
-function Weapon(attack,damage,name,verb,killVerb,modifiers = []) {
+function Weapon(attack,damage,name,verb,killVerb,modifierNames = []) {
     this.attack = attack;
     this.damage = damage;
     this.name = name;
     this.verb = verb;
     this.killVerb = killVerb;
-    this.modifiers = modifiers;
+    this.modifierNames = modifierNames;
+    this.modifiers = [];
+    for (var i = 0; i < modifierNames.length; i++)
+        this.modifiers[i] = modifiers[modifierNames[i]];
 
     this.getAttribute = function(given) {
         if (!this[given])
@@ -57,5 +59,13 @@ function Weapon(attack,damage,name,verb,killVerb,modifiers = []) {
             }
         }
         return result;
+    }
+    
+    this.getName = function() {
+        var displayName = "";
+        for (var i = 0; i < modifierNames.length; i++)
+            displayName += capitalize(modifierNames[i] + " ");
+        displayName += capitalize(this.name);
+        return displayName;
     }
 }
