@@ -1,11 +1,9 @@
 var boardHTML = "";
-var boardCols = 15; 
-var boardRows = 10;
-var visibleCols = 7;
-var visibleRows = 7;
+var visibleCols = 11;
+var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
-var playerX = 7;
-var playerY = 4;
+var playerX = 9;
+var playerY = 8;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
@@ -58,23 +56,17 @@ var equipment = {};
 var shopInventory = [new InventoryItem(copper_axe,1),new InventoryItem(iron_axe,1),new InventoryItem(flint_box,1)];
 
 $(".inquisition").hide();
-
-for (var i = 0; i < boardRows; i++) {
+for (var i = 0; i < mapTable.length; i++) {
 	board[i] = [];
-    for (var j = 0; j < boardCols; j++) {
+    for (var j = 0; j < mapTable[i].length; j++) {
 	    board[i][j] = ["grass"];
+        if (mapTable[i][j] != "grass")
+            addBoardObject(mapTable[i][j],i,j);
     }
 }
 
-var trees = [[3,3],[3,4],[4,3],[8,4],[8,5],[8,6],[7,4],[7,5],[3,10],[3,8],[4,8],[4,9],[2,8],[2,9],[2,10],[3,9]];
-for (var i = 0; i < trees.length; i++)
-    addBoardObject("oak",trees[i][0],trees[i][1]);
-trees = [[6,8],[7,8],[6,9],[8,8],[7,9],[8,9],[9,9],[7,10],[7,9],[8,10]];
-for (var i = 0; i < trees.length; i++)
-    addBoardObject("evergreen",trees[i][0],trees[i][1]);
-
 $("#" + playerY + "-" + playerX).append(playerHTML);
-addBoardObject("village",5,5);
+
 
 updateBoard();
 
@@ -86,9 +78,9 @@ function updateBoard() {
     var botY = playerY - visY;
     var topY = playerY + visY + 1;
     
-    if (topX > boardCols) {  //If the highest X player can see is off the board
-        botX = boardCols - visibleCols;
-        topX = boardCols; //They should only be able to see the highest X on the board
+    if (topX > mapTable[0].length) {  //If the highest X player can see is off the board
+        botX = mapTable[0].length - visibleCols;
+        topX = mapTable[0].length; //They should only be able to see the highest X on the board
     }
     
     else if (botX < 0) { //If the lowest X the player can see is off the board
@@ -96,9 +88,9 @@ function updateBoard() {
         topX = visibleCols;
     }
     
-    if (topY > boardRows) {
-        botY = boardRows - visibleRows;
-        topY = boardRows;
+    if (topY > mapTable.length) {
+        botY = mapTable.length - visibleRows;
+        topY = mapTable.length;
     }
     
     else if (botY < 0) {
@@ -145,8 +137,7 @@ function movePlayer(x,y) {
         $("#shop").hide();
         $("#inventory").hide();
     }
-    
-    if (newX >= 0 && newX < boardCols && newY >= 0 && newY < boardRows){
+    if (newX >= 0 && newX < mapTable[0].length && newY >= 0 && newY < mapTable.length && !$("#" + [newY] + "-" + [newX]).children().hasClass("ocean") && !$("#" + [newY] + "-" + [newX]).children().hasClass("mountain")){
         playerX = newX;
         playerY = newY;
         newLocation = $("#" + playerY + "-" + playerX);
