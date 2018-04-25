@@ -15,6 +15,8 @@ var meat = new Item("meat",false,false,4);
 var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15);
 var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45);
 var steel_axe = new Item("iron_axe",false,makeAxe(["steel"]),115);
+var copper_chestplate = new Item("copper_chestplate",false,false,75);
+var iron_chestplate = new Item("iron_chestplate",false,false,190);
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
 var oak_logs = new Item("oak_logs",false,false,3);
@@ -53,7 +55,7 @@ flint_box.clickFunc = function() {
 
 var inventory = [];
 var equipment = {};
-var shopInventory = [new InventoryItem(copper_axe,1),new InventoryItem(iron_axe,1),new InventoryItem(flint_box,1)];
+var shopInventory = [new InventoryItem(copper_axe,1),new InventoryItem(iron_axe,1),new InventoryItem(copper_chestplate), new InventoryItem(iron_chestplate), new InventoryItem(flint_box,1)];
 
 $(".inquisition").hide();
 for (var i = 0; i < mapTable.length; i++) {
@@ -269,12 +271,13 @@ function updateInventory() {
 
 function updateEquipment() {
     var itemImage;
-    for (var i = 2; i < $("#equipment").children().length; i++) {
-	    $("#equipment").children()[i].remove();
+    for (var i = 0; i < $(".equipmentItem").length; i++) {
+	    $(".equipmentItem").remove();
     }
     for (var curr in equipment) {
 	    if (equipment[curr]){
-	        itemImage = "<div><img class='inventoryItem' onclick='unEquipItem(\"" + curr + "\")' style='right: 108px; top:147px;' src='art/" + equipment[curr].item.name + ".png'></div>";
+		    console.log(curr);
+	        itemImage = "<div><img class='inventoryItem equipmentItem' onclick='unEquipItem(\"" + curr + "\")' style='right: 108px; top:147px;' src='art/" + equipment[curr].item.name + ".png'></div>";
 	        $("#equipment").append(itemImage);
         }
     }
