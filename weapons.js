@@ -19,12 +19,16 @@ function makeAxe(modifiers) {
     return new Weapon(4,[4,5],"axe","chopped with","chopped",modifiers);
 }
 
+function makeChestplate(modifiers) {
+    return new Armor(6,"chestplate",modifiers);
+}
+
 //Weapon modifiers
-var modifiers = {
+var modifierList = {
     rusty:{attack:-1,damage:-1},
     copper: {attack:1},
-    iron: {attack:2, damage:1},
-    steel:{attack:3,damage:2}};
+    iron: {attack:2, damage:1,ac:1.4},
+    steel:{attack:3,damage:2,ac:1.8}};
 
 
 //Base weapon code
@@ -37,39 +41,58 @@ function Weapon(attack,damage,name,verb,killVerb,modifierNames = []) {
     this.modifierNames = modifierNames;
     this.modifiers = [];
     for (var i = 0; i < modifierNames.length; i++)
-        this.modifiers[i] = modifiers[modifierNames[i]];
+        this.modifiers[i] = modifierList[modifierNames[i]];
 
-    this.getAttribute = function(given) {
-        if (!this[given])
-            console.log("Error 1: Requested invalid attribute");
-        else {
-            var result;   
-            if (Array.isArray(this[given])) //Prevents the array from being aliased 
-                result = [this[given][0],this[given][1]];
-            else
-                result = this[given];
+    this.getAttribute = function(given) {return getAttribute(this,given)};
+    
+    this.getName = function() {return getName(this)};
+}
 
-            for (var i = 0; i < this.modifiers.length; i++) { //For each of the weapon's modifiers
-                for (var currProperty in this.modifiers[i]){ //For each of the modifiers properties
-                    if(currProperty == given) {
-                        if (given == "damage") { //If damage, subtract from max and min
-                            result[0] += this.modifiers[i][currProperty];
-                            result[1] += this.modifiers[i][currProperty];
-                        }
-                        else 
-                            result += this.modifiers[i][currProperty];
+function Armor(ac,name,modifierNames = []) {
+    this.ac = ac;
+    this.name = name;
+    this.modifierNames = modifierNames;
+    this.modifiers = [];
+    for (var i = 0; i < modifierNames.length; i++)
+        this.modifiers[i] = modifierList[modifierNames[i]];
+    
+    this.getAttribute = function(given) {return getAttribute(this,given)};
+    
+    this.getName = function() {return getName(this)};
+}
+
+function getAttribute(object, given) {
+    if (!object[given])
+        console.log("Error 1: Requested invalid attribute");
+    else {
+        var result;   
+        if (Array.isArray(object[given])) //Prevents the array from being aliased 
+            result = [object[given][0],object[given][1]];
+        else
+            result = object[given];
+
+        for (var i = 0; i < object.modifiers.length; i++) { //For each of the weapon's modifiers
+            for (var currProperty in object.modifiers[i]){ //For each of the modifiers properties
+                if(currProperty == given) {
+                    if (given == "damage") { //If damage, subtract from max and min
+                        result[0] += object.modifiers[i][currProperty];
+                        result[1] += object.modifiers[i][currProperty];
                     }
+                    else if (given == "ac") 
+                        result = parseInt(result * object.modifiers[i][currProperty]);
+                    else 
+                        result += object.modifiers[i][currProperty];
                 }
             }
         }
-        return result;
     }
-    
-    this.getName = function() {
-        var displayName = "";
-        for (var i = 0; i < modifierNames.length; i++)
-            displayName += capitalize(modifierNames[i] + " ");
-        displayName += capitalize(this.name);
-        return displayName;
-    }
+    return result;
+}
+
+function getName(object) {
+    var displayName = "";
+    for (var i = 0; i < object.modifierNames.length; i++)
+        displayName += capitalize(object.modifierNames[i] + " ");
+    displayName += capitalize(object.name);
+    return displayName;
 }
