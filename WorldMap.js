@@ -276,7 +276,6 @@ function updateEquipment() {
     }
     for (var curr in equipment) {
 	    if (equipment[curr]){
-		    console.log(curr);
 	        itemImage = "<div><img class='inventoryItem equipmentItem' onclick='unEquipItem(\"" + curr + "\")' style='right: 108px; top:147px;' src='art/" + equipment[curr].item.name + ".png'></div>";
 	        $("#equipment").append(itemImage);
         }
@@ -441,7 +440,10 @@ function addItem (item,amount = 1) {
 function equipItem (given) {
 	player[given.equipment.constructor.name.toLowerCase()] = given.equipment;
     removeItem(given);
-    equipment[given.equipment.constructor.name] = new InventoryItem(given, 1);
+    if (given.equipment.constructor.name == "Armor")
+        equipment[given.equipment.slot] = new InventoryItem(given, 1);
+    else
+        equipment[given.equipment.constructor.name] = new InventoryItem(given, 1);
     updateEquipment();
 }
 

@@ -20,7 +20,7 @@ function makeAxe(modifiers) {
 }
 
 function makeChestplate(modifiers) {
-    return new Armor(6,"chestplate",modifiers);
+    return new Armor(6,"chestplate","chest",modifiers);
 }
 
 //Weapon modifiers
@@ -48,9 +48,10 @@ function Weapon(attack,damage,name,verb,killVerb,modifierNames = []) {
     this.getName = function() {return getName(this)};
 }
 
-function Armor(ac,name,modifierNames = []) {
+function Armor(ac,name,slot,modifierNames = []) {
     this.ac = ac;
     this.name = name;
+    this.slot = slot;
     this.modifierNames = modifierNames;
     this.modifiers = [];
     for (var i = 0; i < modifierNames.length; i++)
