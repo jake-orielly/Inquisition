@@ -23,6 +23,10 @@ function makeChestplate(modifiers) {
     return new Armor(6,"chestplate","chest",modifiers);
 }
 
+function makePlatelegs(modifiers) {
+    return new Armor(4,"platelegs","legs",modifiers);
+}
+
 //Weapon modifiers
 var modifierList = {
     rusty:{attack:-1,damage:-1},

@@ -12,11 +12,15 @@ var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
 var board = [];
 
 var meat = new Item("meat",false,false,4);
-var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15);
+var copper_ore = new Item("copper_ore",false,false,3);
+var copper_bar = new Item("copper_bar",true,false,8,[{item:copper_ore,amount:2}]);
+var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,[{item:copper_bar,amount:1},{item:oak_logs,amount:1}]);
 var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45);
 var steel_axe = new Item("iron_axe",false,makeAxe(["steel"]),115);
-var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75);
+var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75,[{item:copper_bar,amount:7}]);
 var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190);
+var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,[{item:copper_bar,amount:4}]);
+var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115);
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
 var oak_logs = new Item("oak_logs",false,false,3);
@@ -55,7 +59,13 @@ flint_box.clickFunc = function() {
 
 var inventory = [];
 var equipment = {};
-var shopInventory = [new InventoryItem(copper_axe,1),new InventoryItem(iron_axe,1),new InventoryItem(copper_chestplate), new InventoryItem(iron_chestplate), new InventoryItem(flint_box,1)];
+var shopTemp = [copper_axe,iron_axe,copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs,flint_box,copper_ore,copper_bar];
+
+var shopInventory = [];
+
+for (var i = 0; i < shopTemp.length; i++) {
+    shopInventory.push(new InventoryItem(shopTemp[i],1));
+}
 
 $(".inquisition").hide();
 for (var i = 0; i < mapTable.length; i++) {
