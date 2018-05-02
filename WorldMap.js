@@ -28,6 +28,7 @@ var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
 
 var foodList = [cooked_meat];
+var smithList = [copper_axe,copper_chestplate,copper_platelegs];
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
 
@@ -52,8 +53,7 @@ flint_box.clickFunc = function() {
         addBoardObject("fire",playerY,playerX);
         curr += "fire";
         updateBoard();
-        if (checkCanCook())
-            $("#cookMenuButton").show();
+        checkCanCraft();
     }
 }
 
@@ -77,6 +77,7 @@ for (var i = 0; i < mapTable.length; i++) {
     }
 }
 
+addBoardObject("anvil",8,11)
 $("#" + playerY + "-" + playerX).append(playerHTML);
 
 
@@ -164,13 +165,7 @@ function movePlayer(x,y) {
             showShop();
         }
         
-        if (checkCanCook())
-            $("#cookMenuButton").show();
-        else {
-            $("#cookMenu").hide();
-            $("#cookMenuButton").hide();
-        }
-        
+        checkCanCraft();
         updateBoard();
     }
 
@@ -178,17 +173,32 @@ function movePlayer(x,y) {
         //startEncounter();
 }
 
-function checkCanCook() {
+function checkCanCraft() {
     var curr = $("#" + playerY + "-" + playerX).children();
     var currClassList;
-    
+    var canCook = false;
+    var canSmith = false;
     for (var i = 0; i < curr.length; i++) {
         currClassList = curr[i].classList;
         for (var j = 0; j < currClassList.length; j++) {
             if(currClassList[j] == "fire")
-                return true;
+                canCook = true;
+            else if (currClassList[j] == "anvil")
+                canSmith = true;
         }
     }
+    console.log(canCook);
+    if (canCook)
+        $("#cookMenuButton").show()
+    else {
+        $("#cookMenu").hide();
+        $("#cookMenuButton").hide();
+    
+    }
+    if (canSmith)
+        $("#smithMenuButton").show();
+    else 
+        $("#smithMenuButton").hide();
 }
 
 function toggleInventory() {
