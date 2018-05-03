@@ -19,6 +19,10 @@ function makeAxe(modifiers) {
     return new Weapon(4,[4,5],"axe","chopped with","chopped",modifiers);
 }
 
+function makePickaxe(modifiers) {
+    return new Weapon(6,[2,3],"pickaxe","swung with","pierced",modifiers);
+}
+
 function makeChestplate(modifiers) {
     return new Armor(6,"chestplate","chest",modifiers);
 }
