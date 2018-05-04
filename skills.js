@@ -2,16 +2,16 @@ var playerSkills = {};
 
 playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
 
-function chopTree(given) {
-    playerSkills.woodcutting.xp += treeList[given].xp;
+function chopTree() {
+    playerSkills.woodcutting.xp += 6;
     if (playerSkills.woodcutting.xp >= xpNeeded(playerSkills.woodcutting.level))
         levelUp(playerSkills.woodcutting);
-    addItem(treeList[given].resource);
+    addItem(logs);
 }
 
 function levelUp(skill) {
     skill.level += 1;
-    console.log("You leveled up in " + skill.name);
+    console.log("You leveld up in " + skill.name);
 }
 
 function xpNeeded(level) {

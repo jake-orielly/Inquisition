@@ -30,13 +30,6 @@
     right: 72px;
 }
 
-#smithMenuButton {
-    display: none;
-    position: absolute;
-    bottom: 8px;
-    right: 72px;
-}
-
 #inventoryTable, #shopTable, #cookMenuTable {
     position:absolute;
     bottom:70px;
@@ -51,6 +44,10 @@
 
 #shopTable {
     right: 312px;
+}
+
+#cookMenuTable {
+    right: 500px;
 }
 
 #inventory, #shop, #cookMenu {

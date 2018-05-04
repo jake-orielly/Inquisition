@@ -46,19 +46,6 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
     this.damageTriggers = [];
     this.hpTriggers = [];
     this.buffs = {};
-    this.unarmed = new Weapon(2,[1,3],"fist","punched with","pummeled");
-    
-    this.getAC = function() {
-        var result = this.ac;
-        if (Object.keys(equipment).length == 0)
-            return result;
-        else {
-            for (var curr in equipment)
-                if (equipment[curr].item.equipment.ac)
-                    result += equipment[curr].item.equipment.ac;
-            return result;
-        }
-    }
 }
 
 function fallenKnightAI(target) {

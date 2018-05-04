@@ -307,16 +307,16 @@ function makeAttack(attacker, defender) {
 
     if (attackResult == 0) {
         moveText(defender.charType,"MISS");
-        return capitalize(attacker.name) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " but missed!";
+        return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " but missed!";
     }
     else {
         changeHP(attackResult,defender);
         moveText(defender.charType,attackResult + critAddon);                    
 
         if (defender.hp > 0)
-            return capitalize(attacker.name) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and " + critLogAddon + " <span class='red'>" + Math.abs(attackResult) + "</span> damage. " + capitalize(defender.name) + " now has <span class='red'>" + defender.hp + "</span> health."; 
+            return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and " + critLogAddon + " <span class='red'>" + Math.abs(attackResult) + "</span> damage. " + defender.name.charAt(0).toUpperCase() + defender.name.slice(1) + " now has <span class='red'>" + defender.hp + "</span> health."; 
         else {
-            return capitalize(attacker.name) + " " + critLogAddon + " <span class='red'>" + + Math.abs(attackResult) + "</span> damage, and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
+            return attacker.name.charAt(0).toUpperCase() + attacker.name.slice(1) + " " + critLogAddon + " <span class='red'>" + + Math.abs(attackResult) + "</span> damage, and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
         }
     }
 }
@@ -326,10 +326,7 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     var attack = attackRoll();
     var critThreshold = 20;
     var curr;
-    
-    if (!attacker.weapon)
-        attacker.weapon = attacker.unarmed;
-    
+
     for (var i = 0; i < player.buffs.critChance.length; i++)
         critThreshold -= player.buffs.critChance[i].count;
     if (attack + attacker.weapon.getAttribute("attack") +attacker.attack > defender.ac || attack == 20) {
