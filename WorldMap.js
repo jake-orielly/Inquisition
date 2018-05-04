@@ -192,7 +192,7 @@ function checkCanCraft() {
                 canSmith = true;
         }
     }
-    console.log(canCook);
+
     if (canCook)
         $("#cookMenuButton").show()
     else {
@@ -339,7 +339,7 @@ function sell(given) {
     }   
 }
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keyup', function(event) {
     if (!inCombat) {
         if (event.keyCode == 87)
             movePlayer(0,-1);
@@ -356,42 +356,42 @@ document.addEventListener('keydown', function(event) {
 
 function tileAction() {
     var curr = board[playerY][playerX];
-    var currResource;
+    var currResource; 
+    var resourceType;
     var currTool;
-    var axeLevel = 0;
-    var pickaxeLevel = 0;
-    
+    var toolLevel = 0;
+    var toolMap = ["axe","pickaxe"];
+    var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level];
+    var actionMap = [chopTree,mineOre];
+   
+    for (var i = 0; i < curr.length; i++) {
+        if (Object.keys(treeList).includes(curr[i])) {
+            currResource = treeList[curr[i]];
+            resourceType = 0;
+        }
+        else if (Object.keys(veinList).includes(curr[i])) {
+            currResource = veinList[curr[i]];
+            resourceType = 1;
+        }
+    }
     for (var i = 0; i < inventory.length; i++) {
         currTool = inventory[i].item.equipment;
-        if (currTool && currTool.name == "axe")
+        if (currTool && currTool.name == toolMap[resourceType])
             for (var j = 0; j < currTool.modifierNames.length; j++)
-                axeLevel = Math.max(axeLevel, toolModifierLevel[currTool.modifierNames[j]]);
-        else if (currTool && currTool.name == "pickaxe")
-            for (var j = 0; j < currTool.modifierNames.length; j++)
-                pickaxeLevel = Math.max(pickaxeLevel, toolModifierLevel[currTool.modifierNames[j]]);
+                toolLevel = Math.max(toolLevel, toolModifierLevel[currTool.modifierNames[j]]);
     }
     
-    if (equipment.Weapon && equipment.Weapon.item.equipment.name == "axe")
+    if (equipment.Weapon && equipment.Weapon.item.equipment.name == toolMap[resourceType])
         for (var j = 0; j < equipment.Weapon.modifierNames.length; j++)
-                axeLevel = Math.max(axeLevel, toolModifierLevel[equipment.Weapon.modifierNames[j]]);
+                toolLevel = Math.max(toolLevel, toolModifierLevel[equipment.Weapon.modifierNames[j]]);
     
-    if (equipment.Weapon && equipment.Weapon.item.equipment.name == "pickaxe")
-        for (var j = 0; j < equipment.Weapon.modifierNames.length; j++)
-                pickaxeLevel = Math.max(pickaxeLevel, toolModifierLevel[equipment.Weapon.modifierNames[j]]);
-    
-    for (var i = 0; i < curr.length; i++) {
-        if (Object.keys(treeList).includes(curr[i]))
-            currResource = treeList[curr[i]];
-        if (Object.keys(veinList).includes(curr[i])) {
-            currResource = veinList[curr[i]];
-            console.log("It's ore.");
-        }
-        if(currResource && axeLevel >= currResource.toolLevel && playerSkills.woodcutting.level >= currResource.playerLevel) {
-            chopTree(curr[i]);
-            curr[i] = curr[i].toString() + "_stump";
-            updateBoard();
-            break;
-        }
+    if(currResource && toolLevel >= currResource.toolLevel && skillMap[resourceType] >= currResource.playerLevel) {
+        actionMap[resourceType](currResource);
+        if (resourceType == 0)
+        	curr[curr.length-1] = curr[curr.length-1].toString() + "_stump";
+        else 
+        	curr[curr.length-1] = "rock";
+        updateBoard();
     }
 }
 

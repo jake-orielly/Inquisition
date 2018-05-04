@@ -68,8 +68,9 @@
             <div id="inventory">
                 <table cellspacing="0" id="inventoryTable"></table>
                 <div id="equipment">
-                    <img id="equipmentBackground" src='art/equipmentBackground.png'>;
-                    <img class="equipmentSlot" style="right: 108px; top:146px;" src='art/inventorySlot.png'>;
+                    <img id="equipmentBackground" src='art/equipmentBackground.png'>
+                    <img class="equipmentSlot" id="weaponSlot" style="right: 108px; top:146px;" src='art/inventorySlot.png'>
+                    <img class="equipmentSlot" id="chestSlot" style="right: 38px; top:74px;" src='art/inventorySlot.png'>
                 </div>
             </div>
             <div id="shop">
@@ -80,7 +81,10 @@
             </div>
             <img id="inventoryButton" onclick="toggleInventory()" src="art/inventory.png">
             <img id="cookMenuButton" onclick="toggleCookMenu()" src="art/cookMenu.png">
+            <img id="smithMenuButton" onclick="toggleSmithMenu()" src="art/smithMenu.png">
         </div>
+        <script src="utilityFunctions.js"></script>
+        <script src="testMap.js"></script>
         <script src="weapons.js"></script>
         <script src="enemies.js"></script>
         <script src="skills.js"></script>

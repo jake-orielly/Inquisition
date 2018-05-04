@@ -1,17 +1,25 @@
 var playerSkills = {};
 
 playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
+playerSkills.mining = {xp:0,level:1,name:"Mining"};
 
-function chopTree() {
-    playerSkills.woodcutting.xp += 6;
+function chopTree(given) {
+    playerSkills.woodcutting.xp += given.xp;
     if (playerSkills.woodcutting.xp >= xpNeeded(playerSkills.woodcutting.level))
         levelUp(playerSkills.woodcutting);
-    addItem(logs);
+    addItem(given.resource);
+}
+
+function mineOre(given) {
+    playerSkills.mining.xp += given.xp;
+    if (playerSkills.mining.xp >= xpNeeded(playerSkills.mining.level))
+        levelUp(playerSkills.mining);
+    addItem(given.resource);
 }
 
 function levelUp(skill) {
     skill.level += 1;
-    console.log("You leveld up in " + skill.name);
+    console.log("You leveled up in " + skill.name);
 }
 
 function xpNeeded(level) {
