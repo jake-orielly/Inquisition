@@ -29,6 +29,7 @@ var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
 
 var foodList = [cooked_meat];
+var smeltList = [copper_bar];
 var smithList = [copper_axe,copper_chestplate,copper_platelegs];
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
@@ -79,7 +80,8 @@ for (var i = 0; i < mapTable.length; i++) {
     }
 }
 
-addBoardObject("anvil",8,11);
+addBoardObject("smelter",8,11);
+addBoardObject("anvil",8,12);
 addBoardObject("copper_vein",11,7);
 addBoardObject("copper_vein",10,8);
 $("#" + playerY + "-" + playerX).append(playerHTML);
@@ -183,6 +185,7 @@ function checkCanCraft() {
     var currClassList;
     var canCook = false;
     var canSmith = false;
+    var canSmelt = false;
     for (var i = 0; i < curr.length; i++) {
         currClassList = curr[i].classList;
         for (var j = 0; j < currClassList.length; j++) {
@@ -190,6 +193,8 @@ function checkCanCraft() {
                 canCook = true;
             else if (currClassList[j] == "anvil")
                 canSmith = true;
+            else if (currClassList[j] == "smelter")
+                canSmelt = true;
         }
     }
 
@@ -204,6 +209,10 @@ function checkCanCraft() {
         $("#smithMenuButton").show();
     else 
         $("#smithMenuButton").hide();
+    if (canSmelt)
+        $("#smeltMenuButton").show();
+    else 
+        $("#smeltMenuButton").hide();
 }
 
 function toggleInventory() {
@@ -229,6 +238,13 @@ function toggleCookMenu() {
         showCookMenu();
 }
 
+function toggleSmeltMenu() {
+    if ($("#smeltMenu").is(":visible"))
+        $("#smeltMenu").hide();
+    else 
+        showSmeltMenu();
+}
+
 function showCookMenu() {
     var result = "";
     for (var i = 0; i < foodList.length; i++) {
@@ -245,6 +261,24 @@ function showCookMenu() {
     $("#cookMenuTable").html(result);
     $("#cookMenu").show();
 }
+
+function showSmeltMenu() {
+    var result = "";
+    for (var i = 0; i < smeltList.length; i++) {
+        if (canCraft(smeltList[i])) {
+            result += "<tr>";
+            result += "<td><img onclick='craft(" + smeltList[i].name + ")' src='art/" + smeltList[i].name + ".png'><td>";
+            result += "<td>" + smeltList[i].getName() + "<td>";
+            result += "</tr>";
+        }
+    }
+    
+    if (result == "")
+        result = "No recipes "
+    $("#smeltMenuTable").html(result);
+    $("#smeltMenu").show();
+}
+
 
 function showShop() {
     var result, curr;
@@ -400,7 +434,11 @@ function craft(given) {
         for (var i = 0; i < given.recipe.length; i++)
                 removeItem(given.recipe[i].item,given.recipe[i].amount);
         addItem(given);
-        showCookMenu();
+        
+        for (var i = 0; i < 2; i++) {
+            toggleCookMenu();
+            toggleSmeltMenu();
+        }
         updateInventory();
     }
 }
@@ -495,6 +533,7 @@ function removeItem (item,amount = 1) {
         alert("Error 2: Tried to remove more of item than is in inventory. " + item.name + " : " + amount);
     else {
         for (var i = 0; i < inventory.length; i++) {
+            console.log(inventory.length);
             if (item == inventory[i].item) {
                 if (inventory[i].amount >= amount) {
                     inventory[i].amount -= amount;
@@ -507,6 +546,7 @@ function removeItem (item,amount = 1) {
                     amount -= inventory[i].amount;
                     inventory.amount = 0;
                     inventory.splice(i,1);
+                    i--;
                 }
             }
         }
