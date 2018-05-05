@@ -16,25 +16,28 @@ var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var meat = new Item("meat",false,false,4);
 var copper_ore = new Item("copper_ore",false,false,3);
 var copper_bar = new Item("copper_bar",true,false,8,[{item:copper_ore,amount:2}]);
-var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,[{item:copper_bar,amount:1},{item:oak_logs,amount:1}]);
-var copper_pickaxe = new Item("copper_pickaxe",false,makePickaxe(["copper"]),15,[{item:copper_bar,amount:1},{item:oak_logs,amount:1}]);
-var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45);
-var steel_axe = new Item("iron_axe",false,makeAxe(["steel"]),115);
+var iron_ore = new Item("iron_ore",false,false,11);
+var iron_bar = new Item("iron_bar",true,false,24,[{item:iron_ore,amount:2}]);
+var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]);
+var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]);
+var steel_axe = new Item("steel_axe",false,makeAxe(["steel"]),115);
+var copper_pickaxe = new Item("copper_pickaxe",false,makePickaxe(["copper"]),15,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]);
+var iron_pickaxe = new Item("iron_pickaxe",false,makePickaxe(["iron"]),45,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]);
 var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75,[{item:copper_bar,amount:7}]);
-var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190);
+var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,[{item:iron_bar,amount:7}]);
 var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,[{item:copper_bar,amount:4}]);
-var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115);
+var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,[{item:iron_bar,amount:4}]);
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
 var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
 
 var foodList = [cooked_meat];
-var smeltList = [copper_bar];
-var smithList = [copper_axe,copper_chestplate,copper_platelegs];
+var smeltList = [copper_bar,iron_bar];
+var smithList = [copper_axe,copper_pickaxe,copper_chestplate,copper_platelegs,iron_axe,iron_pickaxe,iron_chestplate,iron_platelegs];
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList}
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
-var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8}};
+var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:1,xp:29}};
 
 var shouldCloseInventory = false;
 
@@ -65,7 +68,7 @@ flint_box.clickFunc = function() {
 
 var inventory = [];
 var equipment = {};
-var shopTemp = [copper_axe,iron_axe,copper_pickaxe,copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs,flint_box,copper_ore,copper_bar];
+var shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe,copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs,flint_box,copper_ore,copper_bar,iron_ore,iron_bar,oak_logs,evergreen_logs];
 
 var shopInventory = [];
 
@@ -87,6 +90,8 @@ addBoardObject("smelter",8,11);
 addBoardObject("anvil",8,12);
 addBoardObject("copper_vein",11,7);
 addBoardObject("copper_vein",10,8);
+addBoardObject("iron_vein",10,9);
+addBoardObject("iron_vein",9,9);
 $("#" + playerY + "-" + playerX).append(playerHTML);
 
 
@@ -137,11 +142,9 @@ function updateBoard() {
     $("#" + playerY + "-" + playerX).append(playerHTML);
 }
 
-
+addItem(gold,200);
+addItem(iron_pickaxe);
 addItem(meat);
-addItem(flint_box);
-addItem(copper_axe);
-addItem(copper_pickaxe);
 
 function startEncounter() {
     $("#worldMapContainer").hide();
@@ -241,7 +244,6 @@ function inventoryCount(given) {
 }
 
 function toggleMenu(given) {
-    console.log(given);
     if ($("#" + given + "Menu").is(":visible")) {
         if (shouldCloseInventory) {
             shouldCloseInventory = false;
@@ -400,7 +402,7 @@ function tileAction() {
     var toolMap = ["axe","pickaxe"];
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level];
     var actionMap = [chopTree,mineOre];
-   
+    
     for (var i = 0; i < curr.length; i++) {
         if (Object.keys(treeList).includes(curr[i])) {
             currResource = treeList[curr[i]];
@@ -417,7 +419,6 @@ function tileAction() {
             for (var j = 0; j < currTool.modifierNames.length; j++)
                 toolLevel = Math.max(toolLevel, toolModifierLevel[currTool.modifierNames[j]]);
     }
-    
     if (equipment.Weapon && equipment.Weapon.item.equipment.name == toolMap[resourceType])
         for (var j = 0; j < equipment.Weapon.modifierNames.length; j++)
                 toolLevel = Math.max(toolLevel, toolModifierLevel[equipment.Weapon.modifierNames[j]]);
@@ -454,7 +455,6 @@ function craft(given) {
 function canCraft(given) {
     var recipe = given.recipe;
     for (var i = 0; i < recipe.length; i++) {
-        console.log(recipe[i].item)
         if (!(inventoryCount(recipe[i].item) >= recipe[i].amount))
             return false;
     }
