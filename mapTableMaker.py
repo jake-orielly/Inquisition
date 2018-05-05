@@ -20,6 +20,10 @@ for i in range(len(readFile)):
             result[curr].append("\"beach\"")
         elif (readFile[i:i+7] == "#0080ff"):
             result[curr].append("\"ocean\"") #will be ocean
+        elif (readFile[i:i+7] == "#ff8000"):
+            result[curr].append("\"copper_vein\"")
+        elif (readFile[i:i+7] == "#b3b3b3"):
+            result[curr].append("\"iron_vein\"")
 
     elif readFile[i:i+4] == "<TR>":
         result.append([])
