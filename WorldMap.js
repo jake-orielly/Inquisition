@@ -11,6 +11,8 @@ var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
 
 var board = [];
 
+var oak_logs = new Item("oak_logs",false,false,3);
+var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var meat = new Item("meat",false,false,4);
 var copper_ore = new Item("copper_ore",false,false,3);
 var copper_bar = new Item("copper_bar",true,false,8,[{item:copper_ore,amount:2}]);
@@ -24,16 +26,17 @@ var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115);
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
-var oak_logs = new Item("oak_logs",false,false,3);
-var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
 
 var foodList = [cooked_meat];
 var smeltList = [copper_bar];
 var smithList = [copper_axe,copper_chestplate,copper_platelegs];
+var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList}
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
 var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8}};
+
+var shouldCloseInventory = false;
 
 flint_box.clickFunc = function() {
     var loc = $("#" + playerY + "-" + playerX);
@@ -198,6 +201,12 @@ function checkCanCraft() {
         }
     }
 
+    if (shouldCloseInventory) {
+        shouldCloseInventory = false;
+        $("#inventory").hide();
+    }
+    hideMenus();
+    
     if (canCook)
         $("#cookMenuButton").show()
     else {
@@ -211,7 +220,7 @@ function checkCanCraft() {
         $("#smithMenuButton").hide();
     if (canSmelt)
         $("#smeltMenuButton").show();
-    else 
+    else
         $("#smeltMenuButton").hide();
 }
 
@@ -231,54 +240,48 @@ function inventoryCount(given) {
     return total;
 }
 
-function toggleCookMenu() {
-    if ($("#cookMenu").is(":visible"))
-        $("#cookMenu").hide();
-    else 
-        showCookMenu();
+function toggleMenu(given) {
+    console.log(given);
+    if ($("#" + given + "Menu").is(":visible")) {
+        if (shouldCloseInventory) {
+            shouldCloseInventory = false;
+            $("#inventory").hide();
+        }
+        $("#" + given + "Menu").hide();
+    }
+    else {
+        if (!($("#inventory").is(":visible")))
+            shouldCloseInventory = true;
+        showInventory();
+        showMenu(given);
+    }
 }
 
-function toggleSmeltMenu() {
-    if ($("#smeltMenu").is(":visible"))
-        $("#smeltMenu").hide();
-    else 
-        showSmeltMenu();
+function hideMenus() {
+    var menus = ["cook","smelt","smith"];
+    for (var i = 0; i < menus.length; i++) {
+        if ($("#" + menus[i] + "Menu").is(":visible"))
+            $("#" + menus[i] + "Menu").hide();
+    }
 }
 
-function showCookMenu() {
+function showMenu(given) {
     var result = "";
-    for (var i = 0; i < foodList.length; i++) {
-        if (canCraft(foodList[i])) {
+    var currList = craftListMaster[given];
+    for (var i = 0; i < currList.length; i++) {
+        if (canCraft(currList[i])) {
             result += "<tr>";
-            result += "<td><img onclick='craft(" + foodList[i].name + ")' src='art/" + foodList[i].name + ".png'><td>";
-            result += "<td>" + foodList[i].getName() + "<td>";
+            result += "<td><img onclick='craft(" + currList[i].name + ")' src='art/" + currList[i].name + ".png'><td>";
+            result += "<td>" + currList[i].getName() + "<td>";
             result += "</tr>";
         }
     }
     
     if (result == "")
-        result = "No recipes "
-    $("#cookMenuTable").html(result);
-    $("#cookMenu").show();
+        result = "No recipes ";
+    $("#" + given + "MenuTable").html(result);
+    $("#" + given + "Menu").show();
 }
-
-function showSmeltMenu() {
-    var result = "";
-    for (var i = 0; i < smeltList.length; i++) {
-        if (canCraft(smeltList[i])) {
-            result += "<tr>";
-            result += "<td><img onclick='craft(" + smeltList[i].name + ")' src='art/" + smeltList[i].name + ".png'><td>";
-            result += "<td>" + smeltList[i].getName() + "<td>";
-            result += "</tr>";
-        }
-    }
-    
-    if (result == "")
-        result = "No recipes "
-    $("#smeltMenuTable").html(result);
-    $("#smeltMenu").show();
-}
-
 
 function showShop() {
     var result, curr;
@@ -436,17 +439,23 @@ function craft(given) {
         addItem(given);
         
         for (var i = 0; i < 2; i++) {
-            toggleCookMenu();
-            toggleSmeltMenu();
+            toggleMenu("cook");
+            toggleMenu("smelt");
+            toggleMenu("smith");
         }
         updateInventory();
+        if (!($("#inventory").is(":visible"))) {
+            shouldCloseInventory = true;
+            showInventory();
+        }
     }
 }
 
 function canCraft(given) {
     var recipe = given.recipe;
     for (var i = 0; i < recipe.length; i++) {
-        if (!inventoryCount(recipe[i].item,recipe[i].amount))
+        console.log(recipe[i].item)
+        if (!(inventoryCount(recipe[i].item) >= recipe[i].amount))
             return false;
     }
     return true;
@@ -533,7 +542,6 @@ function removeItem (item,amount = 1) {
         alert("Error 2: Tried to remove more of item than is in inventory. " + item.name + " : " + amount);
     else {
         for (var i = 0; i < inventory.length; i++) {
-            console.log(inventory.length);
             if (item == inventory[i].item) {
                 if (inventory[i].amount >= amount) {
                     inventory[i].amount -= amount;

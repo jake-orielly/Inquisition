@@ -37,7 +37,15 @@
     right: 72px;
 }
 
-#inventoryTable, #shopTable, #cookMenuTable, #smeltMenuTable {
+.craftTable {
+    position:absolute;
+    bottom:70px;
+    padding: 5px;
+    background-color: rgb(204,204,204);
+    border: 8px solid rgb(61,61,61);
+}
+
+#inventoryTable, #shopTable {
     position:absolute;
     bottom:70px;
     padding: 5px;
@@ -53,7 +61,14 @@
     right: 312px;
 }
 
-#inventory, #shop, #cookMenu, #smeltMenu {
+.craftMenu {
+    position: relative;
+    display:none;
+    bottom:10px;
+    right:0px;
+}
+
+#inventory, #shop{
     position: relative;
     display:none;
     bottom:10px;

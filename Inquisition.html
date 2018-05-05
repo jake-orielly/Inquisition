@@ -76,16 +76,19 @@
             <div id="shop">
                 <table cellspacing="0" id="shopTable"></table>
             </div>
-            <div id="cookMenu">
-                <table cellspacing="0" id="cookMenuTable"></table>
+            <div class="craftMenu" id="cookMenu">
+                <table cellspacing="0" class="craftTable" id="cookMenuTable"></table>
             </div>
-            <div id="smeltMenu">
-                <table cellspacing="0" id="smeltMenuTable"></table>
+            <div class="craftMenu" id="smeltMenu">
+                <table cellspacing="0" class="craftTable" id="smeltMenuTable"></table>
+            </div>
+            <div class="craftMenu" id="smithMenu">
+                <table cellspacing="0" class="craftTable" id="smithMenuTable"></table>
             </div>
             <img id="inventoryButton" onclick="toggleInventory()" src="art/inventory.png">
-            <img id="cookMenuButton" onclick="toggleCookMenu()" src="art/cookMenu.png">
-            <img id="smithMenuButton" onclick="toggleSmithMenu()" src="art/smithMenu.png">
-            <img id="smeltMenuButton" onclick="toggleSmeltMenu()" src="art/smeltMenu.png">
+            <img id="cookMenuButton" onclick="toggleMenu('cook')" src="art/cookMenu.png">
+            <img id="smithMenuButton" onclick="toggleMenu('smith')" src="art/smithMenu.png">
+            <img id="smeltMenuButton" onclick="toggleMenu('smelt')" src="art/smeltMenu.png">
         </div>
         <script src="utilityFunctions.js"></script>
         <script src="testMap.js"></script>
