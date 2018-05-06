@@ -2,7 +2,7 @@ var boardHTML = "";
 var visibleCols = 11;
 var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
-var playerX = 13;
+var playerX = 12;
 var playerY = 8;
 var nextEncounter = 50;
 var inCombat = false;
@@ -37,7 +37,7 @@ var smithList = [copper_axe,copper_pickaxe,copper_chestplate,copper_platelegs,ir
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList}
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
-var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:3,xp:29}};
+var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:5,xp:17}};
 
 var shouldCloseInventory = false;
 
@@ -71,6 +71,7 @@ var equipment = {};
 var shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe,copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs,flint_box,copper_ore,copper_bar,iron_ore,iron_bar,oak_logs,evergreen_logs];
 
 var shopInventory = [];
+$(".craftMenuButton").hide()
 
 for (var i = 0; i < shopTemp.length; i++) {
     shopInventory.push(new InventoryItem(shopTemp[i],1));
@@ -86,13 +87,10 @@ for (var i = 0; i < mapTable.length; i++) {
     }
 }
 
-addBoardObject("smelter",9,12);
-addBoardObject("anvil",9,13);
-addBoardObject("copper_vein",11,7);
-addBoardObject("copper_vein",10,8);
-addBoardObject("iron_vein",10,9);
-addBoardObject("iron_vein",9,9);
+addBoardObject("smelter",8,13);
+addBoardObject("anvil",8,14);
 $("#" + playerY + "-" + playerX).append(playerHTML);
+hideMenus();
 
 
 updateBoard();
@@ -378,7 +376,7 @@ function sell(given) {
     }   
 }
 
-document.addEventListener('keyup', function(event) {
+document.addEventListener('keydown', function(event) {
     if (!inCombat) {
         if (event.keyCode == 87)
             movePlayer(0,-1);

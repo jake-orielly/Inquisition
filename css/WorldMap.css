@@ -17,24 +17,13 @@
     display: inline-block;
 }
 
-#inventoryButton {
-    position:absolute;
-    bottom:8px;
-    right:8px;
-}
-
-#cookMenuButton {
-    display: none;
+#menuContainer {
+    display: inline-block;
+    height: 64px;
+    margin-top: calc(100% - 68px);
     position: absolute;
-    bottom: 8px;
-    right: 72px;
-}
-
-#smithMenuButton, #smeltMenuButton {
-    display: none;
-    position: absolute;
-    bottom: 8px;
-    right: 72px;
+    top:0;
+    right:0;
 }
 
 .craftTable {
@@ -127,8 +116,6 @@
 .equipmentSlot {
     position: absolute;
 }
-
-.equipmentSlot
 
 .unselectable {
     -webkit-user-select: none; /* Safari 3.1+ */
