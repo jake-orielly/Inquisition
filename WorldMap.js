@@ -90,6 +90,7 @@ for (var i = 0; i < mapTable.length; i++) {
 addBoardObject("smelter",8,13);
 addBoardObject("anvil",8,14);
 $("#" + playerY + "-" + playerX).append(playerHTML);
+createSkillsTable();
 hideMenus();
 
 
@@ -344,13 +345,18 @@ function updateInventory() {
 }
 
 function updateSkills() {
+    for (var i = 0; i < Object.keys(playerSkills).length; i++)
+        updateXPBar(Object.keys(playerSkills)[i]);
+}
+
+function createSkillsTable() {
     var result;
-    var curr;
     for (var i = 0; i < Object.keys(playerSkills).length; i++) {
         result += "<tr>";
-        result += "<td> :" + playerSkills[Object.keys(playerSkills)[i]].level + "</td>";
-        result += "<td>" + playerSkills[Object.keys(playerSkills)[i]].name + "</td>";
+        result += "<td class='skillsData' id='curr" + capitalize(Object.keys(playerSkills)[i]) + "Level'> :" + playerSkills[Object.keys(playerSkills)[i]].level + "</td>";
+        result += "<td class='skillsData'>" + playerSkills[Object.keys(playerSkills)[i]].name + "</td>";
         result += "</tr>";
+        result += "<tr><td class='xpBarRow'><div class='xpBarMax'><div class='xpBarCurr' id='curr" + capitalize(Object.keys(playerSkills)[i]) + "XP'></div></div></td></tr>";
     }
     $("#skillsTable").html(result);
 }

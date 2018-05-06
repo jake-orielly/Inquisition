@@ -57,7 +57,20 @@
     right:0px;
 }
 
-#skillsTable td {
+.xpBarMax {
+    height:12px;
+    background-color: red;
+    border: 2px solid black;
+}
+
+.xpBarCurr {
+    height:11px;
+    background-color:green;
+    width:0px;
+    margin-left:1px;
+}
+
+.skillsData {
     float:right;
 }
 
