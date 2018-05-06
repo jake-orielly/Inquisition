@@ -34,7 +34,7 @@
     border: 8px solid rgb(61,61,61);
 }
 
-#inventoryTable, #shopTable {
+#inventoryTable, #shopTable, #skillsTable {
     position:absolute;
     bottom:70px;
     padding: 5px;
@@ -42,7 +42,7 @@
     border: 8px solid rgb(61,61,61);
 }
 
-#inventoryTable {
+#inventoryTable, #skillsTable {
     right: 12px;
 }
 
@@ -57,7 +57,11 @@
     right:0px;
 }
 
-#inventory, #shop{
+#skillsTable td {
+    float:right;
+}
+
+#inventory, #shop, #skills{
     position: relative;
     display:none;
     bottom:10px;

@@ -232,6 +232,13 @@ function toggleInventory() {
         showInventory();
 }
 
+function toggleSkills() { 
+    if ($("#skills").is(":visible"))
+        $("#skills").hide();
+    else 
+        showSkills();
+}
+
 function inventoryCount(given) {
     var total = 0;
     for (var i = 0; i < inventory.length; i++) {
@@ -310,6 +317,11 @@ function showInventory() {
     $("#inventory").show();
 }
 
+function showSkills() {
+    updateSkills();
+    $("#skills").show();
+}
+
 function updateInventory() {
     var result;
     var curr;
@@ -329,6 +341,18 @@ function updateInventory() {
         result += "</tr>";
     }
     $("#inventoryTable").html(result);
+}
+
+function updateSkills() {
+    var result;
+    var curr;
+    for (var i = 0; i < Object.keys(playerSkills).length; i++) {
+        result += "<tr>";
+        result += "<td> :" + playerSkills[Object.keys(playerSkills)[i]].level + "</td>";
+        result += "<td>" + playerSkills[Object.keys(playerSkills)[i]].name + "</td>";
+        result += "</tr>";
+    }
+    $("#skillsTable").html(result);
 }
 
 function updateEquipment() {
