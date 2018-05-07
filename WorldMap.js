@@ -11,36 +11,37 @@ var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
 
 var board = [];
 
+
+var Craftable = function (xp,playerLevel,recipe) {
+	this.xp = xp;
+	this.playerLevel = playerLevel;
+	this.recipe = recipe;
+}
+
 var oak_logs = new Item("oak_logs",false,false,3);
 var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var meat = new Item("meat",false,false,4);
 var copper_ore = new Item("copper_ore",false,false,3);
-var copper_bar = new Item("copper_bar",true,false,8,[{item:copper_ore,amount:2}]);
+var copper_bar = new Item("copper_bar",true,false,8,new Craftable(15,1,[{item:copper_ore,amount:2}]));
 var iron_ore = new Item("iron_ore",false,false,11);
-var iron_bar = new Item("iron_bar",true,false,24,[{item:iron_ore,amount:2}]);
+var iron_bar = new Item("iron_bar",true,false,24,new Craftable(25,5,[{item:iron_ore,amount:2}]));
 var coal = new Item("coal",false,false,16);
-var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]);
-var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]);
+var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,new Craftable(50,5,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
 var steel_axe = new Item("steel_axe",false,makeAxe(["steel"]),115);
-var copper_pickaxe = new Item("copper_pickaxe",false,makePickaxe(["copper"]),15,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]);
-var iron_pickaxe = new Item("iron_pickaxe",false,makePickaxe(["iron"]),45,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]);
-var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75,[{item:copper_bar,amount:7}]);
-var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,[{item:iron_bar,amount:7}]);
-var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,[{item:copper_bar,amount:4}]);
-var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,[{item:iron_bar,amount:4}]);
+var copper_pickaxe = new Item("copper_pickaxe",false,makePickaxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var iron_pickaxe = new Item("iron_pickaxe",false,makePickaxe(["iron"]),45,new Craftable(50,5,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
+var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75,new Craftable(45, 3,[{item:copper_bar,amount:7}]));
+var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,new Craftable(90,8,[{item:iron_bar,amount:7}]));
+var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,2,[{item:copper_bar,amount:4}]));
+var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
-var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
+var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,1,[{item:meat,amount:1}]));
 
-var Craftable = function (item,xp,playerLevel) {
-	this.item = item;
-	this.xp = xp;
-	this.playerLevel = playerLevel;
-}
-
-var foodList = [new Craftable(cooked_meat,9,1)];
-var smeltList = [new Craftable(copper_bar,15,1),new Craftable(iron_bar,25,5)];
-var smithList = [new Craftable(copper_axe,20,1), new Craftable(copper_pickaxe,20,1), new Craftable(copper_chestplate, 45, 3), new Craftable(copper_platelegs,30,2),new Craftable(iron_axe,50,5),new Craftable(iron_pickaxe,50,5), new Craftable(iron_chestplate,90,8),new Craftable(iron_platelegs,75,7)];
+var foodList = [cooked_meat];
+var smeltList = [copper_bar,iron_bar];
+var smithList = [copper_axe, copper_pickaxe, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_chestplate,iron_platelegs];
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList};
 
 var toolModifierLevel = {copper:1,iron:2,steel:3};
@@ -285,10 +286,10 @@ function showMenu(given) {
     var result = "";
     var currList = craftListMaster[given];
     for (var i = 0; i < currList.length; i++) {
-        if (canCraft(currList[i].item)) {
+        if (canCraft(currList[i])) {
             result += "<tr>";
-            result += "<td><img onclick='craft(" + currList[i].item.name + ")' src='art/" + currList[i].item.name + ".png'><td>";
-            result += "<td>" + currList[i].item.getName() + "<td>";
+            result += "<td><img onclick='craft(" + currList[i].name + ")' src='art/" + currList[i].name + ".png'><td>";
+            result += "<td>" + currList[i].getName() + "<td>";
             result += "</tr>";
         }
     }
@@ -468,12 +469,12 @@ function tileAction() {
     }
 }
 
-function craft(given,craftableGiven = 1) {
+function craft(given) {
     if (canCraft(given)) {
-	    craftXP(craftableGiven);
+	    craftXP(given);
 	    
-        for (var i = 0; i < given.recipe.length; i++)
-                removeItem(given.recipe[i].item,given.recipe[i].amount);
+        for (var i = 0; i < given.craftable.recipe.length; i++)
+                removeItem(given.craftable.recipe[i].item,given.craftable.recipe[i].amount);
         addItem(given);
         
         for (var i = 0; i < 2; i++) {
@@ -490,7 +491,7 @@ function craft(given,craftableGiven = 1) {
 }
 
 function canCraft(given) {
-    var recipe = given.recipe;
+    var recipe = given.craftable.recipe;
     for (var i = 0; i < recipe.length; i++) {
         if (!(inventoryCount(recipe[i].item) >= recipe[i].amount))
             return false;
@@ -519,11 +520,11 @@ function percentile() {
     return parseInt(Math.random()*100+1);
 }
 
-function Item(name,stackable,equipment,value,recipe) {
+function Item(name,stackable,equipment,value,craftable) {
     this.name = name;
     this.stackable = stackable;
     this.value = value;
-    this.recipe = recipe;
+    this.craftable = craftable;
     this.equipment = equipment;
     
     this.getName = function() {

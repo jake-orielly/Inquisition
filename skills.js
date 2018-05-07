@@ -4,6 +4,7 @@ var smeltPerks = [];
 playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
 playerSkills.mining = {xp:0,level:1,name:"Mining"};
 playerSkills.smithing = {xp:0,level:1,name:"Smithing"};
+playerSkills.cooking = {xp:0,level:1,name:"Cooking"};
 
 function harvest(given) {
     var skill;
@@ -24,7 +25,15 @@ function harvest(given) {
 }
 
 function craftXP(given) {
-	console.log(given);
+	var skillsMap = {cook:playerSkills.cooking,smelt:playerSkills.smithing,smith:playerSkills.smithing};
+	var currSkill;
+	
+	for (var curr in craftListMaster)
+		for (var i = 0; i < craftListMaster[curr].length; i++)
+			if(given == craftListMaster[curr][i])
+				currSkill = curr;
+
+	giveXP(given.craftable,skillsMap[currSkill]);
 }
 
 function giveXP(item,skill) {
@@ -61,5 +70,5 @@ function updateXPBar(skill) {
 //Perks
 function extraOre(given) {
     if (parseInt(Math.random()*100+1) <= 15)
-        addItem(console.log(given.resource));
+        addItem(given.resource);
 }
