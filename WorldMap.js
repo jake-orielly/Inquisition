@@ -18,6 +18,7 @@ var copper_ore = new Item("copper_ore",false,false,3);
 var copper_bar = new Item("copper_bar",true,false,8,[{item:copper_ore,amount:2}]);
 var iron_ore = new Item("iron_ore",false,false,11);
 var iron_bar = new Item("iron_bar",true,false,24,[{item:iron_ore,amount:2}]);
+var coal = new Item("coal",false,false,16);
 var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]);
 var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]);
 var steel_axe = new Item("steel_axe",false,makeAxe(["steel"]),115);
@@ -31,13 +32,20 @@ var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
 var cooked_meat = new Item("cooked_meat",false,false,7,[{item:meat,amount:1}]);
 
-var foodList = [cooked_meat];
-var smeltList = [copper_bar,iron_bar];
-var smithList = [copper_axe,copper_pickaxe,copper_chestplate,copper_platelegs,iron_axe,iron_pickaxe,iron_chestplate,iron_platelegs];
-var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList}
+var Craftable = function (item,xp,playerLevel) {
+	this.item = item;
+	this.xp = xp;
+	this.playerLevel = playerLevel;
+}
+
+var foodList = [new Craftable(cooked_meat,9,1)];
+var smeltList = [new Craftable(copper_bar,15,1),new Craftable(iron_bar,25,5)];
+var smithList = [new Craftable(copper_axe,20,1), new Craftable(copper_pickaxe,20,1), new Craftable(copper_chestplate, 45, 3), new Craftable(copper_platelegs,30,2),new Craftable(iron_axe,50,5),new Craftable(iron_pickaxe,50,5), new Craftable(iron_chestplate,90,8),new Craftable(iron_platelegs,75,7)];
+var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList};
+
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
-var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:5,xp:17}};
+var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:5,xp:17},coal_vein:{toolLevel:3,resource:coal,playerLevel:10,xp:25}};
 
 var shouldCloseInventory = false;
 
@@ -277,10 +285,10 @@ function showMenu(given) {
     var result = "";
     var currList = craftListMaster[given];
     for (var i = 0; i < currList.length; i++) {
-        if (canCraft(currList[i])) {
+        if (canCraft(currList[i].item)) {
             result += "<tr>";
-            result += "<td><img onclick='craft(" + currList[i].name + ")' src='art/" + currList[i].name + ".png'><td>";
-            result += "<td>" + currList[i].getName() + "<td>";
+            result += "<td><img onclick='craft(" + currList[i].item.name + ")' src='art/" + currList[i].item.name + ".png'><td>";
+            result += "<td>" + currList[i].item.getName() + "<td>";
             result += "</tr>";
         }
     }
@@ -460,8 +468,10 @@ function tileAction() {
     }
 }
 
-function craft(given) {
+function craft(given,craftableGiven = 1) {
     if (canCraft(given)) {
+	    craftXP(craftableGiven);
+	    
         for (var i = 0; i < given.recipe.length; i++)
                 removeItem(given.recipe[i].item,given.recipe[i].amount);
         addItem(given);

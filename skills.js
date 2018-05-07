@@ -3,26 +3,35 @@ var smeltPerks = [];
 
 playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
 playerSkills.mining = {xp:0,level:1,name:"Mining"};
+playerSkills.smithing = {xp:0,level:1,name:"Smithing"};
 
 function harvest(given) {
     var skill;
-    var curr = Object.keys(veinList);
+    var resourceLists = [treeList,veinList];
+    var skillsList = [playerSkills.woodcutting,playerSkills.mining];
+    var curr;
     
-    for (var i = 0; i < curr.length; i++)
-        if (given == veinList[curr[i]])
-            skill = playerSkills.mining;
+    for (var i = 0; i < skillsList.length; i++) {
+	    curr = Object.keys(resourceLists[i]);
+	    for (var j = 0; j < curr.length; j++)
+		    if (given == resourceLists[i][curr[j]])
+		        skill = skillsList[i];
+    }
     
-    curr = Object.keys(treeList);
-    for (var i = 0; i < curr.length; i++)
-        if (given == treeList[curr[i]])
-            skill = playerSkills.woodcutting;
-    
-    skill.xp += given.xp;
+    giveXP(given,skill);
+    addItem(given.resource);
+    console.log(given);
+}
+
+function craftXP(given) {
+	console.log(given);
+}
+
+function giveXP(item,skill) {
+	skill.xp += item.xp;
     if (skill.xp >= xpNeeded(skill.level))
         levelUp(skill);
     updateXPBar(skill);
-    addItem(given.resource);
-        
 }
 
 function levelUp(skill) {
