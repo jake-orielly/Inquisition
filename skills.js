@@ -4,20 +4,25 @@ var smeltPerks = [];
 playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
 playerSkills.mining = {xp:0,level:1,name:"Mining"};
 
-function chopTree(given) {
-    playerSkills.woodcutting.xp += given.xp;
-    if (playerSkills.woodcutting.xp >= xpNeeded(playerSkills.woodcutting.level))
-        levelUp(playerSkills.woodcutting);
-    updateXPBar(playerSkills.woodcutting);
+function harvest(given) {
+    var skill;
+    var curr = Object.keys(veinList);
+    
+    for (var i = 0; i < curr.length; i++)
+        if (given == veinList[curr[i]])
+            skill = playerSkills.mining;
+    
+    curr = Object.keys(treeList);
+    for (var i = 0; i < curr.length; i++)
+        if (given == treeList[curr[i]])
+            skill = playerSkills.woodcutting;
+    
+    skill.xp += given.xp;
+    if (skill.xp >= xpNeeded(skill.level))
+        levelUp(skill);
+    updateXPBar(skill);
     addItem(given.resource);
-}
-
-function mineOre(given) {
-    playerSkills.mining.xp += given.xp;
-    if (playerSkills.mining.xp >= xpNeeded(playerSkills.mining.level))
-        levelUp(playerSkills.mining);
-    updateXPBar(playerSkills.mining);
-    addItem(given.resource);
+        
 }
 
 function levelUp(skill) {

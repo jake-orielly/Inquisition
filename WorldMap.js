@@ -429,7 +429,6 @@ function tileAction() {
     var toolLevel = 0;
     var toolMap = ["axe","pickaxe"];
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level];
-    var actionMap = [chopTree,mineOre];
     
     for (var i = 0; i < curr.length; i++) {
         if (Object.keys(treeList).includes(curr[i])) {
@@ -452,7 +451,7 @@ function tileAction() {
                 toolLevel = Math.max(toolLevel, toolModifierLevel[equipment.Weapon.modifierNames[j]]);
     
     if(currResource && toolLevel >= currResource.toolLevel && skillMap[resourceType] >= currResource.playerLevel) {
-        actionMap[resourceType](currResource);
+        harvest(currResource);
         if (resourceType == 0)
         	curr[curr.length-1] = curr[curr.length-1].toString() + "_stump";
         else 
