@@ -1,0 +1,17 @@
+var villageMap = 
+[["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","stonePath","stonePath","stonePath","grass","grass","grass","grass","grass","grass","grass"],
+["stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath","stonePath"],
+["grass","grass","grass","grass","grass","grass","stonePath","stonePath","stonePath","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"],
+["grass","grass","grass","grass","grass","grass","grass","stonePath","grass","grass","grass","grass","grass","grass","grass","grass"]]

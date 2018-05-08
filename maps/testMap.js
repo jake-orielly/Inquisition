@@ -1,4 +1,4 @@
-var mapTable = 
+var testMap = 
 [["ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean"],
 ["ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean"],
 ["ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","beach","beach","beach","beach","beach","beach","beach","beach","beach","beach","beach","beach","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean","ocean"],

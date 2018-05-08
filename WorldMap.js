@@ -1,9 +1,10 @@
+var mapTable = testMap;
 var boardHTML = "";
 var visibleCols = 11;
 var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
-var playerX = 12;
-var playerY = 8;
+var playerX = 11;
+var playerY = 25;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
@@ -90,12 +91,16 @@ for (var i = 0; i < shopTemp.length; i++) {
 }
 
 $(".inquisition").hide();
-for (var i = 0; i < mapTable.length; i++) {
-	board[i] = [];
-    for (var j = 0; j < mapTable[i].length; j++) {
-	    board[i][j] = ["grass"];
-        if (mapTable[i][j] != "grass")
-            addBoardObject(mapTable[i][j],i,j);
+makeBoard();
+
+function makeBoard() {
+    for (var i = 0; i < mapTable.length; i++) {
+        board[i] = [];
+        for (var j = 0; j < mapTable[i].length; j++) {
+            board[i][j] = ["grass"];
+            if (mapTable[i][j] != "grass")
+                addBoardObject(mapTable[i][j],i,j);
+        }
     }
 }
 
@@ -185,8 +190,13 @@ function movePlayer(x,y) {
         if (tileType == "empty")
             nextEncounter -= 5;
         else if (tileType == "village") {
-            showInventory();
-            showShop();
+            playerX = (7 - x*7); //Player appears in village based on direction they entered from
+            playerY = (7 - y*7);
+            mapTable = villageMap;
+            makeBoard();
+            updateBoard();
+            //showInventory();
+            //showShop();
         }
         
         checkCanCraft();
