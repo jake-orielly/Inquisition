@@ -81,15 +81,25 @@ flint_box.clickFunc = function() {
 
 var inventory = [];
 var equipment = {};
-var shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe,copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs,flint_box,copper_ore,copper_bar,iron_ore,iron_bar,oak_logs,evergreen_logs];
 
-var shopInventory = [];
-$(".craftMenuButton").hide()
+var generalStoreInventory = [];
+var toolStoreInventory = [];
+var armorStoreInventory = [];
 
-for (var i = 0; i < shopTemp.length; i++) {
-    shopInventory.push(new InventoryItem(shopTemp[i],1));
+var shopTemp = [flint_box,oak_logs,evergreen_logs,copper_ore,iron_ore,copper_bar,iron_bar];
+fillShop(generalStoreInventory,shopTemp);
+shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe];
+fillShop(toolStoreInventory,shopTemp);
+shopTemp = [copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs];
+fillShop(armorStoreInventory,shopTemp);
+
+function fillShop(shop,list) {
+	for (var i = 0; i < list.length; i++) {
+	    shop.push(new InventoryItem(list[i],1));
+	}
 }
 
+$(".craftMenuButton").hide();
 $(".inquisition").hide();
 makeBoard();
 
@@ -179,23 +189,38 @@ function movePlayer(x,y) {
         $("#shop").hide();
         $("#inventory").hide();
     }
-    if (newX >= 0 && newX < mapTable[0].length && newY >= 0 && newY < mapTable.length && !$("#" + [newY] + "-" + [newX]).children().hasClass("ocean") && !$("#" + [newY] + "-" + [newX]).children().hasClass("mountain")){
+    if (newX >= 0 && newX < mapTable[0].length && newY >= 0 && newY < mapTable.length && !$("#" + [newY] + "-" + [newX]).children().hasClass("ocean") && !$("#" + [newY] + "-" + [newX]).children().hasClass("mountain") && !$("#" + [newY] + "-" + [newX]).children().hasClass("barrier")){
         playerX = newX;
         playerY = newY;
         newLocation = $("#" + playerY + "-" + playerX);
 
         if (newLocation.children().hasClass("village"))
                 tileType = "village";
+                
+        if (newLocation.children().hasClass("house") || newLocation.children().hasClass("houseInvis")) {
+	        if (newX > 10)
+	        	showShop(generalStoreInventory);
+	        else if (newX > 8)
+                showShop(toolStoreInventory);
+            else
+            	showShop(armorStoreInventory);
+        }
 
         if (tileType == "empty")
             nextEncounter -= 5;
+            
         else if (tileType == "village") {
             playerX = (7 - x*7); //Player appears in village based on direction they entered from
             playerY = (7 - y*7);
             mapTable = villageMap;
             makeBoard();
+            
+			makeHouse(6,12);
+            makeHouse(6,9);
+            makeHouse(6,4);
+
             updateBoard();
-            //showInventory();
+            ////showInventory();
             //showShop();
         }
         
@@ -205,6 +230,13 @@ function movePlayer(x,y) {
 
     //if (nextEncounter <= 0)
         //startEncounter();
+}
+
+function makeHouse(x,y) {
+	addBoardObject("house",x,y);
+	addBoardObject("houseInvis",x,y+1);
+	addBoardObject("barrier",x-1,y);
+	addBoardObject("barrier",x-1,y+1);
 }
 
 function checkCanCraft() {
@@ -313,7 +345,7 @@ function showMenu(given) {
     $("#" + given + "Menu").show();
 }
 
-function showShop() {
+function showShop(shopInventory) {
     var result, curr;
     
     for (var i = 0; i < 5; i++) {
@@ -405,9 +437,9 @@ function updateEquipment() {
 function buy(given) {
     if ($("#shop").is(":visible")) {
         var playerGold = inventoryCount(gold);
-        if(playerGold >= shopInventory[given].item.value) {
-            addItem(shopInventory[given].item);
-            removeItem(gold,shopInventory[given].item.value);
+        if(playerGold >= generalStoreInventory[given].item.value) {
+            addItem(generalStoreInventory[given].item);
+            removeItem(gold,generalStoreInventory[given].item.value);
             updateInventory();
         }   
     }

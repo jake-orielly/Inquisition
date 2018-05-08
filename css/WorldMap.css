@@ -1,10 +1,18 @@
 .boardTile {
+	position:relative;
     width:64px;
     height:64px;
 }
 
 .tileItem {
     position:absolute;
+}
+
+.house {
+	height: 128px;
+	width: 128px;
+	z-index:1;
+	bottom:0;
 }
 
 #board td {
@@ -79,6 +87,7 @@
     display:none;
     bottom:10px;
     right:0px;
+    z-index:2;
 }
 
 #inventoryTable td, #shopTable td {
