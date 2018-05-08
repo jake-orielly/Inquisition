@@ -9,7 +9,7 @@ var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
 var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
-
+var inTown = false;
 var board = [];
 
 
@@ -86,7 +86,7 @@ var generalStoreInventory = [];
 var toolStoreInventory = [];
 var armorStoreInventory = [];
 
-var shopTemp = [flint_box,oak_logs,evergreen_logs,copper_ore,iron_ore,copper_bar,iron_bar];
+var shopTemp = [flint_box,meat,oak_logs,evergreen_logs,copper_ore,iron_ore,copper_bar,iron_bar];
 fillShop(generalStoreInventory,shopTemp);
 shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe];
 fillShop(toolStoreInventory,shopTemp);
@@ -104,6 +104,7 @@ $(".inquisition").hide();
 makeBoard();
 
 function makeBoard() {
+    board = [];
     for (var i = 0; i < mapTable.length; i++) {
         board[i] = [];
         for (var j = 0; j < mapTable[i].length; j++) {
@@ -204,12 +205,23 @@ function movePlayer(x,y) {
                 showShop(toolStoreInventory);
             else
             	showShop(armorStoreInventory);
+            showInventory();
         }
 
+        if (inTown && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[i].length-1))) {
+            playerX = 10;
+            playerY = 26;
+            inTown = false;
+            mapTable = testMap;
+            makeBoard();
+            updateBoard();
+        }
+        
         if (tileType == "empty")
             nextEncounter -= 5;
             
         else if (tileType == "village") {
+            inTown = true;
             playerX = (7 - x*7); //Player appears in village based on direction they entered from
             playerY = (7 - y*7);
             mapTable = villageMap;
@@ -220,8 +232,6 @@ function movePlayer(x,y) {
             makeHouse(6,4);
 
             updateBoard();
-            ////showInventory();
-            //showShop();
         }
         
         checkCanCraft();
