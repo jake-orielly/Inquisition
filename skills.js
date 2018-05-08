@@ -21,19 +21,22 @@ function harvest(given) {
     
     giveXP(given,skill);
     addItem(given.resource);
-    console.log(given);
 }
 
 function craftXP(given) {
-	var skillsMap = {cook:playerSkills.cooking,smelt:playerSkills.smithing,smith:playerSkills.smithing};
+	giveXP(given.craftable,getSkill(given));
+}
+
+function getSkill(given) {
+    var skillsMap = {cook:playerSkills.cooking,smelt:playerSkills.smithing,smith:playerSkills.smithing};
 	var currSkill;
 	
 	for (var curr in craftListMaster)
 		for (var i = 0; i < craftListMaster[curr].length; i++)
 			if(given == craftListMaster[curr][i])
 				currSkill = curr;
-
-	giveXP(given.craftable,skillsMap[currSkill]);
+    
+    return skillsMap[currSkill];
 }
 
 function giveXP(item,skill) {

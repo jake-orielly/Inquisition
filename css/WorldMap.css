@@ -130,6 +130,20 @@
     height: 354px;
 }
 
+#hpBarCurr  {
+    height: calc(100% - 1px);
+    width:11px;
+    background-color:green;
+}
+
+#hpBarMax {
+    float: right;
+    width: 12px;
+    height: 6em;
+    background-color: red;
+    border: 2px solid black;
+}
+
 .equipmentSlot {
     position: absolute;
 }

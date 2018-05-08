@@ -4,3 +4,4 @@ When inventory fills you just can’t put more items in it, no alert or anything
 Player Death
 Map collapses when visible x & y are different, the two are probably backwards
 Buying item doesn’t remove it from shop inventory
+UI doesn’t indicate/explain items that you’re not high enough level to make

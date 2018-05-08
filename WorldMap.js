@@ -21,6 +21,10 @@ var Craftable = function (xp,playerLevel,recipe) {
 var oak_logs = new Item("oak_logs",false,false,3);
 var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var meat = new Item("meat",false,false,4);
+meat.food = {hp:3};
+var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,1,[{item:meat,amount:1}]));
+cooked_meat.food = {hp:7};
+
 var copper_ore = new Item("copper_ore",false,false,3);
 var copper_bar = new Item("copper_bar",true,false,8,new Craftable(15,1,[{item:copper_ore,amount:2}]));
 var iron_ore = new Item("iron_ore",false,false,11);
@@ -37,7 +41,6 @@ var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
-var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,1,[{item:meat,amount:1}]));
 
 var foodList = [cooked_meat];
 var smeltList = [copper_bar,iron_bar];
@@ -325,6 +328,9 @@ function showShop() {
 function showInventory() {
     updateInventory();
     $("#inventory").show();
+    $("#hpBarCurr").height("calc(" + parseInt(player.hp/player.maxHP * 100) + "% - 1px)");
+    heightDif = $("#hpBarMax").height() - $("#hpBarCurr").height();
+    $("#hpBarCurr").css("margin-top",heightDif-1);
 }
 
 function showSkills() {
@@ -335,6 +341,8 @@ function showSkills() {
 function updateInventory() {
     var result;
     var curr;
+    var heightDif;
+    
     for (var i = 0; i < 5; i++) {
         result += "<tr>";
         for (var j = 0; j < 3; j++) {
@@ -350,6 +358,7 @@ function updateInventory() {
         }
         result += "</tr>";
     }
+    
     $("#inventoryTable").html(result);
 }
 
@@ -395,15 +404,30 @@ function buy(given) {
 }
 
 function itemClick(given) {
+    var item = inventory[given].item;
+    var keys;
+    
     if ($("#shop").is(":visible")) {
         sell(given);
     }
-    else if (inventory[given].item.equipment && inventory[given].item.equipment.constructor.name == "Weapon") {
-        equipItem(inventory[given].item);
+    else if (item.equipment && item.equipment.constructor.name == "Weapon") {
+        equipItem(item);
         updateInventory();
     }
-    else if (inventory[given].item.clickFunc) {
-        inventory[given].item.clickFunc();
+    else if (item.food) {
+        keys = Object.keys(item.food);
+        for (var i = 0; i < keys.length; i++)
+            player[keys[i]] += item.food[keys[i]];
+        
+        if (player.hp > player.maxHP)
+            player.hp = player.maxHP;
+        $("#hpBarCurr").height("calc(" + parseInt(player.hp/player.maxHP * 100) + "% - 1px)");
+        heightDif = $("#hpBarMax").height() - $("#hpBarCurr").height();
+        $("#hpBarCurr").css("margin-top",heightDif-1);
+        removeItem(item);
+    }
+    else if (item.clickFunc) {
+        item.clickFunc();
     }
 }
 
@@ -472,7 +496,6 @@ function tileAction() {
 function craft(given) {
     if (canCraft(given)) {
 	    craftXP(given);
-	    
         for (var i = 0; i < given.craftable.recipe.length; i++)
                 removeItem(given.craftable.recipe[i].item,given.craftable.recipe[i].amount);
         addItem(given);
@@ -492,10 +515,15 @@ function craft(given) {
 
 function canCraft(given) {
     var recipe = given.craftable.recipe;
+    
+    if (getSkill(given).level < given.craftable.playerLevel)
+        return false;
+    
     for (var i = 0; i < recipe.length; i++) {
         if (!(inventoryCount(recipe[i].item) >= recipe[i].amount))
             return false;
     }
+
     return true;
 }
 
