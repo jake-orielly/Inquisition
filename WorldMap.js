@@ -42,7 +42,8 @@ var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
 
 var herb = new Item("herb",false,false,7);
-var hp_potion_small = new Item("hp_potion_small",false,false,25);
+var glass_vial = new Item("glass_vial",false,false,5);
+var hp_potion_small = new Item("hp_potion_small",false,false,25,new Craftable(15,1,[{item:herb,amount:2},{item:glass_vial,amount:1}]));
 hp_potion_small.potion = {hp:5};
 
 var gold = new Item("gold",true,false,1);
@@ -51,7 +52,8 @@ var flint_box = new Item("flint_box",false,false,5);
 var foodList = [cooked_meat];
 var smeltList = [copper_bar,iron_bar];
 var smithList = [copper_axe, copper_pickaxe, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_chestplate,iron_platelegs];
-var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList};
+var potionList = [hp_potion_small];
+var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};
 
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
@@ -126,6 +128,7 @@ addBoardObject("anvil",8,14);
 addBoardObject("herb_plant",26,11);
 addBoardObject("herb_plant",27,11);
 addBoardObject("herb_plant",26,12);
+addBoardObject("distillery",25,12);
 $("#" + playerY + "-" + playerX).append(playerHTML);
 createSkillsTable();
 hideMenus();
@@ -181,6 +184,7 @@ function updateBoard() {
 addItem(gold,200);
 addItem(iron_pickaxe);
 addItem(meat);
+addItem(glass_vial);
 
 function startEncounter() {
     $("#worldMapContainer").hide();
@@ -264,6 +268,7 @@ function checkCanCraft() {
     var canCook = false;
     var canSmith = false;
     var canSmelt = false;
+    var canAlchemy = false;
     for (var i = 0; i < curr.length; i++) {
         currClassList = curr[i].classList;
         for (var j = 0; j < currClassList.length; j++) {
@@ -273,6 +278,9 @@ function checkCanCraft() {
                 canSmith = true;
             else if (currClassList[j] == "smelter")
                 canSmelt = true;
+            else if (currClassList[j] == "distillery")
+                canAlchemy = true;
+            
         }
     }
 
@@ -297,6 +305,10 @@ function checkCanCraft() {
         $("#smeltMenuButton").show();
     else
         $("#smeltMenuButton").hide();
+    if (canAlchemy)
+        $("#alchemyMenuButton").show();
+    else
+        $("#alchemyMenuButton").hide();
 }
 
 function toggleInventory() {
@@ -323,6 +335,7 @@ function inventoryCount(given) {
 }
 
 function toggleMenu(given) {
+    console.log(1);
     if ($("#" + given + "Menu").is(":visible")) {
         if (shouldCloseInventory) {
             shouldCloseInventory = false;
@@ -339,7 +352,7 @@ function toggleMenu(given) {
 }
 
 function hideMenus() {
-    var menus = ["cook","smelt","smith"];
+    var menus = ["cook","smelt","smith","alchemy"];
     for (var i = 0; i < menus.length; i++) {
         if ($("#" + menus[i] + "Menu").is(":visible"))
             $("#" + menus[i] + "Menu").hide();
@@ -348,6 +361,7 @@ function hideMenus() {
 
 function showMenu(given) {
     var result = "";
+    console.log(given);
     var currList = craftListMaster[given];
     for (var i = 0; i < currList.length; i++) {
         if (canCraft(currList[i])) {
@@ -490,6 +504,8 @@ function itemClick(given) {
         $("#hpBarCurr").height("calc(" + parseInt(player.hp/player.maxHP * 100) + "% - 1px)");
         heightDif = $("#hpBarMax").height() - $("#hpBarCurr").height();
         $("#hpBarCurr").css("margin-top",heightDif-1);
+        if (item.potion)
+            addItem(glass_vial);
         removeItem(item);
     }
     
@@ -577,6 +593,7 @@ function craft(given) {
             toggleMenu("cook");
             toggleMenu("smelt");
             toggleMenu("smith");
+            toggleMenu("alchemy");
         }
         updateInventory();
         if (!($("#inventory").is(":visible"))) {
@@ -588,7 +605,6 @@ function craft(given) {
 
 function canCraft(given) {
     var recipe = given.craftable.recipe;
-    
     if (getSkill(given).level < given.craftable.playerLevel)
         return false;
     

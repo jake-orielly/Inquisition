@@ -29,7 +29,7 @@ function craftXP(given) {
 }
 
 function getSkill(given) {
-    var skillsMap = {cook:playerSkills.cooking,smelt:playerSkills.smithing,smith:playerSkills.smithing};
+    var skillsMap = {cook:playerSkills.cooking,smelt:playerSkills.smithing,smith:playerSkills.smithing,alchemy:playerSkills.alchemy};
 	var currSkill;
 	
 	for (var curr in craftListMaster)
