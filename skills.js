@@ -5,11 +5,12 @@ playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
 playerSkills.mining = {xp:0,level:1,name:"Mining"};
 playerSkills.smithing = {xp:0,level:1,name:"Smithing"};
 playerSkills.cooking = {xp:0,level:1,name:"Cooking"};
+playerSkills.alchemy = {xp:0,level:1,name:"Alchemy"};
 
 function harvest(given) {
     var skill;
-    var resourceLists = [treeList,veinList];
-    var skillsList = [playerSkills.woodcutting,playerSkills.mining];
+    var resourceLists = [treeList,veinList,herbList];
+    var skillsList = [playerSkills.woodcutting,playerSkills.mining,playerSkills.alchemy];
     var curr;
     
     for (var i = 0; i < skillsList.length; i++) {

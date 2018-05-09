@@ -40,6 +40,8 @@ var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copp
 var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,new Craftable(90,8,[{item:iron_bar,amount:7}]));
 var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,2,[{item:copper_bar,amount:4}]));
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
+
+var herb = new Item("herb",false,false,7);
 var hp_potion_small = new Item("hp_potion_small",false,false,25);
 hp_potion_small.potion = {hp:5};
 
@@ -54,6 +56,7 @@ var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList};
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
 var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:5,xp:17},coal_vein:{toolLevel:3,resource:coal,playerLevel:10,xp:25}};
+var herbList = {herb_plant:{toolLevel:0,resource:herb,playerLevel:1,xp:9}};
 
 var shouldCloseInventory = false;
 
@@ -120,6 +123,9 @@ function makeBoard() {
 
 addBoardObject("smelter",8,13);
 addBoardObject("anvil",8,14);
+addBoardObject("herb_plant",26,11);
+addBoardObject("herb_plant",27,11);
+addBoardObject("herb_plant",26,12);
 $("#" + playerY + "-" + playerX).append(playerHTML);
 createSkillsTable();
 hideMenus();
@@ -521,8 +527,8 @@ function tileAction() {
     var resourceType;
     var currTool;
     var toolLevel = 0;
-    var toolMap = ["axe","pickaxe"];
-    var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level];
+    var toolMap = ["axe","pickaxe","pickaxe"];
+    var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level,playerSkills.alchemy.level];
     
     for (var i = 0; i < curr.length; i++) {
         if (Object.keys(treeList).includes(curr[i])) {
@@ -532,6 +538,10 @@ function tileAction() {
         else if (Object.keys(veinList).includes(curr[i])) {
             currResource = veinList[curr[i]];
             resourceType = 1;
+        }
+        else if (Object.keys(herbList).includes(curr[i])) {
+            currResource = herbList[curr[i]];
+            resourceType = 2;
         }
     }
     for (var i = 0; i < inventory.length; i++) {
@@ -548,6 +558,8 @@ function tileAction() {
         harvest(currResource);
         if (resourceType == 0)
         	curr[curr.length-1] = curr[curr.length-1].toString() + "_stump";
+        else if (resourceType == 2)
+            curr[curr.length-1] = curr[curr.length-1].toString() + "_picked";
         else 
         	curr[curr.length-1] = "rock";
         updateBoard();
