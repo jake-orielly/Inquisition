@@ -69,8 +69,9 @@
                 <table cellspacing="0" id="inventoryTable"></table>
                 <div id="equipment">
                     <img id="equipmentBackground" src='art/equipmentBackground.png'>
-                    <img class="equipmentSlot" id="weaponSlot" style="right: 108px; top:146px;" src='art/inventorySlot.png'>
-                    <img class="equipmentSlot" id="chestSlot" style="right: 38px; top:74px;" src='art/inventorySlot.png'>
+                    <div class="equipmentSlot" id="weaponSlot" style="right: 187; top:142px;"><img src='art/inventorySlot.png'></div>
+                    <div class="equipmentSlot" id="chestSlot" style="right: 117px; top:74px;" src='art/inventorySlot.png'><img src='art/inventorySlot.png'></div>
+                    <div class="equipmentSlot" id="legsSlot" style="right: 117px; top:157px;" src='art/inventorySlot.png'><img src='art/inventorySlot.png'></div>
                     <div id="hpBarMax"><div id="hpBarCurr"></div></div>
                 </div>
             </div>
@@ -101,13 +102,13 @@
                 <img id="inventoryButton" onclick="toggleInventory()" src="art/inventory.png">
             </div>
         </div>
-        <script src="utilityFunctions.js"></script>
+        <script src="js/utilityFunctions.js"></script>
         <script src="maps/testMap.js"></script>
         <script src="maps/villageMap.js"></script>
-        <script src="weapons.js"></script>
-        <script src="enemies.js"></script>
-        <script src="skills.js"></script>
-        <script src="Inquisition.js"></script>
-        <script src="WorldMap.js"></script>
+        <script src="js/weapons.js"></script>
+        <script src="js/enemies.js"></script>
+        <script src="js/skills.js"></script>
+        <script src="js/Inquisition.js"></script>
+        <script src="js/WorldMap.js"></script>
     </body>
 </html>

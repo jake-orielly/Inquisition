@@ -44,6 +44,7 @@ function Weapon(attack,damage,name,verb,killVerb,modifierNames = []) {
     this.attack = attack;
     this.damage = damage;
     this.name = name;
+    this.slot = "weapon";
     this.verb = verb;
     this.killVerb = killVerb;
     this.modifierNames = modifierNames;

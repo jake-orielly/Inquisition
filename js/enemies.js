@@ -25,7 +25,7 @@ function fallenKnight() {
 }
 
 function createPlayer() {
-    var player = new Character(20,13,3,makeMorningStar(),"Jake",["him","his"],"player","player");
+    var player = new Character(20,13,3,null,"Jake",["him","his"],"player","player");
     player.abilities = [secondWind(player.charType),doubleEdge(player.charType),flagellate(player.charType),woundedFury(player.charType),retaliation(player.charType)];
     initCharacter(player);
     return player;
