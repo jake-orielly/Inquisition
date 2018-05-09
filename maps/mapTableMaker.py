@@ -26,6 +26,10 @@ for i in range(len(readFile)):
             result[curr].append("\"iron_vein\"")
         elif (readFile[i:i+7] == "#787878"):
             result[curr].append("\"stonePath\"")
+        elif (readFile[i:i+7] == "#008040"):
+            result[curr].append("\"herb_plant\"")
+        elif (readFile[i:i+7] == "#FF0080"):
+            result[curr].append("\"mushroom_plant\"")
 
     elif readFile[i:i+4] == "<TR>":
         result.append([])
