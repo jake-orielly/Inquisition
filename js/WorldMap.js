@@ -3,7 +3,7 @@ var boardHTML = "";
 var visibleCols = 11;
 var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
-var playerX = 11;
+var playerX = 15;
 var playerY = 25;
 var nextEncounter = 50;
 var inCombat = false;
@@ -134,13 +134,9 @@ function makeBoard() {
 
 function mapAddons(map) {
 	if (map == testMap) {
-		addBoardObject("smelter",8,13);
-		addBoardObject("anvil",8,14);
-		addBoardObject("herb_plant",26,11);
-		addBoardObject("herb_plant",27,11);
-		addBoardObject("herb_plant",26,12);
-		addBoardObject("mushroom_plant",26,13);
-		addBoardObject("distillery",25,12);
+		addBoardObject("smelter",16,17);
+		addBoardObject("anvil",16,18);
+		addBoardObject("distillery",31,31);
 	}
 }
 
@@ -236,8 +232,8 @@ function movePlayer(x,y) {
         }
 
         if (inTown && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[i].length-1))) {
-            playerX = 10;
-            playerY = 26;
+            playerX = 14;
+            playerY = 29;
             inTown = false;
             mapTable = testMap;
             makeBoard();

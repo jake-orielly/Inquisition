@@ -1,5 +1,5 @@
-readFile = open("/users/jake/Desktop/inquisition/maps/villageMap.html","r").read()
-writeFile = open("/users/jake/Desktop/inquisition/maps/villageMap.js","w")
+readFile = open("/users/jake/Desktop/inquisition/maps/testMap.html","r").read()
+writeFile = open("/users/jake/Desktop/inquisition/maps/testMap.js","w")
 result = []
 curr = -1
 finalResult = "var mapTable = \n["
@@ -28,7 +28,7 @@ for i in range(len(readFile)):
             result[curr].append("\"stonePath\"")
         elif (readFile[i:i+7] == "#008040"):
             result[curr].append("\"herb_plant\"")
-        elif (readFile[i:i+7] == "#FF0080"):
+        elif (readFile[i:i+7] == "#ff0080"):
             result[curr].append("\"mushroom_plant\"")
 
     elif readFile[i:i+4] == "<TR>":
