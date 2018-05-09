@@ -42,9 +42,13 @@ var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
 
 var herb = new Item("herb",false,false,7);
+var mushroom = new Item("mushroom",false,false,11);
 var glass_vial = new Item("glass_vial",false,false,5);
+var glass_jar = new Item("glass_jar",false,false,10);
 var hp_potion_small = new Item("hp_potion_small",false,false,25,new Craftable(15,1,[{item:herb,amount:2},{item:glass_vial,amount:1}]));
 hp_potion_small.potion = {hp:5};
+var hp_potion_medium = new Item("hp_potion_medium",false,false,80,new Craftable(35,1,[{item:herb,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
+hp_potion_medium.potion = {hp:10};
 
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
@@ -52,13 +56,13 @@ var flint_box = new Item("flint_box",false,false,5);
 var foodList = [cooked_meat];
 var smeltList = [copper_bar,iron_bar];
 var smithList = [copper_axe, copper_pickaxe, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_chestplate,iron_platelegs];
-var potionList = [hp_potion_small];
+var potionList = [hp_potion_small,hp_potion_medium];
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};
 
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
 var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:5,xp:17},coal_vein:{toolLevel:3,resource:coal,playerLevel:10,xp:25}};
-var herbList = {herb_plant:{toolLevel:0,resource:herb,playerLevel:1,xp:9}};
+var herbList = {herb_plant:{toolLevel:0,resource:herb,playerLevel:1,xp:9},mushroom_plant:{toolLevel:0,resource:mushroom,playerLevel:1,xp:14}};
 
 var shouldCloseInventory = false;
 
@@ -93,6 +97,7 @@ var equipment = {};
 var generalStoreInventory = [];
 var toolStoreInventory = [];
 var armorStoreInventory = [];
+var alchemyStoreInventory = [];
 
 var shopTemp = [flint_box,meat,oak_logs,evergreen_logs,copper_ore,iron_ore,copper_bar,iron_bar];
 fillShop(generalStoreInventory,shopTemp);
@@ -100,6 +105,8 @@ shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe];
 fillShop(toolStoreInventory,shopTemp);
 shopTemp = [copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs];
 fillShop(armorStoreInventory,shopTemp);
+shopTemp = [hp_potion_small,hp_potion_medium,glass_vial,glass_jar,herb,mushroom];
+fillShop(alchemyStoreInventory,shopTemp);
 
 function fillShop(shop,list) {
 	for (var i = 0; i < list.length; i++) {
@@ -121,14 +128,22 @@ function makeBoard() {
                 addBoardObject(mapTable[i][j],i,j);
         }
     }
+    
+    mapAddons(mapTable);
 }
 
-addBoardObject("smelter",8,13);
-addBoardObject("anvil",8,14);
-addBoardObject("herb_plant",26,11);
-addBoardObject("herb_plant",27,11);
-addBoardObject("herb_plant",26,12);
-addBoardObject("distillery",25,12);
+function mapAddons(map) {
+	if (map == testMap) {
+		addBoardObject("smelter",8,13);
+		addBoardObject("anvil",8,14);
+		addBoardObject("herb_plant",26,11);
+		addBoardObject("herb_plant",27,11);
+		addBoardObject("herb_plant",26,12);
+		addBoardObject("mushroom_plant",26,13);
+		addBoardObject("distillery",25,12);
+	}
+}
+
 $("#" + playerY + "-" + playerX).append(playerHTML);
 createSkillsTable();
 hideMenus();
@@ -181,10 +196,7 @@ function updateBoard() {
     $("#" + playerY + "-" + playerX).append(playerHTML);
 }
 
-addItem(gold,200);
-addItem(iron_pickaxe);
-addItem(meat);
-addItem(glass_vial);
+addItem(gold,500);
 
 function startEncounter() {
     $("#worldMapContainer").hide();
@@ -216,8 +228,10 @@ function movePlayer(x,y) {
 	        	showShop(generalStoreInventory);
 	        else if (newX > 8)
                 showShop(toolStoreInventory);
-            else
+            else if (newX >= 4)
             	showShop(armorStoreInventory);
+            else 
+            	showShop(alchemyStoreInventory);
             showInventory();
         }
 
@@ -243,6 +257,7 @@ function movePlayer(x,y) {
 			makeHouse(6,12);
             makeHouse(6,9);
             makeHouse(6,4);
+            makeHouse(6,2);
 
             updateBoard();
         }
@@ -388,7 +403,7 @@ function showShop(shopInventory) {
             result += "<td>";
             result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
             if(curr < shopInventory.length+1) {
-                result += "<img class='inventoryItem' onclick='buy(" + (curr-1) + ")' src='art/" + shopInventory[curr-1].item.name + ".png'>";
+                result += "<img class='inventoryItem' onclick='buy(" + shopInventory[curr-1].item.name + ")' src='art/" + shopInventory[curr-1].item.name + ".png'>";
                 if (shopInventory[curr-1].amount > 1)
                     result += "<div class='inventoryAmountContainer'><p class='inventoryItemAmount'>" + shopInventory[curr-1].amount + "</p></div>";
             }
@@ -470,9 +485,9 @@ function updateEquipment() {
 function buy(given) {
     if ($("#shop").is(":visible")) {
         var playerGold = inventoryCount(gold);
-        if(playerGold >= generalStoreInventory[given].item.value) {
-            addItem(generalStoreInventory[given].item);
-            removeItem(gold,generalStoreInventory[given].item.value);
+        if(playerGold >= given.value) {
+            addItem(given);
+            removeItem(gold,given.value);
             updateInventory();
         }   
     }
@@ -505,7 +520,7 @@ function itemClick(given) {
         heightDif = $("#hpBarMax").height() - $("#hpBarCurr").height();
         $("#hpBarCurr").css("margin-top",heightDif-1);
         if (item.potion)
-            addItem(glass_vial);
+            addItem(item.craftable.recipe[item.craftable.recipe.length-1].item);
         removeItem(item);
     }
     
