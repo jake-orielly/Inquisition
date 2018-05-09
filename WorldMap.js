@@ -40,6 +40,9 @@ var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copp
 var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,new Craftable(90,8,[{item:iron_bar,amount:7}]));
 var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,2,[{item:copper_bar,amount:4}]));
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
+var hp_potion_small = new Item("hp_potion_small",false,false,25);
+hp_potion_small.potion = {hp:5};
+
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
 
@@ -457,7 +460,7 @@ function buy(given) {
 
 function itemClick(given) {
     var item = inventory[given].item;
-    var keys;
+    var keys,curr;
     
     if ($("#shop").is(":visible")) {
         sell(given);
@@ -466,10 +469,15 @@ function itemClick(given) {
         equipItem(item);
         updateInventory();
     }
-    else if (item.food) {
-        keys = Object.keys(item.food);
+    else if (item.food || item.potion) {
+        if (item.food)
+            curr = item.food;
+        else 
+            curr = item.potion;
+        
+        keys = Object.keys(curr);
         for (var i = 0; i < keys.length; i++)
-            player[keys[i]] += item.food[keys[i]];
+            player[keys[i]] += curr[keys[i]];
         
         if (player.hp > player.maxHP)
             player.hp = player.maxHP;
@@ -478,6 +486,7 @@ function itemClick(given) {
         $("#hpBarCurr").css("margin-top",heightDif-1);
         removeItem(item);
     }
+    
     else if (item.clickFunc) {
         item.clickFunc();
     }

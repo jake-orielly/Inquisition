@@ -110,7 +110,8 @@ $(".abilityButton").hide();
 
 function changeHP(val,target) {
     target.hp += val;
-
+    if (target.hp > target.maxHP)
+        target.hp = target.maxHP;
     if (target.hp <= 0)
         endCombat(target);
 
@@ -395,6 +396,33 @@ function textReset(given) {
 function toggleAbilities() {
     if (!dead)
         $(".abilityButton").toggle();
+}
+
+function toggleItems() {
+    if (!dead) {
+        updateItems();
+    }
+}
+
+function triggerItem(given) {
+    if (given.potion.hp)
+        changeHP(given.potion.hp,player);
+    removeItem(given);
+    updateItems();
+}
+
+function updateItems() {
+    var curr = 0;
+    $(".abilityButton").hide();
+    for (var i = 0; i < inventory.length; i++) {
+        if (inventory[i].item.potion) {
+            console.log(inventory[i].item);
+            $(".abilityButton")[curr].innerHTML = inventory[i].item.getName();
+            $(".abilityButton")[curr].style.display = "table";
+            $(".abilityButton")[curr].setAttribute("onClick","javascript: triggerItem(" + inventory[i].item.name + ");");
+            curr++;
+        }
+    }
 }
 
 function openCombatLog(event) {
