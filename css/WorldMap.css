@@ -8,13 +8,6 @@
     position:absolute;
 }
 
-.house {
-	height: 128px;
-	width: 128px;
-	z-index:1;
-	bottom:0;
-}
-
 #board td {
     padding:0;
     display:inline-block;
@@ -127,6 +120,22 @@
 
 .absolute {
     position: absolute;
+}
+
+.house00 {
+    background: url(../art/house.png) 0 0px;
+}
+
+.house10 {
+    background: url(../art/house.png) 64px 0;
+}
+
+.house01{
+    background: url(../art/house.png) 0 64px;
+}
+
+.house11 {
+    background: url(../art/house.png) 64px 64px;
 }
 
 #equipment {

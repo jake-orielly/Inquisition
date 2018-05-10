@@ -5,5 +5,4 @@ Player Death
 Map collapses when visible x & y are different, the two are probably backwards
 Buying item doesn’t remove it from shop inventory
 UI doesn’t indicate/explain items that you’re not high enough level to make
-House doesn’t render right when half off screen
 Plants re-grow when you exit and re-enter the map (i.e. got to village and come back out)

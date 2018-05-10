@@ -4,7 +4,7 @@ var visibleCols = 11;
 var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 15;
-var playerY = 25;
+var playerY = 28;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
@@ -21,10 +21,14 @@ var Craftable = function (xp,playerLevel,recipe) {
 
 var oak_logs = new Item("oak_logs",false,false,3);
 var evergreen_logs = new Item("evergreen_logs",false,false,8);
+var herb = new Item("herb",false,false,7);
+var mushroom = new Item("mushroom",false,false,11);
 var meat = new Item("meat",false,false,4);
 meat.food = {hp:3};
 var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,1,[{item:meat,amount:1}]));
-cooked_meat.food = {hp:7};
+cooked_meat.food = {hp:8};
+var seasoned_meat = new Item("seasoned_meat",false,false,16,new Craftable(14,3,[{item:meat,amount:1},{item:herb,amount:1}]));
+seasoned_meat.food = {hp:14};
 
 var copper_ore = new Item("copper_ore",false,false,3);
 var copper_bar = new Item("copper_bar",true,false,8,new Craftable(15,1,[{item:copper_ore,amount:2}]));
@@ -41,8 +45,6 @@ var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),
 var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,2,[{item:copper_bar,amount:4}]));
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
 
-var herb = new Item("herb",false,false,7);
-var mushroom = new Item("mushroom",false,false,11);
 var glass_vial = new Item("glass_vial",false,false,5);
 var glass_jar = new Item("glass_jar",false,false,10);
 var hp_potion_small = new Item("hp_potion_small",false,false,25,new Craftable(15,1,[{item:herb,amount:2},{item:glass_vial,amount:1}]));
@@ -53,14 +55,14 @@ hp_potion_medium.potion = {hp:10};
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);
 
-var foodList = [cooked_meat];
+var foodList = [cooked_meat,seasoned_meat];
 var smeltList = [copper_bar,iron_bar];
 var smithList = [copper_axe, copper_pickaxe, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_chestplate,iron_platelegs];
 var potionList = [hp_potion_small,hp_potion_medium];
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};
 
 var toolModifierLevel = {copper:1,iron:2,steel:3};
-var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:3,xp:15}};
+var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:5,xp:15}};
 var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:5,xp:17},coal_vein:{toolLevel:3,resource:coal,playerLevel:10,xp:25}};
 var herbList = {herb_plant:{toolLevel:0,resource:herb,playerLevel:1,xp:9},mushroom_plant:{toolLevel:0,resource:mushroom,playerLevel:1,xp:14}};
 
@@ -128,7 +130,6 @@ function makeBoard() {
                 addBoardObject(mapTable[i][j],i,j);
         }
     }
-    
     mapAddons(mapTable);
 }
 
@@ -138,6 +139,12 @@ function mapAddons(map) {
 		addBoardObject("anvil",16,18);
 		addBoardObject("distillery",31,31);
 	}
+    else {
+        makeHouse(6,12);
+        makeHouse(6,9);
+        makeHouse(6,4);
+        makeHouse(6,1);
+    }
 }
 
 $("#" + playerY + "-" + playerX).append(playerHTML);
@@ -148,12 +155,14 @@ hideMenus();
 updateBoard();
 
 function updateBoard() {
+    
     var visX = parseInt(visibleRows/2);  //Visibility in each direction is half total visibility
     var visY = parseInt(visibleCols/2);
     var botX = playerX-visX; //Lowest X player can see, followed by highest X, lowest Y, etc
     var topX = playerX+visX+1;
     var botY = playerY - visY;
     var topY = playerY + visY + 1;
+    var houseMod;
     
     if (topX > mapTable[0].length) {  //If the highest X player can see is off the board
         botX = mapTable[0].length - visibleCols;
@@ -181,7 +190,12 @@ function updateBoard() {
         for (var j = botX; j < topX; j++) {
                 boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
                 for (var k = 0; k < board[i][j].length; k++) {
-                    boardHTML += "<img class='" + board[i][j][k] + " tileItem' src='art/" + board[i][j][k] + ".png'>";
+                    if (board[i][j][k] == "houseInvis") {
+                        houseMod = houseMap(i,j,k);   
+                    }
+                    else 
+                        houseMod = "";
+                    boardHTML += "<img class='" + board[i][j][k] + houseMod + " tileItem' src='art/" + board[i][j][k] + ".png'>";
                 }
             boardHTML += "</td>";
         }
@@ -190,6 +204,19 @@ function updateBoard() {
     
     $("#board").html(boardHTML);
     $("#" + playerY + "-" + playerX).append(playerHTML);
+}
+
+function houseMap(x,y,z) {
+    var result = " house";
+    if (y-1 > 0 && board[x][y-1][z] == "houseInvis")
+        result += 1;
+    else
+        result += 0;
+    if (x-1 > 0 && board[x-1][y][z] == "houseInvis")
+        result += 1;
+    else 
+        result += 0;
+    return result;
 }
 
 addItem(gold,500);
@@ -248,13 +275,8 @@ function movePlayer(x,y) {
             playerX = (7 - x*7); //Player appears in village based on direction they entered from
             playerY = (7 - y*7);
             mapTable = villageMap;
-            makeBoard();
             
-			makeHouse(6,12);
-            makeHouse(6,9);
-            makeHouse(6,4);
-            makeHouse(6,2);
-
+            makeBoard();
             updateBoard();
         }
         
@@ -267,10 +289,10 @@ function movePlayer(x,y) {
 }
 
 function makeHouse(x,y) {
-	addBoardObject("house",x,y);
+	addBoardObject("houseInvis",x,y);
 	addBoardObject("houseInvis",x,y+1);
-	addBoardObject("barrier",x-1,y);
-	addBoardObject("barrier",x-1,y+1);
+	addBoardObject("houseInvis",x-1,y);
+	addBoardObject("houseInvis",x-1,y+1);
 }
 
 function checkCanCraft() {
@@ -576,7 +598,7 @@ function tileAction() {
                 toolLevel = Math.max(toolLevel, toolModifierLevel[currTool.modifierNames[j]]);
     }
     if (equipment.weapon && equipment.weapon.item.equipment.name == toolMap[resourceType])
-        for (var j = 0; j < equipment.weapon.modifierNames.length; j++)
+        for (var j = 0; j < equipment.weapon.item.equipment.modifierNames.length; j++)
                 toolLevel = Math.max(toolLevel, toolModifierLevel[equipment.weapon.modifierNames[j]]);
     
     if(currResource && toolLevel >= currResource.toolLevel && skillMap[resourceType] >= currResource.playerLevel) {
