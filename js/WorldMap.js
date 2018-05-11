@@ -100,6 +100,7 @@ var generalStoreInventory = [];
 var toolStoreInventory = [];
 var armorStoreInventory = [];
 var alchemyStoreInventory = [];
+var shops = [generalStoreInventory,toolStoreInventory,armorStoreInventory,alchemyStoreInventory];
 
 var shopTemp = [flint_box,meat,oak_logs,evergreen_logs,copper_ore,iron_ore,copper_bar,iron_bar];
 fillShop(generalStoreInventory,shopTemp);
@@ -235,6 +236,7 @@ function movePlayer(x,y) {
     var tileType = "empty";
 
     if ($("#shop").is(":visible")) {
+        $("#dialogueContainer").hide();
         $("#shop").hide();
         $("#inventory").hide();
     }
@@ -248,13 +250,13 @@ function movePlayer(x,y) {
                 
         if (newLocation.children().hasClass("house") || newLocation.children().hasClass("houseInvis")) {
 	        if (newX > 10)
-	        	showShop(generalStoreInventory);
+	        	showShop(0);
 	        else if (newX > 8)
-                showShop(toolStoreInventory);
+                showShop(1);
             else if (newX >= 4)
-            	showShop(armorStoreInventory);
+            	showShop(2);
             else 
-            	showShop(alchemyStoreInventory);
+            	showShop(3);
             showInventory();
         }
 
@@ -409,7 +411,8 @@ function showMenu(given) {
     $("#" + given + "Menu").show();
 }
 
-function showShop(shopInventory) {
+function showShop(given) {
+    var shopInventory = shops[given];
     var result, curr;
     
     for (var i = 0; i < 5; i++) {
@@ -427,8 +430,15 @@ function showShop(shopInventory) {
         }
         result += "</tr>";
     }
+    showDialogue(shopKeepers[given]);
+    $("#dialogueContainer").show()
     $("#shopTable").html(result);
     $("#shop").show();
+}
+
+function showDialogue(given) {
+    $("#portrait").attr("src",given.portrait);
+    $("#dialogueText").html(given.greeting);
 }
 
 function showInventory() {

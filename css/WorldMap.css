@@ -78,7 +78,7 @@
 #inventory, #shop, #skills{
     position: relative;
     display:none;
-    bottom:10px;
+    bottom:40px;
     right:0px;
     z-index:2;
 }
@@ -136,6 +136,40 @@
 
 .house11 {
     background: url(../art/house.png) 64px 64px;
+}
+
+#dialogueContainer {
+    display:none;
+}
+
+#portrait {
+    position:absolute;
+    bottom:0;
+    width:calc(15% - 12px);
+    height:96px;
+    border: 6px solid black;
+    border-radius: 10px;
+    background:white;
+}
+
+#dialogueBox {
+    position: absolute;
+    bottom: 0;
+    right: 2px;
+    width: calc(85% - 12px);
+    height: 96px;
+    background: white;
+    border: 6px solid black;
+    border-radius: 10px;
+}
+
+#dialogueBox p{
+    position: absolute;
+    top: 0px;
+    margin: 0;
+    padding: 10px;
+    font-size: 24px;
+    font-family: "Courier New";
 }
 
 #equipment {
