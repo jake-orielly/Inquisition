@@ -11,6 +11,7 @@ var inventoryMax = 15;
 var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
 var inTown = false;
 var board = [];
+var textLoop;
 
 
 var Craftable = function (xp,playerLevel,recipe) {
@@ -237,6 +238,7 @@ function movePlayer(x,y) {
 
     if ($("#shop").is(":visible")) {
         $("#dialogueContainer").hide();
+        clearInterval(textLoop);
         $("#shop").hide();
         $("#inventory").hide();
     }
@@ -438,7 +440,18 @@ function showShop(given) {
 
 function showDialogue(given) {
     $("#portrait").attr("src",given.portrait);
-    $("#dialogueText").html(given.greeting);
+    scrollText(given.greeting);
+}
+
+function scrollText(given) {
+    var textCount = 0;
+    $("#dialogueText").html(given[0]);
+    textLoop = setInterval(function() {
+        $("#dialogueText").html(given.substring(0,textCount));
+        textCount++;
+        if (textCount == given.length+1)
+            clearInterval(textLoop);
+    }, 30);
 }
 
 function showInventory() {
