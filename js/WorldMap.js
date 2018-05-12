@@ -242,6 +242,7 @@ function houseMap(x,y,z) {
 }
 
 addItem(gold,500);
+addItem(hp_potion_small);
 
 function startEncounter() {
     $("#worldMapContainer").hide();

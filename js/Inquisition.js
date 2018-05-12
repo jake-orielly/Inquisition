@@ -4,6 +4,8 @@ var isPlayerTurn;
 var player;
 var currEnemy;
 var characters;
+var abilitiesOpen = false;
+var itemsOpen = false;
 
 var retaliationBuff = {image:"retaliationBuff",bonus:1,count:0};
 var woundedFuryBuff = {image:"woundedFuryBuff",bonus:1,count:0};
@@ -12,13 +14,14 @@ var flagellateBuff = {image:"flagellateBuff",bonus:5,count:0};
 player = createPlayer();
 
 function startCombat() {
+    var types;
+    
     turn = 0;
     dead = 0;
     isPlayerTurn = true;
     currEnemy = rat();
     characters = [player,currEnemy];
     
-    var types;
     types = Object.keys(player.buffs);
     for (var i = 0; i < types.length; i++) {
         for (var j = 0; j < player.buffs[types[i]].length; j++) {
@@ -39,6 +42,7 @@ function startCombat() {
     }
     
     $("#combatLogContainer").hide();
+    $(".abilityButton").hide();
     document.getElementById("movesSection").style.display = "block";
     document.getElementById("movesButton").className += " active";
     document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + currEnemy.image + ".jpg";
@@ -101,12 +105,13 @@ function secondWindFunc() {
     document.getElementById("combatLog").innerHTML += combatText;
 }
 
-for (var i = 0; i < $(".abilityButton").length; i++) {
-    $(".abilityButton")[i].innerHTML = player.abilities[i].name;
-    $(".abilityButton")[i].setAttribute("onClick","javascript: triggerAbility(player," + i + ");");
+function updateAbilities() {
+    for (var i = 0; i < $(".abilityButton").length; i++) {
+        $(".abilityButton")[i].innerHTML = player.abilities[i].name;
+        $(".abilityButton")[i].setAttribute("onClick","javascript: triggerAbility(player," + i + ");");
+    }
+    $(".abilityButton").show();
 }
-
-$(".abilityButton").hide();
 
 function changeHP(val,target) {
     target.hp += val;
@@ -394,34 +399,64 @@ function textReset(given) {
 }
 
 function toggleAbilities() {
-    if (!dead)
-        $(".abilityButton").toggle();
+    if (!dead) {
+        if (itemsOpen) {
+            $(".abilityButton").hide();
+            itemsOpen = false;
+        }
+        if ($(".abilityButton").is(":visible"))
+            $(".abilityButton").hide();
+        else
+            updateAbilities();
+        abilitiesOpen = !abilitiesOpen;
+    }
 }
 
 function toggleItems() {
     if (!dead) {
-        updateItems();
+        if (abilitiesOpen) {
+            $(".abilityButton").hide();
+            abilitiesOpen = false;
+        }
+        if ($(".abilityButton").is(":visible"))
+            $(".abilityButton").hide();
+        else
+            updateItems();
+        itemsOpen = !itemsOpen;
     }
 }
 
 function triggerItem(given) {
-    if (given.potion.hp)
+    if (given.potion.hp) {
+        if (player.hp + given.potion.hp > player.maxHP)
+            moveText("player", (player.maxHP - player.hp));
+        else 
+            moveText("player",given.potion.hp);
         changeHP(given.potion.hp,player);
+    }
     removeItem(given);
     updateItems();
+    wait();
 }
 
 function updateItems() {
     var curr = 0;
+    var noItems = true;
     $(".abilityButton").hide();
-    for (var i = 0; i < inventory.length; i++) {
-        if (inventory[i].item.potion) {
-            console.log(inventory[i].item);
-            $(".abilityButton")[curr].innerHTML = inventory[i].item.getName();
+    for (var i = 0; i < potionList.length; i++) {
+        if (inventoryCount(potionList[i])) {
+            $(".abilityButton")[curr].innerHTML = potionList[i].getName();
+            if (inventoryCount(potionList[i]) > 1)
+                $(".abilityButton")[curr].innerHTML += " x" + inventoryCount(potionList[i]);
             $(".abilityButton")[curr].style.display = "table";
-            $(".abilityButton")[curr].setAttribute("onClick","javascript: triggerItem(" + inventory[i].item.name + ");");
+            $(".abilityButton")[curr].setAttribute("onClick","javascript: triggerItem(" + potionList[i].name + ");");
             curr++;
+            noItems = false;
         }
+    }
+    if (noItems) {
+        $(".abilityButton")[curr].innerHTML = "[No Items]";
+        $(".abilityButton")[curr].style.display = "table";
     }
 }
 
