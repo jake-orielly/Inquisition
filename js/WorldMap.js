@@ -8,7 +8,7 @@ var playerY = 28;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
-var adjOffset = [[1,0],[0,1],[-1,0],[0,-1]];
+var cardinalOffset = [[-1,0],[0,-1],[0,1],[1,0]];
 var inTown = false;
 var board = [];
 var textLoop;
@@ -164,7 +164,7 @@ function updateBoard() {
     var topX = playerX+visX+1;
     var botY = playerY - visY;
     var topY = playerY + visY + 1;
-    var houseMod;
+    var tileMod;
     
     if (topX > mapTable[0].length) {  //If the highest X player can see is off the board
         botX = mapTable[0].length - visibleCols;
@@ -192,12 +192,15 @@ function updateBoard() {
         for (var j = botX; j < topX; j++) {
                 boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
                 for (var k = 0; k < board[i][j].length; k++) {
-                    if (board[i][j][k] == "houseInvis") {
-                        houseMod = houseMap(i,j,k);   
+                    if (board[i][j][k] == "houseInvis")
+                        tileMod = houseMap(i,j,k);   
+                    else if (board[i][j][k] == "stonePath") {
+                        tileMod = "' style = 'background:url(art/stonePathSheet.png)";
+                        tileMod += bitMask(i,j);
                     }
                     else 
-                        houseMod = "";
-                    boardHTML += "<img class='" + board[i][j][k] + houseMod + " tileItem' src='art/" + board[i][j][k] + ".png'>";
+                        tileMod = "";
+                    boardHTML += "<img class='tileItem " + board[i][j][k] + tileMod + "' src='art/" + board[i][j][k] + ".png'>";
                 }
             boardHTML += "</td>";
         }
@@ -206,6 +209,23 @@ function updateBoard() {
     
     $("#board").html(boardHTML);
     $("#" + playerY + "-" + playerX).append(playerHTML);
+}
+
+function bitMask(x,y) {
+    var result = "";
+    var bitVal = 0;
+    var currX, currY;
+    for (var i = 0; i < cardinalOffset.length; i++) {
+        currX = x + cardinalOffset[i][0];
+        currY = y + cardinalOffset[i][1];
+        if (board[currX] && board[currX][currY])
+            bitVal += (board[currX][currY][1] == "stonePath") * Math.pow(2,i);
+    }
+    currX = (bitVal%4);
+    currY = (parseInt(bitVal/4));
+    result += " " +  ((currX > 0) * (4 - currX) * 65) + "px";
+    result += " " +  ((currY > 0) * (4 - currY) * 65) + "px";
+    return result;
 }
 
 function houseMap(x,y,z) {
