@@ -30,6 +30,8 @@ for i in range(len(readFile)):
             result[curr].append("\"herb_plant\"")
         elif (readFile[i:i+7] == "#ff0080"):
             result[curr].append("\"mushroom_plant\"")
+        elif (readFile[i:i+7] == "#000000"):
+            result[curr].append("\"cave_entrance\"")
 
     elif readFile[i:i+4] == "<TR>":
         result.append([])
