@@ -13,6 +13,7 @@ var inTown = false;
 var board = [];
 var textLoop;
 var shopMap = [];
+var illegalTerrain = ["ocean","mountain","cave_wall","barrier"];
 
 
 var Craftable = function (xp,playerLevel,recipe) {
@@ -77,7 +78,7 @@ flint_box.clickFunc = function() {
     var validSpace = true;
 
     for (var i = 0; i < curr.length; i++)
-        if(curr[i] != "grass")
+        if(curr[i] != "grass" || curr[i] != "cave_floor")
             validSpace = false;
     
     for (var i = 0; i < inventory.length; i++) {
@@ -128,7 +129,10 @@ function makeBoard() {
     for (var i = 0; i < mapTable.length; i++) {
         board[i] = [];
         for (var j = 0; j < mapTable[i].length; j++) {
-            board[i][j] = ["grass"];
+            if (mapTable == caveMap)
+                board[i][j] = ["cave_floor"];
+            else
+                board[i][j] = ["grass"];
             if (mapTable[i][j] != "grass")
                 addBoardObject(mapTable[i][j],i,j);
         }
@@ -142,7 +146,7 @@ function mapAddons(map) {
 		addBoardObject("anvil",16,18);
 		addBoardObject("distillery",31,31);
 	}
-    else {
+    else if (map == villageMap) {
         makeHouse(6,14);
         makeHouse(3,12);
         makeHouse(4,4);
@@ -192,6 +196,7 @@ function updateBoard() {
         boardHTML += "<tr>";
         for (var j = botX; j < topX; j++) {
                 boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
+                console.log(i + " : " + j);
                 for (var k = 0; k < board[i][j].length; k++) {
                     if (board[i][j][k] == "houseInvis")
                         tileMod = houseMap(i,j,k);   
@@ -257,6 +262,11 @@ function movePlayer(x,y) {
     var newY = playerY + y;
     var newLocation;
     var tileType = "empty";
+    var legalTile = true;
+    
+    for (var i = 0; i < illegalTerrain.length; i++) 
+        if ($("#" + [newY] + "-" + [newX]).children().hasClass(illegalTerrain[i]))
+            legalTile = false;
 
     if ($("#shop").is(":visible")) {
         $("#dialogueContainer").hide();
@@ -264,13 +274,15 @@ function movePlayer(x,y) {
         $("#shop").hide();
         $("#inventory").hide();
     }
-    if (newX >= 0 && newX < mapTable[0].length && newY >= 0 && newY < mapTable.length && !$("#" + [newY] + "-" + [newX]).children().hasClass("ocean") && !$("#" + [newY] + "-" + [newX]).children().hasClass("mountain") && !$("#" + [newY] + "-" + [newX]).children().hasClass("barrier")){
+    if (newX >= 0 && newX < mapTable[0].length && newY >= 0 && newY < mapTable.length && legalTile){
         playerX = newX;
         playerY = newY;
         newLocation = $("#" + playerY + "-" + playerX);
 
         if (newLocation.children().hasClass("village"))
                 tileType = "village";
+        else if (newLocation.children().hasClass("cave_entrance"))
+                tileType = "cave";
                 
         if (newLocation.children().hasClass("house") || newLocation.children().hasClass("houseInvis")) {
             for (var i = 0; i < shopMap.length; i++)
@@ -298,6 +310,23 @@ function movePlayer(x,y) {
             playerX = (7 - x*7); //Player appears in village based on direction they entered from
             playerY = (7 - y*7);
             mapTable = villageMap;
+            
+            makeBoard();
+            updateBoard();
+        }
+        
+        else if (tileType == "cave") {
+            if (mapTable == testMap) {
+                playerX = 17;
+                playerY = 4;
+                mapTable = caveMap;    
+            }
+            
+            else if (mapTable == caveMap) {
+                playerX = 17;
+                playerY = 57;
+                mapTable = testMap;
+            }
             
             makeBoard();
             updateBoard();

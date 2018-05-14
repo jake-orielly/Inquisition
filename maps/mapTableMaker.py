@@ -10,6 +10,8 @@ for i in range(len(readFile)):
     if readFile[i] == "#":
         if (readFile[i:i+7] == "#98ca68"):
             result[curr].append("\"grass\"")
+        elif (readFile[i:i+7] == "#7f7f7f"):
+            result[curr].append("\"cave_floor\"")
         elif (readFile[i:i+7] == "#408000"):
             result[curr].append("\"oak\"")
         elif (readFile[i:i+7] == "#804000"):
