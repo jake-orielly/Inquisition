@@ -12,6 +12,7 @@ var cardinalOffset = [[-1,0],[0,-1],[0,1],[1,0]];
 var inTown = false;
 var board = [];
 var textLoop;
+var shopMap = [];
 
 
 var Craftable = function (xp,playerLevel,recipe) {
@@ -142,9 +143,9 @@ function mapAddons(map) {
 		addBoardObject("distillery",31,31);
 	}
     else {
-        makeHouse(6,12);
-        makeHouse(6,9);
-        makeHouse(6,4);
+        makeHouse(6,14);
+        makeHouse(3,12);
+        makeHouse(4,4);
         makeHouse(6,1);
     }
 }
@@ -272,18 +273,15 @@ function movePlayer(x,y) {
                 tileType = "village";
                 
         if (newLocation.children().hasClass("house") || newLocation.children().hasClass("houseInvis")) {
-	        if (newX > 10)
-	        	showShop(0);
-	        else if (newX > 8)
-                showShop(1);
-            else if (newX >= 4)
-            	showShop(2);
-            else 
-            	showShop(3);
+            for (var i = 0; i < shopMap.length; i++)
+                if (newX >= shopMap[i]) {
+                    showShop(i);
+                    break;
+                }
             showInventory();
         }
 
-        if (inTown && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[i].length-1))) {
+        if (inTown && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[0].length-1))) {
             playerX = 14;
             playerY = 29;
             inTown = false;
@@ -318,6 +316,7 @@ function makeHouse(x,y) {
 	addBoardObject("houseInvis",x,y+1);
 	addBoardObject("houseInvis",x-1,y);
 	addBoardObject("houseInvis",x-1,y+1);
+    shopMap.push(y);
 }
 
 function checkCanCraft() {

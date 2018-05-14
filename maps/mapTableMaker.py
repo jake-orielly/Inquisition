@@ -1,8 +1,10 @@
-readFile = open("/users/jake/Desktop/inquisition/maps/testMap.html","r").read()
-writeFile = open("/users/jake/Desktop/inquisition/maps/testMap.js","w")
+mapName = raw_input("Enter map name:")
+
+readFile = open("/users/jake/Desktop/inquisition/maps/" + mapName + ".html","r").read()
+writeFile = open("/users/jake/Desktop/inquisition/maps/" + mapName + ".js","w")
 result = []
 curr = -1
-finalResult = "var mapTable = \n["
+finalResult = "var " + mapName + " = \n["
 
 for i in range(len(readFile)):
     if readFile[i] == "#":
@@ -24,6 +26,8 @@ for i in range(len(readFile)):
             result[curr].append("\"copper_vein\"")
         elif (readFile[i:i+7] == "#b3b3b3"):
             result[curr].append("\"iron_vein\"")
+        elif (readFile[i:i+7] == "#333333"):
+            result[curr].append("\"coal_vein\"")
         elif (readFile[i:i+7] == "#787878"):
             result[curr].append("\"stonePath\"")
         elif (readFile[i:i+7] == "#008040"):
@@ -32,6 +36,8 @@ for i in range(len(readFile)):
             result[curr].append("\"mushroom_plant\"")
         elif (readFile[i:i+7] == "#000000"):
             result[curr].append("\"cave_entrance\"")
+        elif (readFile[i:i+7] == "#191919"):
+            result[curr].append("\"cave_wall\"")
 
     elif readFile[i:i+4] == "<TR>":
         result.append([])
