@@ -13,6 +13,7 @@ var inTown = false;
 var board = [];
 var textLoop;
 var shopMap = [];
+var npcList = [];
 var illegalTerrain = ["ocean","mountain","cave_wall","barrier"];
 
 
@@ -151,8 +152,13 @@ function mapAddons(map) {
         makeHouse(3,12);
         makeHouse(4,4);
         makeHouse(6,1);
-        addBoardObject("npc_0",10,10);
+        makeNPC(10,10);
     }
+}
+
+function makeNPC(x,y) {
+    addBoardObject("npc_0",10,10);
+    npcList.push([x,y]);
 }
 
 $("#" + playerY + "-" + playerX).append(playerHTML);
@@ -197,7 +203,6 @@ function updateBoard() {
         boardHTML += "<tr>";
         for (var j = botX; j < topX; j++) {
                 boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
-                console.log(i + " : " + j);
                 for (var k = 0; k < board[i][j].length; k++) {
                     if (board[i][j][k] == "houseInvis")
                         tileMod = houseMap(i,j,k);   
@@ -268,10 +273,17 @@ function movePlayer(x,y) {
     for (var i = 0; i < illegalTerrain.length; i++) 
         if ($("#" + [newY] + "-" + [newX]).children().hasClass(illegalTerrain[i]))
             legalTile = false;
+    
+    for (var i = 0; i < npcList.length; i++)
+        if (newX == npcList[i][0] && newY == npcList[i][1])
+            legalTile = false;
 
-    if ($("#shop").is(":visible")) {
+    if ($("#dialogueContainer").is(":visible")) {
         $("#dialogueContainer").hide();
         clearInterval(textLoop);
+    }
+    
+    if ($("#shop").is(":visible")) {
         $("#shop").hide();
         $("#inventory").hide();
     }
@@ -483,12 +495,13 @@ function showShop(given) {
         result += "</tr>";
     }
     showDialogue(shopKeepers[given]);
-    $("#dialogueContainer").show()
     $("#shopTable").html(result);
     $("#shop").show();
 }
 
 function showDialogue(given) {
+    clearInterval(textLoop);
+    $("#dialogueContainer").show();
     $("#portrait").attr("src",given.portrait);
     scrollText(given.greeting);
 }
@@ -649,6 +662,17 @@ function tileAction() {
     var toolLevel = 0;
     var toolMap = ["axe","pickaxe","pickaxe"];
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level,playerSkills.alchemy.level];
+    var currX, currY;
+    
+    for (var i = 0; i < cardinalOffset.length; i++) {
+        currX = playerX + cardinalOffset[i][0];
+        currY = playerY + cardinalOffset[i][1];
+        
+        for (var j = 0; j < npcList.length; j++) {
+            if (currX == npcList[j][0] && currY == npcList[j][1])
+                showDialogue(questGiver);
+        }
+    }
     
     for (var i = 0; i < curr.length; i++) {
         if (Object.keys(treeList).includes(curr[i])) {
@@ -664,6 +688,7 @@ function tileAction() {
             resourceType = 2;
         }
     }
+    
     for (var i = 0; i < inventory.length; i++) {
         currTool = inventory[i].item.equipment;
         if (currTool && currTool.name == toolMap[resourceType])
