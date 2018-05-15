@@ -151,6 +151,7 @@ function mapAddons(map) {
         makeHouse(3,12);
         makeHouse(4,4);
         makeHouse(6,1);
+        addBoardObject("npc_0",10,10);
     }
 }
 
