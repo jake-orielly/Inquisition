@@ -12,6 +12,7 @@ var cardinalOffset = [[-1,0],[0,-1],[0,1],[1,0]];
 var inTown = false;
 var board = [];
 var textLoop, holdText;
+var textSkip = false;
 var shopMap = [];
 var npcList = [];
 var illegalTerrain = ["ocean","mountain","cave_wall","barrier"];
@@ -280,6 +281,7 @@ function movePlayer(x,y) {
     if ($("#dialogueContainer").is(":visible")) {
         $("#dialogueContainer").hide();
         clearInterval(textLoop);
+        textLoop = false;
     }
     
     if ($("#shop").is(":visible")) {
@@ -500,6 +502,7 @@ function showShop(given) {
 
 function showDialogue(character,item) {
     clearInterval(textLoop);
+    textLoop = false;
     $("#dialogueContainer").show();
     $("#portrait").attr("src",character.portrait);
     scrollText(character[item]);
@@ -514,10 +517,15 @@ function scrollText(given) {
     temp = chopText(given)[0] + addon;
     $("#dialogueText").html(temp[0]);
     textLoop = setInterval(function() {
+        if (textSkip) {
+            textCount = temp.length;
+            textSkip = false;
+        }
         $("#dialogueText").html(temp.substring(0,textCount));
         textCount++;
         if (textCount == temp.length+1) {
             clearInterval(textLoop);
+            textLoop = false;
             if (chopText(given).length > 1)
                 holdText = chopText(given).splice(1).join(" ");
             else 
@@ -696,9 +704,10 @@ function tileAction() {
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level,playerSkills.alchemy.level];
     var currX, currY;
     
-    if (holdText)
+    if (textLoop) 
+        textSkip = true;
+    else if (holdText)
         scrollText(holdText);
-    
     else {
         for (var i = 0; i < cardinalOffset.length; i++) {
             currX = playerX + cardinalOffset[i][0];
