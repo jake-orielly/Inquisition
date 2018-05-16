@@ -11,11 +11,10 @@ var inventoryMax = 15;
 var cardinalOffset = [[-1,0],[0,-1],[0,1],[1,0]];
 var inTown = false;
 var board = [];
-var textLoop;
+var textLoop, holdText;
 var shopMap = [];
 var npcList = [];
 var illegalTerrain = ["ocean","mountain","cave_wall","barrier"];
-
 
 var Craftable = function (xp,playerLevel,recipe) {
 	this.xp = xp;
@@ -494,27 +493,60 @@ function showShop(given) {
         }
         result += "</tr>";
     }
-    showDialogue(shopKeepers[given]);
+    showDialogue(shopKeepers[given],"greeting");
     $("#shopTable").html(result);
     $("#shop").show();
 }
 
-function showDialogue(given) {
+function showDialogue(character,item) {
     clearInterval(textLoop);
     $("#dialogueContainer").show();
-    $("#portrait").attr("src",given.portrait);
-    scrollText(given.greeting);
+    $("#portrait").attr("src",character.portrait);
+    scrollText(character[item]);
 }
 
 function scrollText(given) {
     var textCount = 0;
-    $("#dialogueText").html(given[0]);
+    var curr, temp, addon = "";
+    
+    if (chopText(given).length > 1)
+        addon = "...";
+    temp = chopText(given)[0] + addon;
+    $("#dialogueText").html(temp[0]);
     textLoop = setInterval(function() {
-        $("#dialogueText").html(given.substring(0,textCount));
+        $("#dialogueText").html(temp.substring(0,textCount));
         textCount++;
-        if (textCount == given.length+1)
+        if (textCount == temp.length+1) {
             clearInterval(textLoop);
+            if (chopText(given).length > 1)
+                holdText = chopText(given).splice(1).join(" ");
+            else 
+                holdText = null;
+        }
     }, 30);
+}
+
+function chopText(text) {
+    var curr = 0;
+    var maxChars = 109;
+    var temp = text.split(" ");
+    var temp2 = "";
+    var result = [];
+    
+    if (text.length > maxChars) {
+        while ((temp2+ temp[curr]).length  < maxChars) {
+            temp2 += temp[curr] + " ";
+            curr++;
+        }
+        temp = temp.splice(curr)
+        result.push(temp2.slice(0,-1));
+        return result.concat(chopText(temp.join(" ")));
+    }
+    
+    else {
+    	result.push(text);
+    	return result;
+    }
 }
 
 function showInventory() {
@@ -664,13 +696,18 @@ function tileAction() {
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level,playerSkills.alchemy.level];
     var currX, currY;
     
-    for (var i = 0; i < cardinalOffset.length; i++) {
-        currX = playerX + cardinalOffset[i][0];
-        currY = playerY + cardinalOffset[i][1];
-        
-        for (var j = 0; j < npcList.length; j++) {
-            if (currX == npcList[j][0] && currY == npcList[j][1])
-                showDialogue(questGiver);
+    if (holdText)
+        scrollText(holdText);
+    
+    else {
+        for (var i = 0; i < cardinalOffset.length; i++) {
+            currX = playerX + cardinalOffset[i][0];
+            currY = playerY + cardinalOffset[i][1];
+
+            for (var j = 0; j < npcList.length; j++) {
+                if (currX == npcList[j][0] && currY == npcList[j][1])
+                    showDialogue(questGiver,"greeting");
+            }
         }
     }
     

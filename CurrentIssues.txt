@@ -6,3 +6,5 @@ Map collapses when visible x & y are different, the two are probably backwards
 Buying item doesn’t remove it from shop inventory
 UI doesn’t indicate/explain items that you’re not high enough level to make
 Plants re-grow when you exit and re-enter the map (i.e. got to village and come back out)
+Potions don’t show up in combat log
+Flint not working?
