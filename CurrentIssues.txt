@@ -8,3 +8,4 @@ UI doesn’t indicate/explain items that you’re not high enough level to make
 Plants re-grow when you exit and re-enter the map (i.e. got to village and come back out)
 Potions don’t show up in combat log
 Flint not working?
+Dialogue system doesn’t support more than 1 level of response from player (should be able to support arbitrary back and forth)

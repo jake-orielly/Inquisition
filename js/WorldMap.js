@@ -15,6 +15,7 @@ var textLoop, holdText;
 var textSkip = false;
 var shopMap = [];
 var npcList = [];
+var conversation, conversationChoice;
 var illegalTerrain = ["ocean","mountain","cave_wall","barrier"];
 
 var Craftable = function (xp,playerLevel,recipe) {
@@ -501,6 +502,8 @@ function showShop(given) {
 }
 
 function showDialogue(character,item) {
+    conversation = [];
+    conversation.push(character);
     clearInterval(textLoop);
     textLoop = false;
     $("#dialogueContainer").show();
@@ -528,7 +531,7 @@ function scrollText(given) {
             textLoop = false;
             if (chopText(given).length > 1)
                 holdText = chopText(given).splice(1).join(" ");
-            else 
+            else
                 holdText = null;
         }
     }, 30);
@@ -681,18 +684,38 @@ function sell(given) {
 
 document.addEventListener('keydown', function(event) {
     if (!inCombat) {
-        if (event.keyCode == 87)
-            movePlayer(0,-1);
+        if (event.keyCode == 87) {
+            if (!conversation)
+                movePlayer(0,-1);
+            else
+                conversationSelect(-1);
+        }
         else if (event.keyCode == 68)
             movePlayer(1,0);
-        else if (event.keyCode == 83)
-            movePlayer(0,1);
+        else if (event.keyCode == 83) {
+            if (!conversation)
+                movePlayer(0,1);
+            else 
+                conversationSelect(1);
+        }
         else if (event.keyCode == 65)
             movePlayer(-1,0);
         else if (event.keyCode == 69)
             tileAction();
     }
 });
+
+function conversationSelect(direction) {
+    if (!textLoop && !holdText) {
+        conversationChoice += direction;
+        $("#dialogueText").html("");
+        for (var i = 2; i < Object.keys(conversation[0]).length; i++) {
+            if (i - 2 == Math.abs(conversationChoice % (Object.keys(conversation[0]).length-2)))
+                $("#dialogueText").html($("#dialogueText").html() + ">");
+            $("#dialogueText").html($("#dialogueText").html() + capitalize(Object.keys(conversation[0])[i]) + "<br>");
+        }
+    }
+}
 
 function tileAction() {
     var curr = board[playerY][playerX];
@@ -708,6 +731,22 @@ function tileAction() {
         textSkip = true;
     else if (holdText)
         scrollText(holdText);
+    else if (conversationChoice != null && conversationChoice != undefined  && conversation.length == 1) {
+        showDialogue(conversation[0],Object.keys(conversation[0])[conversationChoice + 2]);
+        conversation.push(Object.keys(conversation[0])[conversationChoice + 2]);
+        conversationChoice = null;
+    }
+    else if ($("#dialogueContainer").is(":visible")) {
+        if (conversation.length > 1) {
+            $("#dialogueContainer").hide();
+        }
+        else if (conversation[0] && Object.keys(conversation[0]).length > 2) {
+            $("#dialogueText").html(">");
+            conversationChoice = 0;
+            for (var i = 2; i < Object.keys(conversation[0]).length; i++)
+                $("#dialogueText").html($("#dialogueText").html() + capitalize(Object.keys(conversation[0])[i]) + "<br>");
+        }
+    }
     else {
         for (var i = 0; i < cardinalOffset.length; i++) {
             currX = playerX + cardinalOffset[i][0];
