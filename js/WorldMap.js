@@ -283,6 +283,7 @@ function movePlayer(x,y) {
         $("#dialogueContainer").hide();
         clearInterval(textLoop);
         textLoop = false;
+        conversation = null;
     }
     
     if ($("#shop").is(":visible")) {
@@ -496,7 +497,7 @@ function showShop(given) {
         }
         result += "</tr>";
     }
-    showDialogue(shopKeepers[given],"greeting");
+    showDialogue(shopKeepers[given],"line");
     $("#shopTable").html(result);
     $("#shop").show();
 }
@@ -709,10 +710,10 @@ function conversationSelect(direction) {
     if (!textLoop && !holdText) {
         conversationChoice += direction;
         $("#dialogueText").html("");
-        for (var i = 2; i < Object.keys(conversation[0]).length; i++) {
-            if (i - 2 == Math.abs(conversationChoice % (Object.keys(conversation[0]).length-2)))
+        for (var i = 0; i < conversation[0].responses.length; i++) {
+            if (i == Math.abs(conversationChoice % conversation[0].responses.length))
                 $("#dialogueText").html($("#dialogueText").html() + ">");
-            $("#dialogueText").html($("#dialogueText").html() + capitalize(Object.keys(conversation[0])[i]) + "<br>");
+            $("#dialogueText").html($("#dialogueText").html() + capitalize(conversation[0].responses[i]) + "<br>");
         }
     }
 }
@@ -732,19 +733,20 @@ function tileAction() {
     else if (holdText)
         scrollText(holdText);
     else if (conversationChoice != null && conversationChoice != undefined  && conversation.length == 1) {
-        showDialogue(conversation[0],Object.keys(conversation[0])[conversationChoice + 2]);
-        conversation.push(Object.keys(conversation[0])[conversationChoice + 2]);
+        showDialogue(conversation[0],conversation[0].responses[conversationChoice]);
+        conversation.push(conversation[0].responses[conversationChoice]);
         conversationChoice = null;
     }
     else if ($("#dialogueContainer").is(":visible")) {
         if (conversation.length > 1) {
             $("#dialogueContainer").hide();
+            conversation = null;
         }
-        else if (conversation[0] && Object.keys(conversation[0]).length > 2) {
+        else if (conversation[0] && conversation[0].responses) {
             $("#dialogueText").html(">");
             conversationChoice = 0;
-            for (var i = 2; i < Object.keys(conversation[0]).length; i++)
-                $("#dialogueText").html($("#dialogueText").html() + capitalize(Object.keys(conversation[0])[i]) + "<br>");
+            for (var i = 0; i < conversation[0].responses.length; i++)
+                $("#dialogueText").html($("#dialogueText").html() + capitalize(conversation[0].responses[i]) + "<br>");
         }
     }
     else {
@@ -754,7 +756,7 @@ function tileAction() {
 
             for (var j = 0; j < npcList.length; j++) {
                 if (currX == npcList[j][0] && currY == npcList[j][1])
-                    showDialogue(questGiver,"greeting");
+                    showDialogue(questGiver,"line");
             }
         }
     }
