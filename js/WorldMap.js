@@ -503,13 +503,17 @@ function showShop(given) {
 }
 
 function showDialogue(character,item) {
-    conversation = [];
-    conversation.push(character);
+	currConvo = conversation[0];
+	for (var i = 1; i < conversation.length-1; i++)
+		currConvo = currConvo[conversation[i]];
     clearInterval(textLoop);
     textLoop = false;
     $("#dialogueContainer").show();
     $("#portrait").attr("src",character.portrait);
-    scrollText(character[item]);
+    if (currConvo[item]["line"])
+    	scrollText(currConvo[item]["line"]);
+    else
+    	scrollText(currConvo[item]);
 }
 
 function scrollText(given) {
@@ -708,12 +712,15 @@ document.addEventListener('keydown', function(event) {
 
 function conversationSelect(direction) {
     if (!textLoop && !holdText) {
+	    currConvo = conversation[0];
+	    for (var i = 1; i < conversation.length; i++)
+	    	currConvo = currConvo[conversation[i]];
         conversationChoice += direction;
         $("#dialogueText").html("");
-        for (var i = 0; i < conversation[0].responses.length; i++) {
-            if (i == Math.abs(conversationChoice % conversation[0].responses.length))
+        for (var i = 0; i < currConvo.responses.length; i++) {
+            if (i == Math.abs(conversationChoice % currConvo.responses.length))
                 $("#dialogueText").html($("#dialogueText").html() + ">");
-            $("#dialogueText").html($("#dialogueText").html() + capitalize(conversation[0].responses[i]) + "<br>");
+            $("#dialogueText").html($("#dialogueText").html() + capitalize(currConvo.responses[i]) + "<br>");
         }
     }
 }
@@ -728,39 +735,67 @@ function tileAction() {
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level,playerSkills.alchemy.level];
     var currX, currY;
     
-    if (textLoop) 
-        textSkip = true;
-    else if (holdText)
-        scrollText(holdText);
-    else if (conversationChoice != null && conversationChoice != undefined  && conversation.length == 1) {
-        showDialogue(conversation[0],conversation[0].responses[conversationChoice]);
-        conversation.push(conversation[0].responses[conversationChoice]);
-        conversationChoice = null;
-    }
-    else if ($("#dialogueContainer").is(":visible")) {
-        if (conversation.length > 1) {
-            $("#dialogueContainer").hide();
-            conversation = null;
-        }
-        else if (conversation[0] && conversation[0].responses) {
-            $("#dialogueText").html(">");
-            conversationChoice = 0;
-            for (var i = 0; i < conversation[0].responses.length; i++)
-                $("#dialogueText").html($("#dialogueText").html() + capitalize(conversation[0].responses[i]) + "<br>");
-        }
-    }
-    else {
-        for (var i = 0; i < cardinalOffset.length; i++) {
+    if (!conversation) {
+	    for (var i = 0; i < cardinalOffset.length; i++) {
             currX = playerX + cardinalOffset[i][0];
             currY = playerY + cardinalOffset[i][1];
 
             for (var j = 0; j < npcList.length; j++) {
-                if (currX == npcList[j][0] && currY == npcList[j][1])
+                if (currX == npcList[j][0] && currY == npcList[j][1]) {
+	                conversation = [];
+				    conversation.push(questGiver);
                     showDialogue(questGiver,"line");
+                }
             }
         }
     }
     
+    else {
+	    if (textLoop) 
+        	textSkip = true;
+	    else if (holdText)
+	        scrollText(holdText);
+	    else {
+		    currConvo = conversation[0];
+		    for (var i = 1; i < conversation.length; i++) {
+		    	currConvo = currConvo[conversation[i]];
+		    }
+		    
+		    if (conversationChoice != null) {
+		        conversation.push(currConvo.responses[conversationChoice]);
+		        showDialogue(conversation[0],currConvo.responses[conversationChoice]);
+		        conversationChoice = null;
+		    }
+		    else if (currConvo.responses) {
+			    $("#dialogueText").html(">");
+	            conversationChoice = 0;
+	            for (var i = 0; i < currConvo.responses.length; i++)
+	                $("#dialogueText").html($("#dialogueText").html() + capitalize(currConvo.responses[i]) + "<br>");
+		    }
+		    else {
+			    $("#dialogueContainer").hide();
+	            conversation = null;
+		    }
+	    }
+	    /*else if (conversationChoice != null && conversationChoice != undefined  && conversation.length == 1) {
+	        showDialogue(conversation[0],conversation[0].responses[conversationChoice]);
+	        conversation.push(conversation[0].responses[conversationChoice]);
+	        conversationChoice = null;
+	    }
+	    else if ($("#dialogueContainer").is(":visible")) {
+	        if (conversation.length > 1) {
+	            $("#dialogueContainer").hide();
+	            conversation = null;
+	        }
+	        else if (conversation[0] && conversation[0].responses) {
+	            $("#dialogueText").html(">");
+	            conversationChoice = 0;
+	            for (var i = 0; i < conversation[0].responses.length; i++)
+	                $("#dialogueText").html($("#dialogueText").html() + capitalize(conversation[0].responses[i]) + "<br>");
+	        }
+	    }*/
+    }
+        
     for (var i = 0; i < curr.length; i++) {
         if (Object.keys(treeList).includes(curr[i])) {
             currResource = treeList[curr[i]];
