@@ -764,6 +764,11 @@ function tileAction() {
 		    if (conversationChoice != null) {
 		        conversation.push(currConvo.responses[conversationChoice]);
 		        showDialogue(conversation[0],currConvo.responses[conversationChoice]);
+                if (currConvo[currConvo.responses[conversationChoice]].backtrack) {
+                    for (var i = 0; i < conversation.length; i++)
+                        if (conversation[i] == currConvo[currConvo.responses[conversationChoice]].backtrack)
+                            conversation = conversation.splice(0,2);
+                }
 		        conversationChoice = null;
 		    }
 		    else if (currConvo.responses) {

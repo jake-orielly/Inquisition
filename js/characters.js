@@ -13,7 +13,7 @@ questGiver.yes.blue = {line:"Light blue or dark blue?",responses:["light","dark"
 questGiver.yes.blue.light = {line:"Ah. Dainty."};
 questGiver.yes.blue.dark = {line:"Ocean or teal?", responses:["ocean","teal"]};
 questGiver.yes.blue.dark.ocean = {line:"Ah yes. Dark ocean blue. A commendable choice."};
-questGiver.yes.blue.dark.teal = {line:"Meh. Not my liking."};
+questGiver.yes.blue.dark.teal = {line:"Meh. Not my liking. But I'll give you another chance, what's your favorite color?",backtrack:"yes"};
 questGiver.yes.green = {line:"Light green or forest green?",responses:["light","forest"],light:"Well there's no accounting for taste I guess.",forest:"Ah, forest green, a noble color."};
 
 var shopKeepers = [generalShopKeeper,toolShopKeeper,armorShopKeeper,alchemyShopKeeper];
