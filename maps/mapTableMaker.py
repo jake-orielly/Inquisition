@@ -40,6 +40,11 @@ for i in range(len(readFile)):
             result[curr].append("\"cave_entrance\"")
         elif (readFile[i:i+7] == "#191919"):
             result[curr].append("\"cave_wall\"")
+        elif (readFile[i:i+7] == "#9d6606"):
+            result[curr].append("\"wood_wall\"")
+        elif (readFile[i:i+7] == "#72531e"):
+            result[curr].append("\"wood_floor\"")
+
 
     elif readFile[i:i+4] == "<TR>":
         result.append([])

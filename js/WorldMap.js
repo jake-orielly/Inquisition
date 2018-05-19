@@ -179,9 +179,11 @@ function updateBoard() {
     var topY = playerY + visY + 1;
     var tileMod;
     
-    if (topX > mapTable[0].length) {  //If the highest X player can see is off the board
+    if (topX > mapTable[0].length || visibleCols > mapTable[0].length) {  //If the highest X player can see is off the board
         botX = mapTable[0].length - visibleCols;
         topX = mapTable[0].length; //They should only be able to see the highest X on the board
+        if (botX < 0)
+            botX = 0;
     }
     
     else if (botX < 0) { //If the lowest X the player can see is off the board
@@ -189,9 +191,11 @@ function updateBoard() {
         topX = visibleCols;
     }
     
-    if (topY > mapTable.length) {
+    if (topY > mapTable.length || visibleRows > mapTable.length) {
         botY = mapTable.length - visibleRows;
         topY = mapTable.length;
+        if (botY < 0)
+            botY = 0;
     }
     
     else if (botY < 0) {
@@ -200,6 +204,7 @@ function updateBoard() {
     }
     
     boardHTML = "";
+
     for (var i = botY; i < topY; i++) {
         boardHTML += "<tr>";
         for (var j = botX; j < topX; j++) {
@@ -303,10 +308,15 @@ function movePlayer(x,y) {
         if (newLocation.children().hasClass("house") || newLocation.children().hasClass("houseInvis")) {
             for (var i = 0; i < shopMap.length; i++)
                 if (newX >= shopMap[i]) {
-                    showShop(i);
+                    //showShop(i);
+                    playerX = 3;
+                    playerY = 3;
+                    mapTable = shopInterior;
+
+                    makeBoard();
+                    updateBoard();
                     break;
                 }
-            showInventory();
         }
 
         if (inTown && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[0].length-1))) {
