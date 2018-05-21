@@ -18,48 +18,6 @@ var npcList = [];
 var conversation, conversationChoice;
 var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10"];
 
-var Craftable = function (xp,playerLevel,recipe) {
-	this.xp = xp;
-	this.playerLevel = playerLevel;
-	this.recipe = recipe;
-}
-
-var oak_logs = new Item("oak_logs",false,false,3);
-var evergreen_logs = new Item("evergreen_logs",false,false,8);
-var herb = new Item("herb",false,false,7);
-var mushroom = new Item("mushroom",false,false,11);
-var meat = new Item("meat",false,false,4);
-meat.food = {hp:3};
-var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,1,[{item:meat,amount:1}]));
-cooked_meat.food = {hp:8};
-var seasoned_meat = new Item("seasoned_meat",false,false,16,new Craftable(14,3,[{item:meat,amount:1},{item:herb,amount:1}]));
-seasoned_meat.food = {hp:14};
-
-var copper_ore = new Item("copper_ore",false,false,3);
-var copper_bar = new Item("copper_bar",true,false,8,new Craftable(15,1,[{item:copper_ore,amount:2}]));
-var iron_ore = new Item("iron_ore",false,false,11);
-var iron_bar = new Item("iron_bar",true,false,24,new Craftable(25,5,[{item:iron_ore,amount:2}]));
-var coal = new Item("coal",false,false,16);
-var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
-var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,new Craftable(50,5,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
-var steel_axe = new Item("steel_axe",false,makeAxe(["steel"]),115);
-var copper_pickaxe = new Item("copper_pickaxe",false,makePickaxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
-var iron_pickaxe = new Item("iron_pickaxe",false,makePickaxe(["iron"]),45,new Craftable(50,5,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
-var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75,new Craftable(45, 3,[{item:copper_bar,amount:7}]));
-var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,new Craftable(90,8,[{item:iron_bar,amount:7}]));
-var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,2,[{item:copper_bar,amount:4}]));
-var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
-
-var glass_vial = new Item("glass_vial",false,false,5);
-var glass_jar = new Item("glass_jar",false,false,10);
-var hp_potion_small = new Item("hp_potion_small",false,false,25,new Craftable(15,1,[{item:herb,amount:2},{item:glass_vial,amount:1}]));
-hp_potion_small.potion = {hp:5};
-var hp_potion_medium = new Item("hp_potion_medium",false,false,80,new Craftable(35,1,[{item:herb,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
-hp_potion_medium.potion = {hp:10};
-
-var gold = new Item("gold",true,false,1);
-var flint_box = new Item("flint_box",false,false,5);
-
 var foodList = [cooked_meat,seasoned_meat];
 var smeltList = [copper_bar,iron_bar];
 var smithList = [copper_axe, copper_pickaxe, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_chestplate,iron_platelegs];
@@ -102,27 +60,6 @@ flint_box.clickFunc = function() {
 var inventory = [];
 var equipment = {};
 
-var generalStoreInventory = [];
-var toolStoreInventory = [];
-var armorStoreInventory = [];
-var alchemyStoreInventory = [];
-var shops = [generalStoreInventory,toolStoreInventory,armorStoreInventory,alchemyStoreInventory];
-
-var shopTemp = [flint_box,meat,oak_logs,evergreen_logs,copper_ore,iron_ore,copper_bar,iron_bar];
-fillShop(generalStoreInventory,shopTemp);
-shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe];
-fillShop(toolStoreInventory,shopTemp);
-shopTemp = [copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs];
-fillShop(armorStoreInventory,shopTemp);
-shopTemp = [hp_potion_small,hp_potion_medium,glass_vial,glass_jar,herb,mushroom];
-fillShop(alchemyStoreInventory,shopTemp);
-
-function fillShop(shop,list) {
-	for (var i = 0; i < list.length; i++) {
-	    shop.push(new InventoryItem(list[i],1));
-	}
-}
-
 $(".craftMenuButton").hide();
 $(".inquisition").hide();
 makeBoard();
@@ -150,16 +87,26 @@ function mapAddons(map) {
 		addBoardObject("distillery",31,31);
 	}
     else if (map == villageMap) {
-        makeHouse(6,14);
-        makeHouse(3,12);
-        makeHouse(4,4);
-        makeHouse(6,1);
-        makeNPC(10,10);
+        npcList = [];
+        makeHouse(6,14,"general_shopkeeper");
+        makeHouse(3,12,"tool_shopkeeper");
+        makeHouse(4,4,"armor_shopkeeper");
+        makeHouse(6,1,"alchemy_shopkeeper");
+        makeNPC(10,10,"questGiver");
+    }
+    
+    else if (map == shopInterior) {
+        npcList = [];
+        for (var i = 0; i < shopMap.length; i++)
+            if ((shopMap[i][0] - shopEntrance[0] == -1) ||  (shopMap[i][0] - shopEntrance[0] == 0) && shopMap[i][1] == (shopEntrance[1]-1)) {
+                makeNPC(4,4,shopMap[i][2]);
+                break;
+            }
     }
 }
 
-function makeNPC(x,y) {
-    addBoardObject("npc_0",10,10);
+function makeNPC(x,y,skin) {
+    addBoardObject(skin,y,x);
     npcList.push([x,y]);
 }
 
@@ -272,9 +219,10 @@ function startEncounter() {
 function movePlayer(x,y) {
     var newX = playerX + x;
     var newY = playerY + y;
-    var newLocation;
+    var newLocation = $("#" + newY + "-" + newX);
     var tileType = "empty";
     var legalTile = true;
+    var isHouse = (newLocation.children().hasClass("house01") || newLocation.children().hasClass("house11"));
     
     for (var i = 0; i < illegalTerrain.length; i++) 
         if ($("#" + [newY] + "-" + [newX]).children().hasClass(illegalTerrain[i]))
@@ -283,6 +231,9 @@ function movePlayer(x,y) {
     for (var i = 0; i < npcList.length; i++)
         if (newX == npcList[i][0] && newY == npcList[i][1])
             legalTile = false;
+    
+    if (isHouse && y != -1)
+        legalTile = false;
 
     if ($("#dialogueContainer").is(":visible")) {
         $("#dialogueContainer").hide();
@@ -296,8 +247,7 @@ function movePlayer(x,y) {
         $("#inventory").hide();
     }
     if (newX >= 0 && newX < mapTable[0].length && newY >= 0 && newY < mapTable.length && legalTile){
-        newLocation = $("#" + newY + "-" + newX);
-        if (newLocation.children().hasClass("house01") || newLocation.children().hasClass("house11"))
+        if (isHouse)
             shopEntrance = [playerX,playerY];
         playerX = newX;
         playerY = newY;
@@ -307,18 +257,12 @@ function movePlayer(x,y) {
         else if (newLocation.children().hasClass("cave_entrance"))
                 tileType = "cave";
                 
-        if (newLocation.children().hasClass("house01") || newLocation.children().hasClass("house11")) {
-            for (var i = 0; i < shopMap.length; i++)
-                if (newX >= shopMap[i]) {
-                    //showShop(i);
-                    playerX = 4;
-                    playerY = 7;
-                    mapTable = shopInterior;
-
-                    makeBoard();
-                    updateBoard();
-                    break;
-                }
+        if (isHouse) {
+            playerX = 4;
+            playerY = 7;
+            mapTable = shopInterior;
+            makeBoard();
+            updateBoard();
         }
 
         if (mapTable == villageMap && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[0].length-1))) {
@@ -333,6 +277,7 @@ function movePlayer(x,y) {
         else if (mapTable == shopInterior && playerX == 4 && playerY == 8) {
             playerX = shopEntrance[0];
             playerY = shopEntrance[1];
+            shopMap = [];
             mapTable = villageMap;
             makeBoard();
             updateBoard();
@@ -346,7 +291,6 @@ function movePlayer(x,y) {
             playerX = (7 - x*7); //Player appears in village based on direction they entered from
             playerY = (7 - y*7);
             mapTable = villageMap;
-            
             makeBoard();
             updateBoard();
         }
@@ -376,12 +320,12 @@ function movePlayer(x,y) {
         //startEncounter();
 }
 
-function makeHouse(x,y) {
+function makeHouse(x,y,given) {
 	addBoardObject("houseInvis",x,y);
 	addBoardObject("houseInvis",x,y+1);
 	addBoardObject("houseInvis",x-1,y);
 	addBoardObject("houseInvis",x-1,y+1);
-    shopMap.push(y);
+    shopMap.push([y,x,given]);
 }
 
 function checkCanCraft() {
@@ -499,9 +443,8 @@ function showMenu(given) {
 }
 
 function showShop(given) {
-    var shopInventory = shops[given];
+    var shopInventory = given;
     var result, curr;
-    
     for (var i = 0; i < 5; i++) {
         result += "<tr>";
         for (var j = 0; j < 5; j++) {
@@ -517,9 +460,9 @@ function showShop(given) {
         }
         result += "</tr>";
     }
-    showDialogue(shopKeepers[given],"line");
     $("#shopTable").html(result);
     $("#shop").show();
+    showInventory();
 }
 
 function showDialogue(character,item) {
@@ -753,7 +696,7 @@ function tileAction() {
     var toolLevel = 0;
     var toolMap = ["axe","pickaxe","pickaxe"];
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level,playerSkills.alchemy.level];
-    var currX, currY;
+    var currX, currY, currNPC;
     
     if (!conversation) {
 	    for (var i = 0; i < cardinalOffset.length; i++) {
@@ -763,8 +706,11 @@ function tileAction() {
             for (var j = 0; j < npcList.length; j++) {
                 if (currX == npcList[j][0] && currY == npcList[j][1]) {
 	                conversation = [];
-				    conversation.push(questGiver);
-                    showDialogue(questGiver,"line");
+                    currNPC = window["" + board[npcList[j][1]][npcList[j][0]].slice(-1)[0]];
+                    if (currNPC.shop)
+                        showShop(currNPC.shop);
+				    conversation.push(currNPC);
+                    showDialogue(currNPC,"line");
                 }
             }
         }
@@ -802,23 +748,6 @@ function tileAction() {
 	            conversation = null;
 		    }
 	    }
-	    /*else if (conversationChoice != null && conversationChoice != undefined  && conversation.length == 1) {
-	        showDialogue(conversation[0],conversation[0].responses[conversationChoice]);
-	        conversation.push(conversation[0].responses[conversationChoice]);
-	        conversationChoice = null;
-	    }
-	    else if ($("#dialogueContainer").is(":visible")) {
-	        if (conversation.length > 1) {
-	            $("#dialogueContainer").hide();
-	            conversation = null;
-	        }
-	        else if (conversation[0] && conversation[0].responses) {
-	            $("#dialogueText").html(">");
-	            conversationChoice = 0;
-	            for (var i = 0; i < conversation[0].responses.length; i++)
-	                $("#dialogueText").html($("#dialogueText").html() + capitalize(conversation[0].responses[i]) + "<br>");
-	        }
-	    }*/
     }
         
     for (var i = 0; i < curr.length; i++) {
@@ -911,28 +840,6 @@ function loot(given) {
 
 function percentile() {
     return parseInt(Math.random()*100+1);
-}
-
-function Item(name,stackable,equipment,value,craftable) {
-    this.name = name;
-    this.stackable = stackable;
-    this.value = value;
-    this.craftable = craftable;
-    this.equipment = equipment;
-    
-    this.getName = function() {
-        var result = name;
-        result = capitalize(result);
-        for (var i = 0; i < result.length; i++)
-            if (result.charAt(i) == "_")
-                result = result.substr(0,i) + " " + capitalize(result.substr(i+1));
-        return result;
-    }
-}
-
-function InventoryItem(item,amount) {
-    this.item = item;
-    this.amount = amount;
 }
 
 function addItem (item,amount = 1) {
