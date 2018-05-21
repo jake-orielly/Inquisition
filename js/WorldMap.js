@@ -16,7 +16,7 @@ var textSkip = false;
 var shopMap = [];
 var npcList = [];
 var conversation, conversationChoice;
-var illegalTerrain = ["ocean","mountain","cave_wall","barrier"];
+var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10"];
 
 var Craftable = function (xp,playerLevel,recipe) {
 	this.xp = xp;
@@ -72,6 +72,7 @@ var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8}
 var herbList = {herb_plant:{toolLevel:0,resource:herb,playerLevel:1,xp:9},mushroom_plant:{toolLevel:0,resource:mushroom,playerLevel:1,xp:14}};
 
 var shouldCloseInventory = false;
+var shopEntrance;
 
 flint_box.clickFunc = function() {
     var loc = $("#" + playerY + "-" + playerX);
@@ -204,7 +205,6 @@ function updateBoard() {
     }
     
     boardHTML = "";
-
     for (var i = botY; i < topY; i++) {
         boardHTML += "<tr>";
         for (var j = botX; j < topX; j++) {
@@ -296,21 +296,23 @@ function movePlayer(x,y) {
         $("#inventory").hide();
     }
     if (newX >= 0 && newX < mapTable[0].length && newY >= 0 && newY < mapTable.length && legalTile){
+        newLocation = $("#" + newY + "-" + newX);
+        if (newLocation.children().hasClass("house01") || newLocation.children().hasClass("house11"))
+            shopEntrance = [playerX,playerY];
         playerX = newX;
         playerY = newY;
-        newLocation = $("#" + playerY + "-" + playerX);
 
         if (newLocation.children().hasClass("village"))
                 tileType = "village";
         else if (newLocation.children().hasClass("cave_entrance"))
                 tileType = "cave";
                 
-        if (newLocation.children().hasClass("house") || newLocation.children().hasClass("houseInvis")) {
+        if (newLocation.children().hasClass("house01") || newLocation.children().hasClass("house11")) {
             for (var i = 0; i < shopMap.length; i++)
                 if (newX >= shopMap[i]) {
                     //showShop(i);
-                    playerX = 3;
-                    playerY = 3;
+                    playerX = 4;
+                    playerY = 7;
                     mapTable = shopInterior;
 
                     makeBoard();
@@ -319,11 +321,19 @@ function movePlayer(x,y) {
                 }
         }
 
-        if (inTown && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[0].length-1))) {
+        if (mapTable == villageMap && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[0].length-1))) {
             playerX = 14;
             playerY = 29;
             inTown = false;
             mapTable = testMap;
+            makeBoard();
+            updateBoard();
+        }
+        
+        else if (mapTable == shopInterior && playerX == 4 && playerY == 8) {
+            playerX = shopEntrance[0];
+            playerY = shopEntrance[1];
+            mapTable = villageMap;
             makeBoard();
             updateBoard();
         }
