@@ -10,6 +10,10 @@ function ravenousGlutton() {
     return new Character(45,15,2,makeCleaver(),"the ravenous glutton",hisHers(),"enemy","ravenousGlutton");
 }
 
+function caveBeast() {
+    return new Character(45,15,2,makeCleaver(),"the cave beast",["it","it's"],"enemy","monster");
+}
+
 function rat() {
     var rat = new Character(5,5,2,makeCleaver(),"the rat",["it","it's"],"enemy","rat");
     rat.makeMove = baseAI;

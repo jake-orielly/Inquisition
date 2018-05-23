@@ -13,13 +13,17 @@ var flagellateBuff = {image:"flagellateBuff",bonus:5,count:0};
 
 player = createPlayer();
 
-function startCombat() {
+function startCombat(given) {
     var types;
     
     turn = 0;
     dead = 0;
     isPlayerTurn = true;
-    currEnemy = rat();
+    
+    if (given)
+        currEnemy = given();
+    else
+        currEnemy = rat();
     characters = [player,currEnemy];
     
     types = Object.keys(player.buffs);
@@ -45,7 +49,7 @@ function startCombat() {
     $(".abilityButton").hide();
     document.getElementById("movesSection").style.display = "block";
     document.getElementById("movesButton").className += " active";
-    document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + currEnemy.image + ".jpg";
+    document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + currEnemy.image + ".png";
     
     for (var i = 0; i < $(".abilityButton").length; i++)
         $(".abilityButton")[i].classList.remove("coolDown");

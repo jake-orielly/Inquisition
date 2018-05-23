@@ -138,6 +138,34 @@
     background: url(../art/house.png) 64px 64px;
 }
 
+.boss00 {
+    background: url(../art/monster.png) 0 0px;
+}
+
+.boss10 {
+    background: url(../art/monster.png) 64px 0;
+}
+
+.boss01{
+    background: url(../art/monster.png) 0 64px;
+}
+
+.boss11 {
+    background: url(../art/monster.png) 64px 64px;
+}
+
+.bossMove {
+      transform: translate(-320px,0);
+}
+
+.monsterInvis {
+    position: absolute;
+    transition: all 0.5s cubic-bezier(.99,.12,.63,.66);
+    -webkit-transition: all 0.5s cubic-bezier(.99,.12,.63,.66); /** Chrome & Safari **/
+    -moz-transition: all 0.5s ease-in; /** Firefox **/
+    -o-transition: all 0.5s ease-in; /** Opera **/
+}
+
 #dialogueContainer {
     display:none;
 }

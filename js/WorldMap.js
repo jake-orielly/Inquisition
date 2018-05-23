@@ -13,6 +13,7 @@ var inTown = false;
 var board = [];
 var textLoop, holdText;
 var textSkip = false;
+var monsterAttack = false;
 var shopMap = [];
 var npcList = [];
 var conversation, conversationChoice;
@@ -94,6 +95,10 @@ function mapAddons(map) {
         makeHouse(6,1,"alchemy_shopkeeper");
         makeNPC(10,10,"questGiver");
     }
+    else if (map == caveMap) {
+        makeBoss(33,35,"monster");
+        addBoardObject("chest",33,37);
+    }
     
     else if (map == shopInterior) {
         npcList = [];
@@ -110,6 +115,12 @@ function makeNPC(x,y,skin) {
     npcList.push([x,y]);
 }
 
+function teleport(x,y) {
+    playerX = x;
+    playerY = y;
+    updateBoard();
+}
+
 $("#" + playerY + "-" + playerX).append(playerHTML);
 createSkillsTable();
 hideMenus();
@@ -117,14 +128,14 @@ hideMenus();
 
 updateBoard();
 
-function updateBoard() {
+function updateBoard(camX = 0,camY = 0) {
     
     var visX = parseInt(visibleRows/2);  //Visibility in each direction is half total visibility
     var visY = parseInt(visibleCols/2);
-    var botX = playerX-visX; //Lowest X player can see, followed by highest X, lowest Y, etc
-    var topX = playerX+visX+1;
-    var botY = playerY - visY;
-    var topY = playerY + visY + 1;
+    var botX = playerX + camX - visX; //Lowest X player can see, followed by highest X, lowest Y, etc
+    var topX = playerX + camX + visX+1;
+    var botY = playerY + camY - visY;
+    var topY = playerY + camY + visY + 1;
     var tileMod;
     
     if (topX > mapTable[0].length || visibleCols > mapTable[0].length) {  //If the highest X player can see is off the board
@@ -158,7 +169,9 @@ function updateBoard() {
                 boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
                 for (var k = 0; k < board[i][j].length; k++) {
                     if (board[i][j][k] == "houseInvis")
-                        tileMod = houseMap(i,j,k);   
+                        tileMod = houseMap(i,j,k);  
+                    else if (board[i][j][k] == "monsterInvis")
+                        tileMod = bossMap(i,j,k); 
                     else if (board[i][j][k] == "stonePath") {
                         tileMod = "' style = 'background:url(art/stonePathSheet.png)";
                         tileMod += bitMask(i,j);
@@ -172,8 +185,31 @@ function updateBoard() {
         boardHTML += "</tr>";
     }
     
+    if (mapTable == caveMap && playerX == 29 && playerY == 33 && !monsterAttack) {
+        monsterAttack = true;
+        cameraMove();
+        setTimeout(function() {
+            $(".monsterInvis").addClass("bossMove")
+            setTimeout(function() {
+                startEncounter(caveBeast);
+                monsterAttack = false;
+            }, 850);
+        }, 1400);
+    }
+    
     $("#board").html(boardHTML);
     $("#" + playerY + "-" + playerX).append(playerHTML);
+}
+
+function cameraMove() {
+    var count = 1;
+    var cameraPan;
+    cameraPan = setInterval(function() {
+        updateBoard(count-1,0);
+        count++;
+        if (count == 6)
+            clearInterval(cameraPan);
+    }, 200);
 }
 
 function bitMask(x,y) {
@@ -206,14 +242,27 @@ function houseMap(x,y,z) {
     return result;
 }
 
+function bossMap(x,y,z) {
+    var result = " boss";
+    if (y-1 > 0 && board[x][y-1][z] == "monsterInvis")
+        result += 1;
+    else
+        result += 0;
+    if (x-1 > 0 && board[x-1][y][z] == "monsterInvis")
+        result += 1;
+    else 
+        result += 0;
+    return result;
+}
+
 addItem(gold,500);
 addItem(hp_potion_small);
 
-function startEncounter() {
+function startEncounter(given) {
     $("#worldMapContainer").hide();
     $(".inquisition").show();
     inCombat = true;
-    startCombat();
+    startCombat(given);
 }
 
 function movePlayer(x,y) {
@@ -326,6 +375,13 @@ function makeHouse(x,y,given) {
 	addBoardObject("houseInvis",x-1,y);
 	addBoardObject("houseInvis",x-1,y+1);
     shopMap.push([y,x,given]);
+}
+
+function makeBoss(x,y,given) {
+    addBoardObject("monsterInvis",x,y);
+	addBoardObject("monsterInvis",x,y+1);
+	addBoardObject("monsterInvis",x-1,y);
+	addBoardObject("monsterInvis",x-1,y+1);
 }
 
 function checkCanCraft() {
@@ -651,7 +707,7 @@ function sell(given) {
 }
 
 document.addEventListener('keydown', function(event) {
-    if (!inCombat) {
+    if (!inCombat && !monsterAttack) {
         if (event.keyCode == 87) {
             if (!conversation)
                 movePlayer(0,-1);
