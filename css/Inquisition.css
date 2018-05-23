@@ -18,10 +18,12 @@
 }
 
 .red {
+    font-weight: bold;
     color: red;
 }
 
 .green {
+    font-weight:bold;
     color: green;
 }
 

@@ -1,11 +1,8 @@
 Can only buy 1 item at a time from shop
-Combat log doesn’t clear between combats
 Inventory limit not enforced
 Player Death
 Map collapses when visible x & y are different, the two are probably backwards
 Buying item doesn’t remove it from shop inventory
 UI doesn’t indicate/explain items that you’re not high enough level to make
 Plants re-grow when you exit and re-enter the map (i.e. got to village and come back out)
-Potions don’t show up in combat log
-Flint not working?
-Crash if walk away from shopkeeper during line
+Fix “the rat” vs “rat” situation in combat log

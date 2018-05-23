@@ -1,5 +1,5 @@
 function frothingHeretic() {
-    var frothingHeretic = new Character(10,13,1,makeDagger([rusty]),"the frothing heretic",hisHers(),"enemy","frothingHeretic");
+    var frothingHeretic = new Character(10,13,1,makeDagger(["rusty"]),"the frothing heretic",hisHers(),"enemy","chest");
     frothingHeretic.abilities = [flagellate(frothingHeretic.charType)];
     frothingHeretic.makeMove = frothingHereticAI;
     initCharacter(frothingHeretic);
@@ -15,7 +15,7 @@ function caveBeast() {
 }
 
 function rat() {
-    var rat = new Character(5,5,2,makeCleaver(),"the rat",["it","it's"],"enemy","rat");
+    var rat = new Character(5,5,2,makeCleaver(),"the rat",["it","it's"],"enemy","chest");
     rat.makeMove = baseAI;
     rat.loot = [{item:meat,odds:100,amount:1}];
     return rat;

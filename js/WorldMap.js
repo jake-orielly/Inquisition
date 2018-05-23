@@ -38,11 +38,11 @@ flint_box.clickFunc = function() {
     var curr = board[playerY][playerX];
     var playerLogs = false;
     var validSpace = true;
-
-    for (var i = 0; i < curr.length; i++)
-        if(curr[i] != "grass" || curr[i] != "cave_floor")
-            validSpace = false;
     
+    for (var i = 0; i < curr.length; i++)
+        if(!(curr[i] == "grass" || curr[i] == "cave_floor"))
+            validSpace = false;
+
     for (var i = 0; i < inventory.length; i++) {
         for (var curr in treeList)
             if(inventory[i].item == treeList[curr].resource)
@@ -709,7 +709,7 @@ function sell(given) {
 document.addEventListener('keydown', function(event) {
     if (!inCombat && !monsterAttack) {
         if (event.keyCode == 87) {
-            if (!conversation)
+            if (conversationChoice == undefined)
                 movePlayer(0,-1);
             else
                 conversationSelect(-1);
@@ -717,7 +717,7 @@ document.addEventListener('keydown', function(event) {
         else if (event.keyCode == 68)
             movePlayer(1,0);
         else if (event.keyCode == 83) {
-            if (!conversation)
+            if (conversationChoice == undefined)
                 movePlayer(0,1);
             else 
                 conversationSelect(1);

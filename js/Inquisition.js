@@ -45,6 +45,8 @@ function startCombat(given) {
             player.abilities[i].cooldown = 0;
     }
     
+    document.getElementById("combatLog").innerHTML += "<tr><td> " + capitalize(currEnemy.name) + " appears and attacks you!</td></tr>";
+    
     $("#combatLogContainer").hide();
     $(".abilityButton").hide();
     document.getElementById("movesSection").style.display = "block";
@@ -143,6 +145,7 @@ function endCombat(target) {
     dead = target;
     loot(currEnemy);
     setTimeout(function(){
+        document.getElementById("combatLog").innerHTML = "";
         $("#worldMapContainer").show();
         $(".inquisition").hide();
         $(".actionButton").css("color","black");
@@ -200,7 +203,7 @@ function flagellateFunc() {
         target = currEnemy;
     changeHP(selfDamage,target);
     moveText(target.charType,selfDamage);
-    combatText += target.name + " flogged " + target.perPronoun + "self, inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + target.possPronoun + " next attack!";
+    combatText += capitalize(target.name) + " flogged " + target.perPronoun + "self, inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + target.possPronoun + " next attack!";
     combatText += "</td></tr>";
     document.getElementById("combatLog").innerHTML += combatText;
     showBuff(this.buff,this.charType);
@@ -431,12 +434,15 @@ function toggleItems() {
 }
 
 function triggerItem(given) {
+    var healAmount;
     if (given.potion.hp) {
         if (player.hp + given.potion.hp > player.maxHP)
-            moveText("player", (player.maxHP - player.hp));
+            healAmount = player.maxHP - player.hp;
         else 
-            moveText("player",given.potion.hp);
-        changeHP(given.potion.hp,player);
+            healAmount = given.potion.hp;
+        moveText("player",healAmount);
+        changeHP(healAmount,player);
+        document.getElementById("combatLog").innerHTML += "<tr><td>" + player.name + " drank a potion, healing <span class='green'>" + healAmount + "</span> damage.</td></tr>";
     }
     removeItem(given);
     updateItems();
