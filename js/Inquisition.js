@@ -152,6 +152,7 @@ function endCombat(target) {
         $(".actionButton").css("cursor","pointer");
         nextEncounter = parseInt(Math.random()*100)+50;
         inCombat = false;
+        showInventory();
     },1000);
 }
 

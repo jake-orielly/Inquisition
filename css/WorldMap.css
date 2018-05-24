@@ -35,7 +35,7 @@
     border: 8px solid rgb(61,61,61);
 }
 
-#inventoryTable, #shopTable, #skillsTable {
+#inventoryTable, #shopTable, #skillsTable, #treasureTable {
     position:absolute;
     bottom:70px;
     padding: 5px;
@@ -47,7 +47,7 @@
     right: 12px;
 }
 
-#shopTable {
+#shopTable, #treasureTable {
     right: 312px;
 }
 
@@ -75,7 +75,7 @@
     float:right;
 }
 
-#inventory, #shop, #skills{
+#inventory, #shop, #skills, #treasure{
     position: relative;
     display:none;
     bottom:40px;
@@ -83,7 +83,7 @@
     z-index:2;
 }
 
-#inventoryTable td, #shopTable td {
+#inventoryTable td, #shopTable td, #treasureTable td {
     display: inline-block;
     padding: 1px;
     width: 64px;

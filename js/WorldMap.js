@@ -17,7 +17,7 @@ var monsterAttack = false;
 var shopMap = [];
 var npcList = [];
 var conversation, conversationChoice;
-var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10"];
+var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10","chest","chest_open"];
 
 var foodList = [cooked_meat,seasoned_meat];
 var smeltList = [copper_bar,iron_bar];
@@ -32,6 +32,17 @@ var herbList = {herb_plant:{toolLevel:0,resource:herb,playerLevel:1,xp:9},mushro
 
 var shouldCloseInventory = false;
 var shopEntrance;
+
+var caveTreasure = [];
+var treasureTemp = [hp_potion_medium,hp_potion_medium];
+fillTreasure(caveTreasure,treasureTemp);
+var currTreasure;
+
+function fillTreasure(treasure,list) {
+	for (var i = 0; i < list.length; i++) {
+	    treasure.push(new InventoryItem(list[i],1));
+	}
+}
 
 flint_box.clickFunc = function() {
     var loc = $("#" + playerY + "-" + playerX);
@@ -50,7 +61,7 @@ flint_box.clickFunc = function() {
     }
     
     if (playerLogs && validSpace) {
-        removeItem(playerLogs);
+        removeItem(inventory,playerLogs);
         addBoardObject("fire",playerY,playerX);
         curr += "fire";
         updateBoard();
@@ -255,8 +266,8 @@ function bossMap(x,y,z) {
     return result;
 }
 
-addItem(gold,500);
-addItem(hp_potion_small);
+addItem(inventory,gold,500);
+addItem(inventory,hp_potion_small);
 
 function startEncounter(given) {
     $("#worldMapContainer").hide();
@@ -294,6 +305,9 @@ function movePlayer(x,y) {
     if ($("#shop").is(":visible")) {
         $("#shop").hide();
         $("#inventory").hide();
+    }
+    if ($("#treasure").is(":visible")) {
+        $("#treasure").hide();
     }
     if (newX >= 0 && newX < mapTable[0].length && newY >= 0 && newY < mapTable.length && legalTile){
         if (isHouse)
@@ -447,11 +461,11 @@ function toggleSkills() {
         showSkills();
 }
 
-function inventoryCount(given) {
+function inventoryCount(source,given) {
     var total = 0;
-    for (var i = 0; i < inventory.length; i++) {
-        if (inventory[i].item == given)
-            total += inventory[i].amount;
+    for (var i = 0; i < source.length; i++) {
+        if (source[i].item == given)
+            total += source[i].amount;
     }
     return total;
 }
@@ -518,6 +532,29 @@ function showShop(given) {
     }
     $("#shopTable").html(result);
     $("#shop").show();
+    showInventory();
+}
+
+function showTreasure() {
+    var treasureInventory = currTreasure;
+    var result, curr;
+    for (var i = 0; i < 3; i++) {
+        result += "<tr>";
+        for (var j = 0; j < 3; j++) {
+            curr = i*3 + j+1;
+            result += "<td>";
+            result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
+            if(curr < treasureInventory.length+1) {
+                result += "<img class='inventoryItem' onclick='lootItem(" + treasureInventory[curr-1].item.name + ")' src='art/" + treasureInventory[curr-1].item.name + ".png'>";
+                if (treasureInventory[curr-1].amount > 1)
+                    result += "<div class='inventoryAmountContainer'><p class='inventoryItemAmount'>" + treasureInventory[curr-1].amount + "</p></div>";
+            }
+            result += "</td>";
+        }
+        result += "</tr>";
+    }
+    $("#treasureTable").html(result);
+    $("#treasure").show();
     showInventory();
 }
 
@@ -653,10 +690,10 @@ function updateEquipment() {
 
 function buy(given) {
     if ($("#shop").is(":visible")) {
-        var playerGold = inventoryCount(gold);
+        var playerGold = inventoryCount(inventory,gold);
         if(playerGold >= given.value) {
-            addItem(given);
-            removeItem(gold,given.value);
+            addItem(inventory,given);
+            removeItem(inventory,gold,given.value);
             updateInventory();
         }   
     }
@@ -669,6 +706,8 @@ function itemClick(given) {
     if ($("#shop").is(":visible")) {
         sell(given);
     }
+    else if ($("#treasure").is(":visible"))
+        stashItem(given);
     else if (item.equipment) {
         equipItem(item);
         updateInventory();
@@ -689,8 +728,8 @@ function itemClick(given) {
         heightDif = $("#hpBarMax").height() - $("#hpBarCurr").height();
         $("#hpBarCurr").css("margin-top",heightDif-1);
         if (item.potion)
-            addItem(item.craftable.recipe[item.craftable.recipe.length-1].item);
-        removeItem(item);
+            addItem(inventory,item.craftable.recipe[item.craftable.recipe.length-1].item);
+        removeItem(inventory,item);
     }
     
     else if (item.clickFunc) {
@@ -700,10 +739,17 @@ function itemClick(given) {
 
 function sell(given) {
     if(inventory[given].item.name != "gold") {
-        addItem(gold,(inventory[given].item.value*inventory[given].amount));
-        removeItem(inventory[given].item,inventory[given].amount);
+        addItem(inventory,gold,(inventory[given].item.value*inventory[given].amount));
+        removeItem(inventory,inventory[given].item,inventory[given].amount);
         updateInventory();
     }   
+}
+
+function stashItem(given) {
+    addItem(currTreasure,inventory[given].item,inventory[given].amount);
+    removeItem(inventory,inventory[given].item,inventory[given].amount);
+    updateInventory();
+    showTreasure();
 }
 
 document.addEventListener('keydown', function(event) {
@@ -759,6 +805,16 @@ function tileAction() {
             currX = playerX + cardinalOffset[i][0];
             currY = playerY + cardinalOffset[i][1];
 
+            for (var j = 0; j < board[currY][currX].length; j++)
+                if(board[currY][currX][j] == "chest" || board[currY][currX][j] == "chest_open") {
+                    currTreasure = caveTreasure;
+                    board[currY][currX][j] = "chest_open";
+                    showTreasure(currTreasure);
+                    shouldCloseInventory = true;
+                    showInventory();
+                    updateBoard();
+                }
+            
             for (var j = 0; j < npcList.length; j++) {
                 if (currX == npcList[j][0] && currY == npcList[j][1]) {
 	                conversation = [];
@@ -847,8 +903,8 @@ function craft(given) {
     if (canCraft(given)) {
 	    craftXP(given);
         for (var i = 0; i < given.craftable.recipe.length; i++)
-                removeItem(given.craftable.recipe[i].item,given.craftable.recipe[i].amount);
-        addItem(given);
+                removeItem(inventory,given.craftable.recipe[i].item,given.craftable.recipe[i].amount);
+        addItem(inventory,given);
         
         for (var i = 0; i < 2; i++) {
             toggleMenu("cook");
@@ -870,7 +926,7 @@ function canCraft(given) {
         return false;
     
     for (var i = 0; i < recipe.length; i++) {
-        if (!(inventoryCount(recipe[i].item) >= recipe[i].amount))
+        if (!(inventoryCount(inventory,recipe[i].item) >= recipe[i].amount))
             return false;
     }
 
@@ -879,39 +935,44 @@ function canCraft(given) {
 
 function loot(given) {
     var curr;
+    currTreasure = [];
     for (var i = 0; i < given.loot.length; i++) {
         curr = given.loot[i];
-        if (inventory.length < inventoryMax) {
-            if (percentile() <= curr.odds) {
-                if (Array.isArray(curr.amount))
-                    addItem(curr.item,rangeVal(curr.amount));
-                else 
-                    addItem(curr.item,curr.amount);
-            }
+        if (percentile() <= curr.odds) {
+            if (Array.isArray(curr.amount))
+                currTreasure.push(new InventoryItem(curr.item,rangeVal(curr.amount)));
+            else 
+                currTreasure.push(new InventoryItem(curr.item,curr.amount));
         }
-        else 
-            alert("Inventory Full");
     }
+    shouldCloseInventory = true;
+    showTreasure(currTreasure);
 }
 
 function percentile() {
     return parseInt(Math.random()*100+1);
 }
 
-function addItem (item,amount = 1) {
+function addItem (source,item,amount = 1) {
     var newAmount;
     if (item.stackable) {
-        for (var i = 0; i < inventory.length; i++) {
-            if (item == inventory[i].item) {
-                newAmount = inventory[i].amount + amount;
-                inventory[i] = new InventoryItem(item, newAmount);
+        for (var i = 0; i < source.length; i++) {
+            if (item == source[i].item) {
+                newAmount = source[i].amount + amount;
+                source[i] = new InventoryItem(item, newAmount);
                 return;
             }
         }
     }
 
-    inventory.push(new InventoryItem(item,amount));
+    source.push(new InventoryItem(item,amount));
     updateInventory();
+}
+
+function lootItem(item,amount = 1) {
+    addItem(inventory,item,amount);
+    removeItem(currTreasure,item,amount);
+    showTreasure(currTreasure);
 }
 
 function equipItem (given) {
@@ -919,7 +980,7 @@ function equipItem (given) {
 		unEquipItem(given.equipment.slot);
 		
 	player[given.equipment.slot] = given.equipment;
-    removeItem(given);
+    removeItem(inventory,given);
     if (given.equipment.constructor.name == "Armor")
         equipment[given.equipment.slot] = new InventoryItem(given, 1);
     else
@@ -929,30 +990,30 @@ function equipItem (given) {
 
 function unEquipItem (given) {
 	if (equipment[given]) {
-	    addItem(equipment[given].item);
+	    addItem(inventory,equipment[given].item);
 	    player[given.toLowerCase()] = null;
 	    equipment[given] = null;
 	    updateEquipment();
     }
 }
 
-function removeItem (item,amount = 1) {
-    if (inventoryCount(item) < amount)
+function removeItem (source,item,amount = 1) {
+    if (inventoryCount(source,item) < amount)
         alert("Error 2: Tried to remove more of item than is in inventory. " + item.name + " : " + amount);
     else {
-        for (var i = 0; i < inventory.length; i++) {
-            if (item == inventory[i].item) {
-                if (inventory[i].amount >= amount) {
-                    inventory[i].amount -= amount;
+        for (var i = 0; i < source.length; i++) {
+            if (item == source[i].item) {
+                if (source[i].amount >= amount) {
+                    source[i].amount -= amount;
                     amount = 0;
-                    if (inventory[i].amount == 0)
-                        inventory.splice(i,1);
+                    if (source[i].amount == 0)
+                        source.splice(i,1);
                     break;
                 }
                 else {
-                    amount -= inventory[i].amount;
-                    inventory.amount = 0;
-                    inventory.splice(i,1);
+                    amount -= source[i].amount;
+                    source.amount = 0;
+                    source.splice(i,1);
                     i--;
                 }
             }
