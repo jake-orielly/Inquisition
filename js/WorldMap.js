@@ -74,6 +74,8 @@ var equipment = {};
 
 $(".craftMenuButton").hide();
 $(".inquisition").hide();
+
+makePerkSortButtons(); 
 makeBoard();
 
 function makeBoard() {
@@ -90,6 +92,53 @@ function makeBoard() {
         }
     }
     mapAddons(mapTable);
+}
+
+function makePerkSortButtons(sorted = "general") {
+    var onclick = "onclick='toggleSortActive(this)'";
+    var result = "<td><button id='generalPerkSort'" + onclick + ">General</button></td>";
+    for (var i in playerSkills) {
+        result += "<td><button id='" + i + "PerkSort' " + onclick + ">" + playerSkills[i].name + "</button></td>";
+    }
+    $("#perkSortButtonList").html(result);
+    $("#generalPerkSort").toggleClass("sortActive")
+}
+
+function toggleSortActive(given) {
+    var tempPerkList = [];
+    for (var i = 0; i < perkList.length; i++)
+        for(var j = 0; j < perkList[i].categories.length; j++)
+            if (given.innerHTML.toLowerCase() == perkList[i].categories[j])
+                tempPerkList.push(perkList[i]);
+    showPerks(tempPerkList);
+    $("#perkSortButtonList>td>button").removeClass("sortActive");
+    given.classList.toggle("sortActive");
+}
+
+function togglePerks() {
+    if ($("#perks").is(":visible"))
+        $("#perks").hide();
+    else 
+        showPerks();
+}
+
+function showPerks(perks = perkList) {
+    var result = "";
+    var grey;
+    
+    for (var i = 0; i < perks.length; i++) {
+        grey = "";
+        //if (!meetsRequirements(perks[i]))
+            //grey = "greyedOut";
+        result += "<tr class='" + grey + "'>";
+        result += "<td><img src='" + perks[i].img + "'></td>";
+        result += "<td><h1>" + perks[i].name + "</h1></td>";
+        result += "<td><p>" + perks[i].description + "</p></td>";
+        result += "</tr>";
+    }
+    
+    $("#perkTable").html(result);
+    $("#perks").show();
 }
 
 function mapAddons(map) {
@@ -462,25 +511,12 @@ function toggleSkills() {
         showSkills();
 }
 
-function togglePerks() {
-    if ($("#perks").is(":visible"))
-        $("#perks").hide();
-    else 
-        showPerks();
-}
-
-function showPerks() {
-    var result = "";
-    
-    for (var i = 0; i < perkList.length; i++) {
-        result += "<tr>";
-        result += "<td><img src='" + perkList[i].img + "'></td>";
-        result += "<td><h1>" + perkList[i].name + "</h1></td>";
-        result += "<td><p>" + perkList[i].description + "</p></td>";
-        result += "</tr>";
-    }
-    $("#perkTable").html(result);
-    $("#perks").show();
+function meetsRequirements(given) {
+    var result = true;
+    for (var skill in given.requirements)
+        if(playerSkills[skill].level < given.requirements[skill])
+            result = false;
+    return result;
 }
 
 function inventoryCount(source,given) {

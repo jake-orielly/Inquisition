@@ -4,7 +4,7 @@ function makeShortSword(modifiers) {
 }
 
 function makeMace(modifiers) {
-    return new Weapon(4,[4,6],"mace","swung with","smashing",modifiers);
+    return new Weapon(4,[4,6],"mace","swung with","crushing",modifiers);
 }
 
 function makeMorningStar(modifiers) {

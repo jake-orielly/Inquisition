@@ -117,7 +117,7 @@
     background: linear-gradient(to bottom,  #eeeeee 0%,#cccccc 100%);
     border: 8px solid rgb(61,61,61);
     position: absolute;
-    top: 12em;
+    top: 0.5em;
     width: calc(100% - 18px);
     display:none;
 }
@@ -142,12 +142,29 @@
     margin-left: 0.5em;
 }
 
+.greyedOut { 
+    -webkit-filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    filter: grayscale(100%);
+    color: grey;
+}
+
 .closeButton {
     width: 32px;
     height: 32px;
     position: absolute;
     right: 4px;
     top: 4px;
+}
+
+#perkSortButtonList button {
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.sortActive { 
+    background: green;
+    color: white;
 }
 
 #inventoryTable td, #shopTable td, #treasureTable td {

@@ -10,7 +10,7 @@ playerSkills.cooking = {xp:0,level:1,name:"Cooking"};
 playerSkills.alchemy = {xp:0,level:1,name:"Alchemy"};
 playerSkills.piercing = {xp:0,level:1,name:"Piercing"};
 playerSkills.chopping = {xp:0,level:1,name:"Chopping"};
-playerSkills.smashing = {xp:0,level:1,name:"Smashing"};
+playerSkills.crushing = {xp:0,level:1,name:"Crushing"};
 
 function harvest(given) {
     var skill;
@@ -91,11 +91,16 @@ function updateXPBar(skill) {
 
 //Perks
 
-var piercingAptitude = {name:"Piercing Aptitude",img:"art/copper_short_sword.png",description:"+4 attack and +1 damage with piercing weapons"};
-var choppingAptitude = {name:"Chopping Aptitude",img:"art/copper_axe.png",description:"+2 attack and +2 damage with chopping weapons"};
-var crushingAptitude = {name:"Crushing Aptitude",img:"art/copper_mace.png",description:"+3 damage with crushing weapons"};
+var piercingAptitude = {name:"Piercing Aptitude",img:"art/copper_short_sword.png",description:"+4 attack and +1 damage with piercing weapons",requirements:{piercing:3},categories:["general","piercing"]};
+var choppingAptitude = {name:"Chopping Aptitude",img:"art/copper_axe.png",description:"+2 attack and +2 damage with chopping weapons",requirements:{chopping:3},categories:["general","chopping"]};
+var crushingAptitude = {name:"Crushing Aptitude",img:"art/copper_mace.png",description:"+3 damage with crushing weapons",requirements:{crushing:3},categories:["general","crushing"]};
+var woodcuttingAptitude = {name:"Woodcutting Aptitude",img:"art/oak.png",description:"You can chop evergreen trees with an iron axe.",requirements:{woodcutting:3},categories:["general","woodcutting"]};
+var miningAptitude = {name:"Mining Aptitude",img:"art/copper_pickaxe.png",description:"You can mine iron ore with an iron pickaxe.",requirements:{mining:3},categories:["general","mining"]};
+var smithingAptitude = {name:"Smithing Aptitude",img:"art/copper_bar.png",description:"You can smith iron weapons and armor.",requirements:{smithing:3},categories:["general","smithing"]};
+var cookingAptitude = {name:"Cooking Aptitude",img:"art/cooked_meat.png",description:"You can cook more complex foods.",requirements:{cooking:3},categories:["general","cooking"]};
+var alchemyAptitude = {name:"Alchemy Aptitude",img:"art/hp_potion_small.png",description:"You can craft more powerful potions.",requirements:{alchemy:3},categories:["general","alchemy"]};
 
-var perkList = [piercingAptitude,choppingAptitude,crushingAptitude];
+var perkList = [piercingAptitude,choppingAptitude,crushingAptitude,woodcuttingAptitude,miningAptitude,smithingAptitude,cookingAptitude,alchemyAptitude];
 
 /*function extraOre(given) {
     if (parseInt(Math.random()*100+1) <= 15)
