@@ -1,8 +1,7 @@
 var playerSkills = {};
-var smeltPerks = [];
 var playerPerk = {chopping:[]};
-var feats = 0;
-var featsUsed = 0;
+var perkPoints = 0;
+var perkPointsUsed = 0;
 
 playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
 playerSkills.mining = {xp:0,level:1,name:"Mining"};
@@ -63,11 +62,11 @@ function giveAttackXP(skill,given) {
 
 function levelUp(skill) {
     skill.level += 1;
-    if (feats-featsUsed < 5)
-        document.getElementById("featGem" + (feats-featsUsed)).src = "art/feat_gem.png";
-    feats++;
-    if (feats % 5 == 0)
-        $("#featsButton").addClass("active");
+    if (perkPoints-perkPointsUsed < 5)
+        document.getElementById("perkGem" + (perkPoints-perkPointsUsed)).src = "art/perk_gem.png";
+    perkPoints++;
+    if (perkPoints % 5 == 0)
+        $("#perksButton").addClass("perksButtonActive");
     $("#curr" + skill.name + "Level").html(":" + skill.level);
     console.log("You leveled up in " + skill.name  + ". Your " + skill.name + " level is now " + skill.level + ". ");
 }
@@ -91,11 +90,14 @@ function updateXPBar(skill) {
 }
 
 //Perks
-function extraOre(given) {
+
+var piercingAptitude = {name:"Piercing Aptitude",img:"art/copper_short_sword.png",description:"+4 attack and +1 damage with piercing weapons"};
+var choppingAptitude = {name:"Chopping Aptitude",img:"art/copper_axe.png",description:"+2 attack and +2 damage with chopping weapons"};
+var crushingAptitude = {name:"Crushing Aptitude",img:"art/copper_mace.png",description:"+3 damage with crushing weapons"};
+
+var perkList = [piercingAptitude,choppingAptitude,crushingAptitude];
+
+/*function extraOre(given) {
     if (parseInt(Math.random()*100+1) <= 15)
         addItem(inventory,given.resource);
-}
-
-function extraAttack() {
-    console.log(this.attack);
-}
+}*/

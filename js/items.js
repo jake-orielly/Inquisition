@@ -14,6 +14,9 @@ var copper_bar = new Item("copper_bar",true,false,8,new Craftable(15,1,[{item:co
 var iron_ore = new Item("iron_ore",false,false,11);
 var iron_bar = new Item("iron_bar",true,false,24,new Craftable(25,5,[{item:iron_ore,amount:2}]));
 var coal = new Item("coal",false,false,16);
+
+var copper_short_sword = new Item("copper_short_sword",false,makeShortSword(["copper"]),12,new Craftable(16,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var copper_mace = new Item("copper_mace",false,makeMace(["copper"]),14,new Craftable(18,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
 var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
 var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,new Craftable(50,5,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
 var steel_axe = new Item("steel_axe",false,makeAxe(["steel"]),115);

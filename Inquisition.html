@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="css/WorldMap.css">
     </head>
 
-    <body>
+    <body class="unselectable">
         <div class="inquisition" id="battleSection">
             <div id="enemyContainer">
                 <div class="hpMax" id="enemyHPMax">
@@ -78,15 +78,19 @@
             <div id="skills">
                 <table>
                     <tr>
-                        <td><img src="art/feat_gem_empty.png" id="featGem0"></td>
-                        <td><img src="art/feat_gem_empty.png" id="featGem1"></td>
-                        <td><img src="art/feat_gem_empty.png" id="featGem2"></td>
-                        <td><img src="art/feat_gem_empty.png" id="featGem3"></td>
-                        <td><img src="art/feat_gem_empty.png" id="featGem4"></td>
+                        <td><img src="art/perk_gem_empty.png" id="perkGem0"></td>
+                        <td><img src="art/perk_gem_empty.png" id="perkGem1"></td>
+                        <td><img src="art/perk_gem_empty.png" id="perkGem2"></td>
+                        <td><img src="art/perk_gem_empty.png" id="perkGem3"></td>
+                        <td><img src="art/perk_gem_empty.png" id="perkGem4"></td>
                     </tr>
                 </table>
-                <button class="featsButton" id="featsButton">Feats</button>
+                <button class="perksButton" id="perksButton" onclick="togglePerks()">Perks</button>
                 <table cellspacing="0" id="skillsTable"></table>
+            </div>
+            <div id="perks">
+                <img class="closeButton" onclick="togglePerks()" src="art/close.png">
+                <table id="perkTable"></table>
             </div>
             <div id="shop">
                 <table cellspacing="0" id="shopTable"></table>

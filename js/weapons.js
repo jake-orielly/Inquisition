@@ -3,6 +3,10 @@ function makeShortSword(modifiers) {
     return new Weapon(5,[3,5],"short sword","swung with","piercing",modifiers);
 }
 
+function makeMace(modifiers) {
+    return new Weapon(4,[4,6],"mace","swung with","smashing",modifiers);
+}
+
 function makeMorningStar(modifiers) {
     return new Weapon(3,[4,7],"morningstar","swung with","crushing",modifiers);
 }

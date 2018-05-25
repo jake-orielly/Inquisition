@@ -21,7 +21,7 @@ var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","hous
 
 var foodList = [cooked_meat,seasoned_meat];
 var smeltList = [copper_bar,iron_bar];
-var smithList = [copper_axe, copper_pickaxe, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_chestplate,iron_platelegs];
+var smithList = [copper_axe, copper_pickaxe, copper_short_sword, copper_mace, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_chestplate,iron_platelegs];
 var potionList = [hp_potion_small,hp_potion_medium];
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};
 
@@ -460,6 +460,27 @@ function toggleSkills() {
         $("#skills").hide();
     else 
         showSkills();
+}
+
+function togglePerks() {
+    if ($("#perks").is(":visible"))
+        $("#perks").hide();
+    else 
+        showPerks();
+}
+
+function showPerks() {
+    var result = "";
+    
+    for (var i = 0; i < perkList.length; i++) {
+        result += "<tr>";
+        result += "<td><img src='" + perkList[i].img + "'></td>";
+        result += "<td><h1>" + perkList[i].name + "</h1></td>";
+        result += "<td><p>" + perkList[i].description + "</p></td>";
+        result += "</tr>";
+    }
+    $("#perkTable").html(result);
+    $("#perks").show();
 }
 
 function inventoryCount(source,given) {
