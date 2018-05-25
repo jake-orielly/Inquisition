@@ -1,26 +1,26 @@
 //Weapon templates
 function makeShortSword(modifiers) {
-    return new Weapon(5,[3,5],"short sword","swung with","sliced",modifiers);
+    return new Weapon(5,[3,5],"short sword","swung with","piercing",modifiers);
 }
 
 function makeMorningStar(modifiers) {
-    return new Weapon(3,[4,7],"morningstar","swung with","crushed",modifiers);
+    return new Weapon(3,[4,7],"morningstar","swung with","crushing",modifiers);
 }
 
 function makeCleaver(modifiers) {
-    return new Weapon(4,[4,5],"cleaver","chopped with","sliced",modifiers);
+    return new Weapon(4,[4,5],"cleaver","chopped with","chopping",modifiers);
 }
 
 function makeDagger(modifiers) {
-    return new Weapon(3,[3,4],"dagger","lunged with","skewered",modifiers);
+    return new Weapon(3,[3,4],"dagger","lunged with","piercing",modifiers);
 }
 
 function makeAxe(modifiers) {
-    return new Weapon(4,[4,5],"axe","chopped with","chopped",modifiers);
+    return new Weapon(4,[4,5],"axe","chopped with","chopping",modifiers);
 }
 
 function makePickaxe(modifiers) {
-    return new Weapon(6,[2,3],"pickaxe","swung with","pierced",modifiers);
+    return new Weapon(6,[2,3],"pickaxe","swung with","piercing",modifiers);
 }
 
 function makeChestplate(modifiers) {

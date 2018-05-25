@@ -309,7 +309,7 @@ function makeAttack(attacker, defender) {
     var crit = false;
     var critAddon = "";
     var critLogAddon = "dealt";
-
+    
     if (attackResult[1]) {
         attackResult = attackResult[0];
         crit = true;
@@ -325,7 +325,10 @@ function makeAttack(attacker, defender) {
     }
     else {
         changeHP(attackResult,defender);
-        moveText(defender.charType,attackResult + critAddon);                    
+        moveText(defender.charType,attackResult + critAddon);   
+        
+        if (attacker == player)
+            giveAttackXP(attacker.weapon.killVerb,Math.abs(attackResult));
 
         if (defender.hp > 0)
             return capitalize(attacker.name) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and " + critLogAddon + " <span class='red'>" + Math.abs(attackResult) + "</span> damage. " + capitalize(defender.name) + " now has <span class='red'>" + defender.hp + "</span> health."; 
@@ -346,7 +349,8 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     
     for (var i = 0; i < player.buffs.critChance.length; i++)
         critThreshold -= player.buffs.critChance[i].count;
-    if (attack + attacker.weapon.getAttribute("attack") +attacker.attack > defender.ac || attack == 20) {
+
+    if (attack + attacker.weapon.getAttribute("attack") +attacker.getAttack(attacker.weapon.killVerb) > defender.ac || attack == 20) {
         result = getDamage(attacker.weapon.getAttribute("damage")[0],attacker.weapon.getAttribute("damage")[1]);
         if (attacker.buffs.damage)
             for (var i = 0; i < attacker.buffs.damage.length; i++) {

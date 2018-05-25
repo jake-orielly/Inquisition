@@ -63,6 +63,16 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
             return result;
         }
     }
+    
+    this.getAttack = function(given) {
+        var result = this.attack;
+        if (this.charType = "player")
+        if (attackPerks[given])
+            for (var i = 0; i < attackPerks[given].length; i++)
+                result += attackPerks[given][i];
+        console.log(result);
+        return result;
+    }
 }
 
 function fallenKnightAI(target) {

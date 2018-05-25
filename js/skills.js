@@ -1,11 +1,17 @@
 var playerSkills = {};
 var smeltPerks = [];
+var playerPerk = {chopping:[]};
+var feats = 0;
+var featsUsed = 0;
 
 playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
 playerSkills.mining = {xp:0,level:1,name:"Mining"};
 playerSkills.smithing = {xp:0,level:1,name:"Smithing"};
 playerSkills.cooking = {xp:0,level:1,name:"Cooking"};
 playerSkills.alchemy = {xp:0,level:1,name:"Alchemy"};
+playerSkills.piercing = {xp:0,level:1,name:"Piercing"};
+playerSkills.chopping = {xp:0,level:1,name:"Chopping"};
+playerSkills.smashing = {xp:0,level:1,name:"Smashing"};
 
 function harvest(given) {
     var skill;
@@ -21,7 +27,7 @@ function harvest(given) {
     }
     
     giveXP(given,skill);
-    addItem(given.resource);
+    addItem(inventory,given.resource);
 }
 
 function craftXP(given) {
@@ -47,8 +53,21 @@ function giveXP(item,skill) {
     updateXPBar(skill);
 }
 
+function giveAttackXP(skill,given) {
+    skill = playerSkills[skill]
+    skill.xp += given;
+    if (skill.xp >= xpNeeded(skill.level))
+        levelUp(skill);
+    updateXPBar(skill);
+}
+
 function levelUp(skill) {
     skill.level += 1;
+    if (feats-featsUsed < 5)
+        document.getElementById("featGem" + (feats-featsUsed)).src = "art/feat_gem.png";
+    feats++;
+    if (feats % 5 == 0)
+        $("#featsButton").addClass("active");
     $("#curr" + skill.name + "Level").html(":" + skill.level);
     console.log("You leveled up in " + skill.name  + ". Your " + skill.name + " level is now " + skill.level + ". ");
 }
@@ -74,5 +93,9 @@ function updateXPBar(skill) {
 //Perks
 function extraOre(given) {
     if (parseInt(Math.random()*100+1) <= 15)
-        addItem(given.resource);
+        addItem(inventory,given.resource);
+}
+
+function extraAttack() {
+    console.log(this.attack);
 }

@@ -35,7 +35,34 @@
     border: 8px solid rgb(61,61,61);
 }
 
-#inventoryTable, #shopTable, #skillsTable, #treasureTable {
+#skills {
+    position:absolute;
+    display:none;
+    padding: 5px;
+    background-color: rgb(204,204,204);
+    border: 8px solid rgb(61,61,61);
+    bottom: 64px;
+    right: 2px;
+}
+
+.featsButton {
+    width: 100%;
+    height: 24px;
+    color: black;
+    background-color: rgb(204,204,204);
+    border: 2px solid black;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 450;
+}
+
+.active {
+    background-color:green;
+    color: white;
+    text-shadow: 1px 1px 1px black
+}
+
+#inventoryTable, #shopTable, #treasureTable {
     position:absolute;
     bottom:70px;
     padding: 5px;
@@ -68,14 +95,14 @@
     height:11px;
     background-color:green;
     width:0px;
-    margin-left:1px;
+    margin-top:1px;
 }
 
 .skillsData {
     float:right;
 }
 
-#inventory, #shop, #skills, #treasure{
+#inventory, #shop, #treasure{
     position: relative;
     display:none;
     bottom:40px;

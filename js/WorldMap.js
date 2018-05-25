@@ -268,6 +268,7 @@ function bossMap(x,y,z) {
 
 addItem(inventory,gold,500);
 addItem(inventory,hp_potion_small);
+addItem(inventory,copper_axe);
 
 function startEncounter(given) {
     $("#worldMapContainer").hide();
@@ -631,7 +632,7 @@ function showInventory() {
 
 function showSkills() {
     updateSkills();
-    $("#skills").show();
+    $("#skills").css("display","inline-block");
 }
 
 function updateInventory() {
@@ -885,7 +886,7 @@ function tileAction() {
     }
     if (equipment.weapon && equipment.weapon.item.equipment.name == toolMap[resourceType])
         for (var j = 0; j < equipment.weapon.item.equipment.modifierNames.length; j++)
-                toolLevel = Math.max(toolLevel, toolModifierLevel[equipment.weapon.modifierNames[j]]);
+                toolLevel = Math.max(toolLevel, toolModifierLevel[equipment.weapon.item.equipment.modifierNames[j]]);
     
     if(currResource && toolLevel >= currResource.toolLevel && skillMap[resourceType] >= currResource.playerLevel) {
         harvest(currResource);
