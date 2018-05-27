@@ -20,12 +20,6 @@ var conversation, conversationChoice;
 var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10","chest","chest_open"];
 var needTool;
 
-var foodList = [cooked_meat,seasoned_meat];
-var smeltList = [copper_bar,iron_bar];
-var smithList = [copper_axe, copper_pickaxe, copper_short_sword, copper_mace, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_chestplate,iron_platelegs];
-var potionList = [hp_potion_small,hp_potion_medium];
-var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};
-
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,requiredPerk:woodcuttingAptitude,xp:15}};
 var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,requiredPerk:miningAptitude,xp:17},coal_vein:{toolLevel:3,resource:coal,requiredPerk:miningAptitude,xp:25}};
@@ -995,7 +989,7 @@ function tileAction() {
         updateBoard();
     }
     else {
-        if (!hasPerk(currResource.requiredPerk)) {
+        if (currResource && !hasPerk(currResource.requiredPerk)) {
             $("#toolNeededText").html("Need " + currResource.requiredPerk.name);
             $("#toolNeededImage").attr("src", currResource.requiredPerk.img);
             $("#toolNeeded").fadeIn(200);
@@ -1004,7 +998,7 @@ function tileAction() {
                 $("#toolNeeded").fadeOut(200);
             },1500);
         }
-        else if (toolLevel < currResource.toolLevel) {
+        else if (currResource && toolLevel < currResource.toolLevel) {
             $("#toolNeededText").html("Need " + toolLevelMap[currResource.toolLevel-1] + " " + toolMap[resourceType]);
             $("#toolNeededImage").attr("src","art/" + toolLevelMap[currResource.toolLevel-1] + "_" + toolMap[resourceType] + ".png");
             $("#toolNeeded").fadeIn(200);

@@ -16,22 +16,29 @@ var iron_bar = new Item("iron_bar",true,false,24,new Craftable(25,smithingAptitu
 var coal = new Item("coal",false,false,16);
 
 var copper_short_sword = new Item("copper_short_sword",false,makeShortSword(["copper"]),12,new Craftable(16,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var iron_short_sword = new Item("iron_short_sword",false,makeShortSword(["iron"]),40,new Craftable(42,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
+
 var copper_mace = new Item("copper_mace",false,makeMace(["copper"]),14,new Craftable(18,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var iron_mace = new Item("iron_mace",false,makeMace(["iron"]),44,new Craftable(48,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
+
 var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
-var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,new Craftable(50,5,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
+var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,new Craftable(50,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
 var steel_axe = new Item("steel_axe",false,makeAxe(["steel"]),115);
+
 var copper_pickaxe = new Item("copper_pickaxe",false,makePickaxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
-var iron_pickaxe = new Item("iron_pickaxe",false,makePickaxe(["iron"]),45,new Craftable(50,5,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
+var iron_pickaxe = new Item("iron_pickaxe",false,makePickaxe(["iron"]),45,new Craftable(50,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
+
 var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75,new Craftable(45, 3,[{item:copper_bar,amount:7}]));
-var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,new Craftable(90,8,[{item:iron_bar,amount:7}]));
+var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,new Craftable(90,smithingAptitude,[{item:iron_bar,amount:7}]));
+
 var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,2,[{item:copper_bar,amount:4}]));
-var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,7,[{item:iron_bar,amount:4}]));
+var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,smithingAptitude,[{item:iron_bar,amount:4}]));
 
 var glass_vial = new Item("glass_vial",false,false,5);
 var glass_jar = new Item("glass_jar",false,false,10);
-var hp_potion_small = new Item("hp_potion_small",false,false,25,new Craftable(15,1,[{item:herb,amount:2},{item:glass_vial,amount:1}]));
+var hp_potion_small = new Item("hp_potion_small",false,false,25,new Craftable(15,null,[{item:herb,amount:2},{item:glass_vial,amount:1}]));
 hp_potion_small.potion = {hp:5};
-var hp_potion_medium = new Item("hp_potion_medium",false,false,80,new Craftable(35,1,[{item:herb,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
+var hp_potion_medium = new Item("hp_potion_medium",false,false,80,new Craftable(35,alchemyAptitude,[{item:herb,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
 hp_potion_medium.potion = {hp:10};
 
 var gold = new Item("gold",true,false,1);
@@ -43,9 +50,9 @@ var armorStoreInventory = [];
 var alchemyStoreInventory = [];
 var shops = [generalStoreInventory,toolStoreInventory,armorStoreInventory,alchemyStoreInventory];
 
-var shopTemp = [flint_box,meat,oak_logs,evergreen_logs,copper_ore,iron_ore,copper_bar,iron_bar];
+var shopTemp = [flint_box,meat,oak_logs,evergreen_logs,copper_bar,iron_bar];
 fillShop(generalStoreInventory,shopTemp);
-shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe];
+shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe,copper_short_sword,iron_short_sword,copper_mace,iron_mace];
 fillShop(toolStoreInventory,shopTemp);
 shopTemp = [copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs];
 fillShop(armorStoreInventory,shopTemp);
@@ -85,3 +92,9 @@ function Craftable(xp,requiredPerk,recipe) {
 	this.requiredPerk = requiredPerk;
 	this.recipe = recipe;
 }
+
+var foodList = [cooked_meat,seasoned_meat];
+var smeltList = [copper_bar,iron_bar];
+var smithList = [copper_axe, copper_pickaxe, copper_short_sword, copper_mace, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_short_sword, iron_mace, iron_chestplate,iron_platelegs];
+var potionList = [hp_potion_small,hp_potion_medium];
+var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};
