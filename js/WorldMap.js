@@ -26,9 +26,9 @@ var potionList = [hp_potion_small,hp_potion_medium];
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};
 
 var toolModifierLevel = {copper:1,iron:2,steel:3};
-var treeList = {oak:{toolLevel:1,resource:oak_logs,playerLevel:1,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,playerLevel:5,xp:15}};
-var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,playerLevel:1,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,playerLevel:5,xp:17},coal_vein:{toolLevel:3,resource:coal,playerLevel:10,xp:25}};
-var herbList = {herb_plant:{toolLevel:0,resource:herb,playerLevel:1,xp:9},mushroom_plant:{toolLevel:0,resource:mushroom,playerLevel:1,xp:14}};
+var treeList = {oak:{toolLevel:1,resource:oak_logs,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,requiredPerk:woodcuttingAptitude,xp:15}};
+var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,requiredPerk:miningAptitude,xp:17},coal_vein:{toolLevel:3,resource:coal,requiredPerk:miningAptitude,xp:25}};
+var herbList = {herb_plant:{toolLevel:0,resource:herb,xp:9},mushroom_plant:{toolLevel:0,resource:mushroom,requiredPerk:alchemyAptitude,xp:14}};
 
 var shouldCloseInventory = false;
 var shopEntrance;
@@ -124,21 +124,50 @@ function togglePerks() {
 
 function showPerks(perks = perkList) {
     var result = "";
-    var grey;
     
     for (var i = 0; i < perks.length; i++) {
-        grey = "";
-        //if (!meetsRequirements(perks[i]))
-            //grey = "greyedOut";
-        result += "<tr class='" + grey + "'>";
+        if (!meetsRequirements(perks[i]) || (perkPoints - perkPointsUsed < 5))
+            result += "<tr class='greyedOut'>";
+        else
+            result += "<tr onclick='buyPerk(" + perks[i].compName + ")'>";
         result += "<td><img src='" + perks[i].img + "'></td>";
-        result += "<td><h1>" + perks[i].name + "</h1></td>";
+        result += "<td><h1>" + perks[i].name + "<span class='perkRequirement'>Requires</span></h1></td>";
         result += "<td><p>" + perks[i].description + "</p></td>";
         result += "</tr>";
     }
     
+    for (var i = 0; i < 5; i++)
+        document.getElementById("perkGem" + i).src = "art/perk_gem_empty.png";
+    for (var i = 0; i < perkPoints-perkPointsUsed; i++)
+        if (i >= 5)
+            break;
+        else
+            document.getElementById("perkGem" + i).src = "art/perk_gem.png";
+        
+    
+    $("#perkPoints").html("Perk Points Availible: " + parseInt((perkPoints-perkPointsUsed)/5));
     $("#perkTable").html(result);
+    $("#perkTable>tr").mouseenter(function() {
+        $(this).find("td").find("h1").find("span").removeClass("perkRequirement");
+        $(this).find("td").find("h1").find("span").addClass("perkRequirementHover");
+    });
+    $("#perkTable>tr").mouseleave(function() {
+        $(this).find("td").find("h1").find("span").addClass("perkRequirement");
+        $(this).find("td").find("h1").find("span").removeClass("perkRequirementHover");
+    });
     $("#perks").show();
+}
+
+function buyPerk(given) {
+    for (var i = 0; i < perkList.length; i++)
+        if (given == perkList[i]) {
+            perkPointsUsed += 5;
+            playerPerks.push(given);
+            perkList.splice(i,1);
+            if (perkPoints - perkPointsUsed < 5)
+                $("#perksButton").removeClass("perksButtonActive");
+        }
+    showPerks();
 }
 
 function mapAddons(map) {
@@ -317,7 +346,7 @@ function bossMap(x,y,z) {
 
 addItem(inventory,gold,500);
 addItem(inventory,hp_potion_small);
-addItem(inventory,copper_axe);
+addItem(inventory,iron_axe);
 
 function startEncounter(given) {
     $("#worldMapContainer").hide();
@@ -945,7 +974,7 @@ function tileAction() {
         for (var j = 0; j < equipment.weapon.item.equipment.modifierNames.length; j++)
                 toolLevel = Math.max(toolLevel, toolModifierLevel[equipment.weapon.item.equipment.modifierNames[j]]);
     
-    if(currResource && toolLevel >= currResource.toolLevel && skillMap[resourceType] >= currResource.playerLevel) {
+    if(currResource && toolLevel >= currResource.toolLevel && hasPerk(currResource.requiredPerk)) {
         harvest(currResource);
         if (resourceType == 0)
         	curr[curr.length-1] = curr[curr.length-1].toString() + "_stump";
@@ -955,6 +984,16 @@ function tileAction() {
         	curr[curr.length-1] = "rock";
         updateBoard();
     }
+}
+
+function hasPerk(given) {
+    if (given == null)
+        return true;
+    else 
+        for (var i = 0; i < playerPerks.length; i++)
+            if (playerPerks[i] == given)
+                return true;
+    return false;
 }
 
 function craft(given) {
@@ -980,7 +1019,7 @@ function craft(given) {
 
 function canCraft(given) {
     var recipe = given.craftable.recipe;
-    if (getSkill(given).level < given.craftable.playerLevel)
+    if (!hasPerk(given.craftable.requiredPerk))
         return false;
     
     for (var i = 0; i < recipe.length; i++) {

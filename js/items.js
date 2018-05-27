@@ -4,15 +4,15 @@ var herb = new Item("herb",false,false,7);
 var mushroom = new Item("mushroom",false,false,11);
 var meat = new Item("meat",false,false,4);
 meat.food = {hp:3};
-var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,1,[{item:meat,amount:1}]));
+var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,null,[{item:meat,amount:1}]));
 cooked_meat.food = {hp:8};
-var seasoned_meat = new Item("seasoned_meat",false,false,16,new Craftable(14,3,[{item:meat,amount:1},{item:herb,amount:1}]));
+var seasoned_meat = new Item("seasoned_meat",false,false,16,new Craftable(14,cookingAptitude,[{item:meat,amount:1},{item:herb,amount:1}]));
 seasoned_meat.food = {hp:14};
 
 var copper_ore = new Item("copper_ore",false,false,3);
-var copper_bar = new Item("copper_bar",true,false,8,new Craftable(15,1,[{item:copper_ore,amount:2}]));
+var copper_bar = new Item("copper_bar",true,false,8,new Craftable(15,null,[{item:copper_ore,amount:2}]));
 var iron_ore = new Item("iron_ore",false,false,11);
-var iron_bar = new Item("iron_bar",true,false,24,new Craftable(25,5,[{item:iron_ore,amount:2}]));
+var iron_bar = new Item("iron_bar",true,false,24,new Craftable(25,smithingAptitude,[{item:iron_ore,amount:2}]));
 var coal = new Item("coal",false,false,16);
 
 var copper_short_sword = new Item("copper_short_sword",false,makeShortSword(["copper"]),12,new Craftable(16,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
@@ -80,8 +80,8 @@ function InventoryItem(item,amount) {
     this.amount = amount;
 }
 
-function Craftable(xp,playerLevel,recipe) {
+function Craftable(xp,requiredPerk,recipe) {
 	this.xp = xp;
-	this.playerLevel = playerLevel;
+	this.requiredPerk = requiredPerk;
 	this.recipe = recipe;
 }
