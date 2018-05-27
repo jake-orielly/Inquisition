@@ -18,6 +18,7 @@ var shopMap = [];
 var npcList = [];
 var conversation, conversationChoice;
 var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10","chest","chest_open"];
+var needTool;
 
 var foodList = [cooked_meat,seasoned_meat];
 var smeltList = [copper_bar,iron_bar];
@@ -124,14 +125,22 @@ function togglePerks() {
 
 function showPerks(perks = perkList) {
     var result = "";
-    
+    var requirements;
     for (var i = 0; i < perks.length; i++) {
-        if (!meetsRequirements(perks[i]) || (perkPoints - perkPointsUsed < 5))
+        if (!meetsRequirements(perks[i])) {
             result += "<tr class='greyedOut'>";
+            requirements = "Requires: ";
+            for (var j in perks[i].requirements)
+                requirements += capitalize(j) + ": " + perks[i].requirements[j];
+        }
+        else if (perkPoints - perkPointsUsed < 5) {
+            result += "<tr class='greyedOut'>";
+            requirements = "Costs 1 perk point"
+        }
         else
             result += "<tr onclick='buyPerk(" + perks[i].compName + ")'>";
         result += "<td><img src='" + perks[i].img + "'></td>";
-        result += "<td><h1>" + perks[i].name + "<span class='perkRequirement'>Requires</span></h1></td>";
+        result += "<td><h1>" + perks[i].name + "<span class='perkRequirement'>" + requirements +"</span></h1></td>";
         result += "<td><p>" + perks[i].description + "</p></td>";
         result += "</tr>";
     }
@@ -147,13 +156,13 @@ function showPerks(perks = perkList) {
     
     $("#perkPoints").html("Perk Points Availible: " + parseInt((perkPoints-perkPointsUsed)/5));
     $("#perkTable").html(result);
-    $("#perkTable>tr").mouseenter(function() {
-        $(this).find("td").find("h1").find("span").removeClass("perkRequirement");
-        $(this).find("td").find("h1").find("span").addClass("perkRequirementHover");
+    $("#perkTable>tr>td>h1").mouseenter(function() {
+        $(this).find("span").removeClass("perkRequirement");
+        $(this).find("span").addClass("perkRequirementHover");
     });
-    $("#perkTable>tr").mouseleave(function() {
-        $(this).find("td").find("h1").find("span").addClass("perkRequirement");
-        $(this).find("td").find("h1").find("span").removeClass("perkRequirementHover");
+    $("#perkTable>tr>td>h1").mouseleave(function() {
+        $(this).find("span").addClass("perkRequirement");
+        $(this).find("span").removeClass("perkRequirementHover");
     });
     $("#perks").show();
 }
@@ -884,6 +893,7 @@ function tileAction() {
     var currTool;
     var toolLevel = 0;
     var toolMap = ["axe","pickaxe","pickaxe"];
+    var toolLevelMap = ["copper","iron"];
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level,playerSkills.alchemy.level];
     var currX, currY, currNPC;
     
@@ -983,6 +993,26 @@ function tileAction() {
         else 
         	curr[curr.length-1] = "rock";
         updateBoard();
+    }
+    else {
+        if (!hasPerk(currResource.requiredPerk)) {
+            $("#toolNeededText").html("Need " + currResource.requiredPerk.name);
+            $("#toolNeededImage").attr("src", currResource.requiredPerk.img);
+            $("#toolNeeded").fadeIn(200);
+            clearInterval(needTool);
+            needTool = setTimeout(function() {
+                $("#toolNeeded").fadeOut(200);
+            },1500);
+        }
+        else if (toolLevel < currResource.toolLevel) {
+            $("#toolNeededText").html("Need " + toolLevelMap[currResource.toolLevel-1] + " " + toolMap[resourceType]);
+            $("#toolNeededImage").attr("src","art/" + toolLevelMap[currResource.toolLevel-1] + "_" + toolMap[resourceType] + ".png");
+            $("#toolNeeded").fadeIn(200);
+            clearInterval(needTool);
+            needTool = setTimeout(function() {
+                $("#toolNeeded").fadeOut(200);
+            },1500);
+        }
     }
 }
 

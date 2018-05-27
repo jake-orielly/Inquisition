@@ -1,5 +1,5 @@
 function frothingHeretic() {
-    var frothingHeretic = new Character(10,13,1,makeDagger(["rusty"]),"the frothing heretic",hisHers(),"enemy","chest");
+    var frothingHeretic = new Character(10,13,makeDagger(["rusty"]),"the frothing heretic",hisHers(),"enemy","chest");
     frothingHeretic.abilities = [flagellate(frothingHeretic.charType)];
     frothingHeretic.makeMove = frothingHereticAI;
     initCharacter(frothingHeretic);
@@ -7,39 +7,38 @@ function frothingHeretic() {
 }
 
 function ravenousGlutton() {
-    return new Character(45,15,2,makeCleaver(),"the ravenous glutton",hisHers(),"enemy","ravenousGlutton");
+    return new Character(45,15,makeCleaver(),"the ravenous glutton",hisHers(),"enemy","ravenousGlutton");
 }
 
 function caveBeast() {
-    return new Character(45,15,2,makeCleaver(),"the cave beast",["it","it's"],"enemy","monster");
+    return new Character(45,15,makeCleaver(),"the cave beast",["it","it's"],"enemy","monster");
 }
 
 function rat() {
-    var rat = new Character(5,5,2,makeCleaver(),"the rat",["it","it's"],"enemy","chest");
+    var rat = new Character(5,5,makeCleaver(),"the rat",["it","it's"],"enemy","chest");
     rat.makeMove = baseAI;
     rat.loot = [{item:meat,odds:100,amount:1}];
     return rat;
 }
 
 function fallenKnight() {
-    var fallenKnight = new Character(25,10,3,makeShortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
+    var fallenKnight = new Character(25,10,makeShortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
     fallenKnight.abilities = [secondWind(fallenKnight.charType)];
     fallenKnight.makeMove = fallenKnightAI;
     return fallenKnight;
 }
 
 function createPlayer() {
-    var player = new Character(20,13,3,null,"Jake",["him","his"],"player","player");
+    var player = new Character(20,13,null,"Jake",["him","his"],"player","player");
     player.abilities = [secondWind(player.charType),doubleEdge(player.charType),flagellate(player.charType),woundedFury(player.charType),retaliation(player.charType)];
     initCharacter(player);
     return player;
 }
 
-var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,abilities = []) {
+var Character = function(maxHP,ac,weapon,name,pronounSet,charType,image,abilities = []) {
     this.hp = maxHP;
     this.maxHP = maxHP;
     this.ac = ac;
-    this.attack = attack;
     this.weapon = weapon;
     this.name = name;
     this.charType = charType;
@@ -62,16 +61,6 @@ var Character = function(maxHP,ac,attack,weapon,name,pronounSet,charType,image,a
                     result += equipment[curr].item.equipment.ac;
             return result;
         }
-    }
-    
-    this.getAttack = function(given) {
-        var result = this.attack;
-        if (this.charType = "player")
-        if (attackPerks[given])
-            for (var i = 0; i < attackPerks[given].length; i++)
-                result += attackPerks[given][i];
-        console.log(result);
-        return result;
     }
 }
 

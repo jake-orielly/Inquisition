@@ -119,6 +119,8 @@
     position: absolute;
     top: 0;
     width: calc(100% - 18px);
+    height: calc(100% - 18px);
+    z-index: 1;
     display:none;
 }
 
@@ -333,6 +335,30 @@
     position: absolute;
 }
 
+#toolNeeded { 
+    float:left;
+    margin-right: 2em;
+    background: #eeeeee;
+    background: -moz-linear-gradient(top,  #eeeeee 0%, #cccccc 100%);
+    background: -webkit-linear-gradient(top,  #eeeeee 0%,#cccccc 100%);
+    background: linear-gradient(to bottom,  #eeeeee 0%,#cccccc 100%);
+    padding: 0px 1em;
+    border: 4px solid rgb(61,61,61);
+    border-radius: 12px;
+    margin-top: -0.5em;
+    display:none;
+}
+
+#toolNeededText { 
+    float:left;
+    font-size:20px;
+    font-weight: bold;
+}
+
+#toolNeededImage { 
+    float:left;
+    margin-left: 1em;
+}
 
 button:focus {
     outline:0;

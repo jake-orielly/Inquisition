@@ -340,17 +340,19 @@ function makeAttack(attacker, defender) {
 
 function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     var result = 0;
-    var attack = attackRoll();
     var critThreshold = 20;
-    var curr;
+    var curr, attack;
+    var baseAttack = attackRoll();
     
+    attack = baseAttack + attacker.weapon.getAttribute("attack");
+    if (attacker == player)
+        attack = applyPerks(attack,attacker.weapon.getAttribute("killVerb"),"attack");
     if (!attacker.weapon)
         attacker.weapon = attacker.unarmed;
     
     for (var i = 0; i < player.buffs.critChance.length; i++)
         critThreshold -= player.buffs.critChance[i].count;
-
-    if (attack + attacker.weapon.getAttribute("attack") +attacker.getAttack(attacker.weapon.killVerb) > defender.ac || attack == 20) {
+    if (attack > defender.ac || attack == 20) {
         result = getDamage(attacker.weapon.getAttribute("damage")[0],attacker.weapon.getAttribute("damage")[1]);
         if (attacker.buffs.damage)
             for (var i = 0; i < attacker.buffs.damage.length; i++) {
@@ -362,11 +364,31 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
                 }
             }
     }
-
-    if (attack >= critThreshold) {
+    if (attacker == player)
+        result = applyPerks(result,attacker.weapon.getAttribute("killVerb"),"damage");
+    console.log(critThreshold);
+    critThreshold = applyPerks(critThreshold,attacker.weapon.getAttribute("killVerb"),"crit");
+    console.log(critThreshold);
+    if (baseAttack >= critThreshold) {
         result = [result * 2,true];
     }
     return result;
+}
+
+function applyPerks(given,killVerb,attribute) {
+    for (var i = 0; i < playerPerks.length; i++)
+            for (var j in playerPerks[i].requirements)
+                if (j == killVerb)
+                    for (var k in playerPerks[i].functional)
+                        if (k == attribute)
+                            given = playerPerks[i].functional[k](given);
+    return given;
+    /*for (var i = 0; i < playerPerks.length; i++)
+            for (var j in playerPerks[i].requirements)
+                if (j == attacker.weapon.getAttribute("killVerb"))
+                    for (var k in playerPerks[i].functional)
+                        if (k == "damage")
+                            result = playerPerks[i].functional[k](result);*/
 }
 
 function attackRoll() {
