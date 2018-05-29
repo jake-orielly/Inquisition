@@ -121,20 +121,23 @@ function showPerks(perks = perkList) {
     var result = "";
     var requirements;
     for (var i = 0; i < perks.length; i++) {
+        requirements = "";
         if (!meetsRequirements(perks[i])) {
             result += "<tr class='greyedOut'>";
             requirements = "Requires: ";
             for (var j in perks[i].requirements)
                 requirements += capitalize(j) + ": " + perks[i].requirements[j];
+            requirements = "<span class='perkRequirement'>" + requirements + "</span>";
         }
         else if (perkPoints - perkPointsUsed < 5) {
             result += "<tr class='greyedOut'>";
             requirements = "Costs 1 perk point"
+            requirements = "<span class='perkRequirement'>" + requirements + "</span>";
         }
         else
             result += "<tr onclick='buyPerk(" + perks[i].compName + ")'>";
         result += "<td><img src='" + perks[i].img + "'></td>";
-        result += "<td><h1>" + perks[i].name + "<span class='perkRequirement'>" + requirements +"</span></h1></td>";
+        result += "<td><h1>" + perks[i].name + requirements + "</h1></td>";
         result += "<td><p>" + perks[i].description + "</p></td>";
         result += "</tr>";
     }
@@ -350,6 +353,7 @@ function bossMap(x,y,z) {
 addItem(inventory,gold,500);
 addItem(inventory,hp_potion_small);
 addItem(inventory,iron_axe);
+addItem(inventory,iron_pickaxe);
 
 function startEncounter(given) {
     $("#worldMapContainer").hide();
@@ -591,7 +595,7 @@ function showMenu(given) {
         if (canCraft(currList[i])) {
             result += "<tr>";
             result += "<td><img onclick='craft(" + currList[i].name + ")' src='art/" + currList[i].name + ".png'><td>";
-            result += "<td>" + currList[i].getName() + "<td>";
+            result += "<td onclick='craft(" + currList[i].name + ")'>" + currList[i].getName() + "<td>";
             result += "</tr>";
         }
     }

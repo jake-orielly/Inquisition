@@ -2,35 +2,43 @@ var playerSkills = {};
 var playerPerks = [];
 var perkPoints = 0;
 var perkPointsUsed = 0;
+var lvlUpTextInterval;
 
-playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting"};
-playerSkills.mining = {xp:0,level:1,name:"Mining"};
-playerSkills.smithing = {xp:0,level:1,name:"Smithing"};
-playerSkills.cooking = {xp:0,level:1,name:"Cooking"};
-playerSkills.alchemy = {xp:0,level:1,name:"Alchemy"};
-playerSkills.piercing = {xp:0,level:1,name:"Piercing"};
-playerSkills.chopping = {xp:0,level:1,name:"Chopping"};
-playerSkills.crushing = {xp:0,level:1,name:"Crushing"};
+playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting",img:"art/oak.png"};
+playerSkills.mining = {xp:0,level:1,name:"Mining",img:"art/copper_vein.png"};
+playerSkills.smithing = {xp:0,level:1,name:"Smithing",img:"art/anvil.png"};
+playerSkills.cooking = {xp:0,level:1,name:"Cooking",img:"art/fire.png"};
+playerSkills.alchemy = {xp:0,level:1,name:"Alchemy",img:"art/distillery.png"};
+playerSkills.piercing = {xp:0,level:1,name:"Piercing",img:"art/copper_short_sword.png"};
+playerSkills.chopping = {xp:0,level:1,name:"Chopping",img:"art/copper_axe.png"};
+playerSkills.crushing = {xp:0,level:1,name:"Crushing",img:"art/copper_mace.png"};
 
 function harvest(given) {
     var skill;
     var resourceLists = [treeList,veinList,herbList];
     var skillsList = [playerSkills.woodcutting,playerSkills.mining,playerSkills.alchemy];
+    var secondarySkillMap = ["chopping","piercing"];
     var curr;
     
     for (var i = 0; i < skillsList.length; i++) {
 	    curr = Object.keys(resourceLists[i]);
+            
 	    for (var j = 0; j < curr.length; j++)
-		    if (given == resourceLists[i][curr[j]])
+		    if (given == resourceLists[i][curr[j]]) {
 		        skill = skillsList[i];
+                if (secondarySkillMap[i])
+                    giveAttackXP(secondarySkillMap[i],parseInt(given.xp/2.5))
+            }
     }
-    
+
     giveXP(given,skill);
     addItem(inventory,given.resource);
 }
 
 function craftXP(given) {
 	giveXP(given.craftable,getSkill(given));
+    if(getSkill(given).name == "Smithing")
+        giveAttackXP("crushing",parseInt(given.craftable.xp/2.5))
 }
 
 function getSkill(given) {
@@ -68,7 +76,15 @@ function levelUp(skill) {
     if (perkPoints % 5 == 0)
         $("#perksButton").addClass("perksButtonActive");
     $("#curr" + skill.name + "Level").html(":" + skill.level);
-    console.log("You leveled up in " + skill.name  + ". Your " + skill.name + " level is now " + skill.level + ". ");
+    $("#lvlUpImage").attr("src",skill.img);
+    $("#lvlUpName").html(skill.name);
+    $("#lvlUpText").html("Level: " + skill.level);
+    clearInterval(lvlUpTextInterval);
+    $("#levelUpMessage").fadeIn(400);
+    lvlUpTextInterval = setInterval(function(){
+        $("#levelUpMessage").fadeOut(400);
+    },1600)
+    
 }
 
 function xpNeeded(level) {

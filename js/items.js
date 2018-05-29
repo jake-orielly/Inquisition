@@ -15,23 +15,23 @@ var iron_ore = new Item("iron_ore",false,false,11);
 var iron_bar = new Item("iron_bar",true,false,24,new Craftable(25,smithingAptitude,[{item:iron_ore,amount:2}]));
 var coal = new Item("coal",false,false,16);
 
-var copper_short_sword = new Item("copper_short_sword",false,makeShortSword(["copper"]),12,new Craftable(16,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var copper_short_sword = new Item("copper_short_sword",false,makeShortSword(["copper"]),12,new Craftable(16,null,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
 var iron_short_sword = new Item("iron_short_sword",false,makeShortSword(["iron"]),40,new Craftable(42,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
 
-var copper_mace = new Item("copper_mace",false,makeMace(["copper"]),14,new Craftable(18,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var copper_mace = new Item("copper_mace",false,makeMace(["copper"]),14,new Craftable(18,null,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
 var iron_mace = new Item("iron_mace",false,makeMace(["iron"]),44,new Craftable(48,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
 
-var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var copper_axe = new Item("copper_axe",false,makeAxe(["copper"]),15,new Craftable(20,null,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
 var iron_axe = new Item("iron_axe",false,makeAxe(["iron"]),45,new Craftable(50,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
 var steel_axe = new Item("steel_axe",false,makeAxe(["steel"]),115);
 
-var copper_pickaxe = new Item("copper_pickaxe",false,makePickaxe(["copper"]),15,new Craftable(20,1,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
+var copper_pickaxe = new Item("copper_pickaxe",false,makePickaxe(["copper"]),15,new Craftable(20,null,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
 var iron_pickaxe = new Item("iron_pickaxe",false,makePickaxe(["iron"]),45,new Craftable(50,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
 
-var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75,new Craftable(45, 3,[{item:copper_bar,amount:7}]));
+var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),75,new Craftable(45, null,[{item:copper_bar,amount:7}]));
 var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),190,new Craftable(90,smithingAptitude,[{item:iron_bar,amount:7}]));
 
-var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,2,[{item:copper_bar,amount:4}]));
+var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,null,[{item:copper_bar,amount:4}]));
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,smithingAptitude,[{item:iron_bar,amount:4}]));
 
 var glass_vial = new Item("glass_vial",false,false,5);

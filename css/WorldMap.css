@@ -360,6 +360,35 @@
     margin-left: 1em;
 }
 
+#levelUpMessage {
+    display:none;
+    z-index: 1;
+    background: #eeeeee;
+    background: -moz-linear-gradient(top,  #eeeeee 0%, #cccccc 100%);
+    background: -webkit-linear-gradient(top,  #eeeeee 0%,#cccccc 100%);
+    background: linear-gradient(to bottom,  #eeeeee 0%,#cccccc 100%);
+    padding: 0px 1em;
+    border: 4px solid rgb(61,61,61);
+    border-radius: 2em;
+    text-align: center;
+}
+
+#levelUpMessage p {
+    font-size:4em;
+    margin-top:0px;
+    text-shadow: 2px 2px 29px rgba(255, 223, 0, 1);
+    text-align: center;
+}
+
+#lvlUpText { 
+    white-space:nowrap;
+}
+
+#levelUpMessage img {
+    width:6em;
+    height:6em;
+}
+
 button:focus {
     outline:0;
 }
