@@ -90,23 +90,31 @@ function makeBoard() {
 }
 
 function makePerkSortButtons(sorted = "general") {
+    var categories = ["combat","harvesting","crafting"];
     var onclick = "onclick='toggleSortActive(this)'";
-    var result = "<td><button id='generalPerkSort'" + onclick + ">General</button></td>";
-    for (var i in playerSkills) {
-        result += "<td><button id='" + i + "PerkSort' " + onclick + ">" + playerSkills[i].name + "</button></td>";
+    var result = "<td><p id=generalPerkSort " + onclick + ">General</p></td>";
+    for (var i = 0; i < categories.length; i++) {
+        result += "<td><div class='dropdown'>";
+        result += "<button onclick='dropdownToggle($(this))' class='dropbtn'>" + capitalize(categories[i]) + "</button>";
+        result += "<div id='perkDropdown' class='dropdown-content'>";
+        for (var j in playerSkills) {
+            if (playerSkills[j].category == categories[i])
+                result += "<p id='" + j + "PerkSort' " + onclick + ">" + playerSkills[j].name + "</p>";
+        }
+        result += "</div></div></td>";
     }
     $("#perkSortButtonList").html(result);
-    $("#generalPerkSort").toggleClass("sortActive")
 }
 
 function toggleSortActive(given) {
+    console.log(1);
     var tempPerkList = [];
     for (var i = 0; i < perkList.length; i++)
         for(var j = 0; j < perkList[i].categories.length; j++)
             if (given.innerHTML.toLowerCase() == perkList[i].categories[j])
                 tempPerkList.push(perkList[i]);
     showPerks(tempPerkList);
-    $("#perkSortButtonList>td>button").removeClass("sortActive");
+    $("#perkSortButtonList>td>div>div>p").removeClass("sortActive");
     given.classList.toggle("sortActive");
 }
 

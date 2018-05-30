@@ -344,11 +344,11 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     var curr, attack;
     var baseAttack = attackRoll();
     
+    if (!attacker.weapon)
+        attacker.weapon = attacker.unarmed;
     attack = baseAttack + attacker.weapon.getAttribute("attack");
     if (attacker == player)
         attack = applyPerks(attack,attacker.weapon.getAttribute("killVerb"),"attack");
-    if (!attacker.weapon)
-        attacker.weapon = attacker.unarmed;
     
     for (var i = 0; i < player.buffs.critChance.length; i++)
         critThreshold -= player.buffs.critChance[i].count;

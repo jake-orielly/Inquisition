@@ -4,14 +4,15 @@ var perkPoints = 0;
 var perkPointsUsed = 0;
 var lvlUpTextInterval;
 
-playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting",img:"art/oak.png"};
-playerSkills.mining = {xp:0,level:1,name:"Mining",img:"art/copper_vein.png"};
-playerSkills.smithing = {xp:0,level:1,name:"Smithing",img:"art/anvil.png"};
-playerSkills.cooking = {xp:0,level:1,name:"Cooking",img:"art/fire.png"};
-playerSkills.alchemy = {xp:0,level:1,name:"Alchemy",img:"art/distillery.png"};
-playerSkills.piercing = {xp:0,level:1,name:"Piercing",img:"art/copper_short_sword.png"};
-playerSkills.chopping = {xp:0,level:1,name:"Chopping",img:"art/copper_axe.png"};
-playerSkills.crushing = {xp:0,level:1,name:"Crushing",img:"art/copper_mace.png"};
+playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting",img:"art/oak.png",category:"harvesting"};
+playerSkills.mining = {xp:0,level:1,name:"Mining",img:"art/copper_vein.png",category:"harvesting"};
+playerSkills.smithing = {xp:0,level:1,name:"Smithing",img:"art/anvil.png",category:"crafting"};
+playerSkills.cooking = {xp:0,level:1,name:"Cooking",img:"art/fire.png",category:"crafting"};
+playerSkills.alchemy = {xp:0,level:1,name:"Alchemy",img:"art/distillery.png",category:"crafting"};
+playerSkills.piercing = {xp:0,level:1,name:"Piercing",img:"art/copper_short_sword.png",category:"combat"};
+playerSkills.chopping = {xp:0,level:1,name:"Chopping",img:"art/copper_axe.png",category:"combat"};
+playerSkills.crushing = {xp:0,level:1,name:"Crushing",img:"art/copper_mace.png",category:"combat"};
+playerSkills.unarmed = {xp:0,level:1,name:"Unarmed",img:"art/fist.png",category:"combat"};
 
 function harvest(given) {
     var skill;
@@ -61,7 +62,10 @@ function giveXP(item,skill) {
 }
 
 function giveAttackXP(skill,given) {
-    skill = playerSkills[skill];
+    if (skill == "pummeled")
+        skill = playerSkills["unarmed"];
+    else
+        skill = playerSkills[skill];
     skill.xp += given;
     if (skill.xp >= xpNeeded(skill.level))
         levelUp(skill);
@@ -110,13 +114,14 @@ function updateXPBar(skill) {
 var piercingAptitude = {name:"Piercing Aptitude",img:"art/copper_short_sword.png",description:"+3 attack, +1 damage, and +1 crit range with piercing weapons",requirements:{piercing:3},categories:["general","piercing"],compName:"piercingAptitude",functional:{attack:function(given){return given+3},damage:function(given){return given+1},crit:function(given){return given-1}}};
 var choppingAptitude = {name:"Chopping Aptitude",img:"art/copper_axe.png",description:"+2 attack and +2 damage with chopping weapons",requirements:{chopping:3},categories:["general","chopping"],compName:"choppingAptitude",functional:{attack:function(given){return given+2},damage:function(given){return given+2}}};
 var crushingAptitude = {name:"Crushing Aptitude",img:"art/copper_mace.png",description:"+3 damage with crushing weapons",requirements:{crushing:3},categories:["general","crushing"],compName:"crushingAptitude",functional:{damage:function(given){return given+3}}};
+var unarmedAptitude = {name:"Unarmed Aptitude",img:"art/fist.png",description:"+5 attack, +2 damage, and +2 crit range when not using a weapon",requirements:{unarmed:3},categories:["general","unarmed"],compName:"unarmedAptitude",functional:{attack:function(given){return given+5},damage:function(given){return given+2},crit:function(given){return given-2}}};
 var woodcuttingAptitude = {name:"Woodcutting Aptitude",img:"art/evergreen.png",description:"You can chop evergreen trees with an iron axe.",requirements:{woodcutting:3},categories:["general","woodcutting"],compName:"woodcuttingAptitude"};
 var miningAptitude = {name:"Mining Aptitude",img:"art/iron_vein.png",description:"You can mine iron ore with an iron pickaxe.",requirements:{mining:3},categories:["general","mining"],compName:"miningAptitude"};
 var smithingAptitude = {name:"Smithing Aptitude",img:"art/iron_bar.png",description:"You can smith iron weapons and armor.",requirements:{smithing:3},categories:["general","smithing"],compName:"smithingAptitude"};
 var cookingAptitude = {name:"Cooking Aptitude",img:"art/seasoned_meat.png",description:"You can cook more complex foods.",requirements:{cooking:3},categories:["general","cooking"],compName:"cookingAptitude"};
 var alchemyAptitude = {name:"Alchemy Aptitude",img:"art/hp_potion_medium.png",description:"You can craft more powerful potions.",requirements:{alchemy:3},categories:["general","alchemy"],compName:"alchemyAptitude"};
 
-var perkList = [piercingAptitude,choppingAptitude,crushingAptitude,woodcuttingAptitude,miningAptitude,smithingAptitude,cookingAptitude,alchemyAptitude];
+var perkList = [piercingAptitude,choppingAptitude,crushingAptitude,unarmedAptitude,woodcuttingAptitude,miningAptitude,smithingAptitude,cookingAptitude,alchemyAptitude];
 
 /*function extraOre(given) {
     if (parseInt(Math.random()*100+1) <= 15)

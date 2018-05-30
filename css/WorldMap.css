@@ -154,9 +154,11 @@
     margin: 2px 10px;
 }
 
-#perks td p {
-    margin-top: 0.5em;
-    margin-left: 0.5em;
+#perks td p:not(#generalPerkSort) {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px 30px;
 }
 
 .greyedOut { 
@@ -174,9 +176,9 @@
     top: 4px;
 }
 
-#perkSortButtonList button {
+#perkSortButtonList button, #generalPerkSort {
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 20px;
 }
 
 #perkPoints {
@@ -185,9 +187,10 @@
     margin: 5px 20px;
 }
 
-.sortActive { 
+.sortActive, .sortActive:hover { 
     background: green;
     color: white;
+    text-shadow: 2px 2px 2px black;
 }
 
 #inventoryTable td, #shopTable td, #treasureTable td {
@@ -392,6 +395,54 @@
 button:focus {
     outline:0;
 }
+
+.dropbtn, #generalPerkSort {
+    background-color: #3498DB;
+    color: white;
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+#generalPerkSort {
+    font-family: sans-serif;
+}
+
+.dropbtn {
+    font-size: 16px;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #2980B9;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content p {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+#tableContainer {
+    height: 85%;
+    overflow: auto;
+}
+
+.dropdown p:hover:not(.sortActive) {background-color: #ddd}
 
 .unselectable {
     -webkit-user-select: none; /* Safari 3.1+ */
