@@ -9,8 +9,6 @@ var itemsOpen = false;
 
 var retaliationBuff = {image:"retaliationBuff",bonus:1,count:0};
 var woundedFuryBuff = {image:"woundedFuryBuff",bonus:1,count:0};
-var bloodBoilBuff = {image:"bloodBoilBuff",bonus:5,count:0};
-var oakSkinBuff = {image:"oakSkinBuff",bonus:4,count:0,degrades:1};
 
 player = createPlayer();
 
@@ -74,10 +72,6 @@ function Ability(charType,name,description,maxCooldown,buff,categories,func) {
     this.func = func;
 }
 
-function regrowth(charType) {
-    return new Ability(charType,"Regrowth","Life energy knits your flesh together, healing you.",4,{},{},regrowthFunc)
-}
-
 function retaliation(charType) {
     return new Ability(charType,"Retaliation","Every time you take damage, you gain bonus attack, which is expended the next time you strike.",-1,retaliationBuff,{damageTriggers:retaliationFunc,buffs:{damage:retaliationBuff}},noFunc);
 }
@@ -90,33 +84,8 @@ function woundedFury(charType) {
     return new Ability(charType,"Wounded Fury","The lower your health, the higher your crit chance.",-1,woundedFuryBuff,{hpTriggers:woundedFuryFunc,buffs:{critChance:woundedFuryBuff}},noFunc);
 }
 
-function bloodBoil(charType) {
-    return new Ability(charType, "Blood Boil","Your blood boils with demonic strength, increasing the damage of your next attack but damaging you.",3,bloodBoilBuff,{buffs:{damage:bloodBoilBuff}},bloodBoilFunc);
-}
-
-function oakSkin(charType) {
-    return new Ability(charType, "Oak Skin","Bless yourself with skin linke oak bark, gaining 4 AC.",6,oakSkinBuff,{buffs:{ac:oakSkinBuff}},oakSkinFunc);
-}
-
 function noFunc() {
     console.log("Error 2: Bad Ability Function","The lower your health, the higher your crit chance.");
-}
-
-function regrowthFunc() {
-    var combatText = "<tr><td>";
-    var target;
-    var amount = 8;
-    if (this.charType == "player")
-        target = player;
-    else
-        target = currEnemy;
-    target.mana -= 12;
-    updateMana(target);
-    changeHP(amount,target);
-    moveText(target.charType,amount);
-    combatText += target.name + " got " + target.possPronoun + " second wind, healing for <span class='green'>" + amount + "</span> hp.";
-    combatText += "</td></tr>";
-    document.getElementById("combatLog").innerHTML += combatText;
 }
 
 function updateAbilities() {
@@ -164,11 +133,17 @@ function endCombat(target) {
 }
 
 function triggerAbility(owner,given) {
-    if (owner.abilities[given].cooldown == 0 && !dead) {
-        owner.abilities[given].cooldown = owner.abilities[given].maxCooldown;
-        owner.abilities[given].func();
-        if (owner == player)
-            $(".abilityButton")[given].classList.add("coolDown");
+    if (!owner.abilities[given].manaCost || (owner.mana >= owner.abilities[given].manaCost)) {
+        if (owner.abilities[given].manaCost) {
+            owner.mana -= owner.abilities[given].manaCost;
+            updateMana(owner);
+        }
+        if (owner.abilities[given].cooldown == 0 && !dead) {
+            owner.abilities[given].cooldown = owner.abilities[given].maxCooldown;
+            owner.abilities[given].func(owner);
+            if (owner == player)
+                $(".abilityButton")[given].classList.add("coolDown");
+        }
     }
 }
 
@@ -198,43 +173,6 @@ function showBuff(buff,charType) {
 
 function hideBuff(given) {
     $("#" + given + "Row").hide();
-}
-
-function bloodBoilFunc() {
-    var selfDamage = -3;
-    var combatText = "<tr><td>";
-    giveAttackXP("demon",17);
-    this.buff.count += 1;
-    var target;
-    if (this.charType == "player")
-        target = player;
-    else
-        target = currEnemy;
-    target.mana -= 6;
-    updateMana(target);
-    changeHP(selfDamage,target);
-    moveText(target.charType,selfDamage);
-    combatText += capitalize(target.name) + "'s blood boils with demonic energy inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + target.possPronoun + " next attack!";
-    combatText += "</td></tr>";
-    document.getElementById("combatLog").innerHTML += combatText;
-    showBuff(this.buff,this.charType);
-}
-
-function oakSkinFunc() {
-    var combatText = "<tr><td>";
-    var target;
-    this.buff.count += 3;
-    giveAttackXP("druid",17);
-    if (this.charType == "player")
-        target = player;
-    else
-        target = currEnemy;
-    target.mana -= 8;
-    updateMana(target);
-    combatText += capitalize(target.name) + " blessed " + target.perPronoun + "self, gaining 8 AC!";
-    combatText += "</td></tr>";
-    document.getElementById("combatLog").innerHTML += combatText;
-    showBuff(this.buff,this.charType);
 }
 
 function doubleEdgeFunc() {

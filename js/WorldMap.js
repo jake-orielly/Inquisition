@@ -180,6 +180,9 @@ function buyPerk(given) {
             perkList.splice(i,1);
             if (perkPoints - perkPointsUsed < 5)
                 $("#perksButton").removeClass("perksButtonActive");
+            if (given.abilities)
+                for (var j = 0; j < given.abilities.length; j++)
+                    player.abilities.push(given.abilities[j](player.charType))
         }
     showPerks();
 }
