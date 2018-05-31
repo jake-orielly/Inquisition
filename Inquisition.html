@@ -13,6 +13,11 @@
                         <div class="hpText" id="enemyHPText">1/1</div>
                     </div>
                 </div>
+                <div class="manaMax" id="enemyManaMax">
+                    <div class="mana" id="enemyMana">
+                        <div class="manaText" id="enemyManaText">1/1</div>
+                    </div>
+                </div>
                 <div id="enemyImgContainer">
                     <img>
                     <div id="enemyActionText" class="actionText">MISS</div>
@@ -32,6 +37,11 @@
                         <div class="hpText" id="playerHPText">1/1</div>
                     </div>
                 </div>
+                <div class="manaMax" id="playerManaMax">
+                    <div class="mana" id="playerMana">
+                        <div class="manaText" id="playerManaText">1/1</div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="tabMenu inquisition">
@@ -41,15 +51,15 @@
         <table id = "movesSection" class="inquisition tabContent">
             <tr>
                 <td><div class="actionButton" onClick="playerTurn()">Attack</div></td>
-                <td><div class="abilityButton">Error</div></td>
+                <td><div class="abilityButton">error</div></td>
             </tr>
             <tr>
                 <td><div class="actionButton" onClick="toggleAbilities()">Abilities</div></td>
-                <td><div class="abilityButton">Error</div></td>
+                <td><div class="abilityButton">error</div></td>
             </tr>
             <tr>
                 <td><div class="actionButton" onClick="toggleItems()">Items</div></td>
-                <td><div class="abilityButton" >Error</div></td>
+                <td><div class="abilityButton" >error</div></td>
             </tr>
             <tr>
                 <td><div class="actionButton" onClick="wait()">Wait</div></td>
@@ -85,6 +95,7 @@
                     <div class="equipmentSlot" id="weaponSlot" style="right: 187; top:142px;"><img src='art/inventorySlot.png'></div>
                     <div class="equipmentSlot" id="chestSlot" style="right: 117px; top:74px;" src='art/inventorySlot.png'><img src='art/inventorySlot.png'></div>
                     <div class="equipmentSlot" id="legsSlot" style="right: 117px; top:157px;" src='art/inventorySlot.png'><img src='art/inventorySlot.png'></div>
+                    <div id="manaBarMax"><div id="manaBarCurr"></div></div>
                     <div id="hpBarMax"><div id="hpBarCurr"></div></div>
                 </div>
             </div>

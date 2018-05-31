@@ -320,18 +320,37 @@
     height: 354px;
 }
 
-#hpBarCurr  {
+#hpBarCurr, #manaBarCurr {
     height: calc(100% - 1px);
     width:11px;
+}
+
+#hpBarCurr {
     background-color:green;
 }
 
-#hpBarMax {
+#manaBarCurr {
+    background-color:cadetblue;
+}
+
+#hpBarMax, #manaBarMax {
     float: right;
     width: 12px;
     height: 6em;
-    background-color: red;
     border: 2px solid black;
+}
+
+#hpBarMax {
+    background-color: red;
+}
+
+#manaBarMax {
+    background-color: white;
+    margin-left: 3px;
+}
+
+.abilityButton {
+    display:none;
 }
 
 .equipmentSlot, .equipmentSlot img {

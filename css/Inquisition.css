@@ -1,4 +1,4 @@
-.hp, .hpMax {
+.hp, .hpMax, .mana, .manaMax {
     height: 30px;
     width: 250px;
 }
@@ -7,11 +7,15 @@
     background-color: green;
 }
 
-.hpMax {
+.mana {
+    background-color:cadetblue
+}
+
+.hpMax, .manaMax {
     outline: 2px solid black;
 }
 
-.hpText {
+.hpText, .manaText {
     font-size: 18px;
     font-weight: 900;
     margin-left: 10px;
@@ -20,6 +24,11 @@
 .red {
     font-weight: bold;
     color: red;
+}
+
+.blue {
+    font-weight: bold;
+    color: cadetblue;
 }
 
 .green {
@@ -46,8 +55,7 @@
     padding: 0;
 }
 
-#enemyHPMax {
-    float:right;
+#enemyHPMax, #enemyManaMax {
     margin: 5px;
 }
 
@@ -98,12 +106,9 @@
 #playerImageContainer {
     height:90%;
     position: relative;
-    bottom: 35px;
 }
 
-#playerHPMax {
-    position:absolute;
-    bottom:0;
+#playerHPMax, #playerManaMax {
     margin: 5px;
 }
 
@@ -121,10 +126,6 @@
 #enemyImgContainer {
     height:90%;
     position:relative;
-}
-
-#enemyHPMax {
-    float:right;
 }
 
 .actionButton, .abilityButton {
@@ -180,6 +181,10 @@
     height: 50px;
     margin: 0px;
     border: solid;
+    background: #eeeeee;
+    background: -moz-linear-gradient(top,  #eeeeee 0%, #cccccc 100%);
+    background: -webkit-linear-gradient(top,  #eeeeee 0%,#cccccc 100%);
+    background: linear-gradient(to bottom,  #eeeeee 0%,#cccccc 100%);
 }
 
 .playerBigBuffText {

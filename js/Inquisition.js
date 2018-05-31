@@ -9,7 +9,8 @@ var itemsOpen = false;
 
 var retaliationBuff = {image:"retaliationBuff",bonus:1,count:0};
 var woundedFuryBuff = {image:"woundedFuryBuff",bonus:1,count:0};
-var flagellateBuff = {image:"flagellateBuff",bonus:5,count:0};
+var bloodBoilBuff = {image:"bloodBoilBuff",bonus:5,count:0};
+var oakSkinBuff = {image:"oakSkinBuff",bonus:4,count:0,degrades:1};
 
 player = createPlayer();
 
@@ -37,8 +38,10 @@ function startCombat(given) {
     for (var i = 0; i < player.hpTriggers.length; i++)
                 player.hpTriggers[i]();
     
-    for (var i = 0; i < characters.length; i++)
+    for (var i = 0; i < characters.length; i++) {
         updateHP(characters[i]);
+        updateMana(characters[i]);
+    }
     
     for (var i = 0; i < player.abilities.length; i++) {
         if(player.abilities[i].cooldown > 0)
@@ -71,8 +74,8 @@ function Ability(charType,name,description,maxCooldown,buff,categories,func) {
     this.func = func;
 }
 
-function secondWind(charType) {
-    return new Ability(charType,"Second Wind","Regain half your missing health.",5,{},{},secondWindFunc)
+function regrowth(charType) {
+    return new Ability(charType,"Regrowth","Life energy knits your flesh together, healing you.",4,{},{},regrowthFunc)
 }
 
 function retaliation(charType) {
@@ -87,23 +90,28 @@ function woundedFury(charType) {
     return new Ability(charType,"Wounded Fury","The lower your health, the higher your crit chance.",-1,woundedFuryBuff,{hpTriggers:woundedFuryFunc,buffs:{critChance:woundedFuryBuff}},noFunc);
 }
 
-function flagellate(charType) {
-    return new Ability(charType, "Flagellate","Lash yourself, increasing the damage of your next attack.",3,flagellateBuff,{buffs:{damage:flagellateBuff}},flagellateFunc);
+function bloodBoil(charType) {
+    return new Ability(charType, "Blood Boil","Your blood boils with demonic strength, increasing the damage of your next attack but damaging you.",3,bloodBoilBuff,{buffs:{damage:bloodBoilBuff}},bloodBoilFunc);
+}
+
+function oakSkin(charType) {
+    return new Ability(charType, "Oak Skin","Bless yourself with skin linke oak bark, gaining 4 AC.",6,oakSkinBuff,{buffs:{ac:oakSkinBuff}},oakSkinFunc);
 }
 
 function noFunc() {
     console.log("Error 2: Bad Ability Function","The lower your health, the higher your crit chance.");
 }
 
-function secondWindFunc() {
+function regrowthFunc() {
     var combatText = "<tr><td>";
     var target;
-    var amount;
+    var amount = 8;
     if (this.charType == "player")
         target = player;
     else
         target = currEnemy;
-    amount = parseInt((target.maxHP - target.hp)/2);
+    target.mana -= 12;
+    updateMana(target);
     changeHP(amount,target);
     moveText(target.charType,amount);
     combatText += target.name + " got " + target.possPronoun + " second wind, healing for <span class='green'>" + amount + "</span> hp.";
@@ -112,11 +120,11 @@ function secondWindFunc() {
 }
 
 function updateAbilities() {
-    for (var i = 0; i < $(".abilityButton").length; i++) {
+    for (var i = 0; i < player.abilities.length; i++) {
         $(".abilityButton")[i].innerHTML = player.abilities[i].name;
         $(".abilityButton")[i].setAttribute("onClick","javascript: triggerAbility(player," + i + ");");
+        $(".abilityButton")[i].style.display='block';
     }
-    $(".abilityButton").show();
 }
 
 function changeHP(val,target) {
@@ -127,10 +135,9 @@ function changeHP(val,target) {
         endCombat(target);
 
     else {
-        if (val < 0) {
+        if (val < 0)
             for (var i = 0; i < target.damageTriggers.length; i++)
                 target.damageTriggers[i](val);
-        }
 
         for (var i = 0; i < target.hpTriggers.length; i++)
                 target.hpTriggers[i]();
@@ -160,7 +167,7 @@ function triggerAbility(owner,given) {
     if (owner.abilities[given].cooldown == 0 && !dead) {
         owner.abilities[given].cooldown = owner.abilities[given].maxCooldown;
         owner.abilities[given].func();
-        if (owner = player)
+        if (owner == player)
             $(".abilityButton")[given].classList.add("coolDown");
     }
 }
@@ -171,8 +178,9 @@ function showBuff(buff,charType) {
             hideBuff(buff.image);
     }
     else if (!document.getElementById(buff.image)) {
-        var result = "<tr id='" + buff.image + "Row'><td><div class='relative'><img class='buffImage' src=art/" + buff.image + ".jpg >"
-        result += "<p class='buffText " + charType + "BuffText' id='" + buff.image + "'>" + buff.count + "</p>";
+        var result = "<tr id='" + buff.image + "Row'><td><div class='relative'><img class='buffImage' src=art/" + buff.image + ".png >"
+        if (buff.count > 1)
+            result += "<p class='buffText " + charType + "BuffText' id='" + buff.image + "'>" + buff.count + "</p>";
         result += "</div></td></tr>";
         document.getElementById("playerBuffTable").innerHTML += result;
     }
@@ -192,19 +200,38 @@ function hideBuff(given) {
     $("#" + given + "Row").hide();
 }
 
-function flagellateFunc() {
+function bloodBoilFunc() {
     var selfDamage = -3;
     var combatText = "<tr><td>";
-
+    giveAttackXP("demon",17);
     this.buff.count += 1;
     var target;
     if (this.charType == "player")
         target = player;
     else
         target = currEnemy;
+    target.mana -= 6;
+    updateMana(target);
     changeHP(selfDamage,target);
     moveText(target.charType,selfDamage);
-    combatText += capitalize(target.name) + " flogged " + target.perPronoun + "self, inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + target.possPronoun + " next attack!";
+    combatText += capitalize(target.name) + "'s blood boils with demonic energy inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + target.possPronoun + " next attack!";
+    combatText += "</td></tr>";
+    document.getElementById("combatLog").innerHTML += combatText;
+    showBuff(this.buff,this.charType);
+}
+
+function oakSkinFunc() {
+    var combatText = "<tr><td>";
+    var target;
+    this.buff.count += 3;
+    giveAttackXP("druid",17);
+    if (this.charType == "player")
+        target = player;
+    else
+        target = currEnemy;
+    target.mana -= 8;
+    updateMana(target);
+    combatText += capitalize(target.name) + " blessed " + target.perPronoun + "self, gaining 8 AC!";
     combatText += "</td></tr>";
     document.getElementById("combatLog").innerHTML += combatText;
     showBuff(this.buff,this.charType);
@@ -286,6 +313,12 @@ function wait() {
 }
 
 function playerCooldownTick() {
+    for (var i in player.buffs) 
+        for (var j = 0; j < player.buffs[i].length; j++)
+            if (player.buffs[i][j].count > 0 && player.buffs[i][j].degrades){
+                player.buffs[i][j].count--;
+                showBuff(   player.buffs[i][j]);
+            }
     for (var i = 0; i < player.abilities.length; i++) {
         if (player.abilities[i].cooldown > 0)
             player.abilities[i].cooldown--;
@@ -343,16 +376,22 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     var critThreshold = 20;
     var curr, attack;
     var baseAttack = attackRoll();
+    var defenderAC = defender.ac;
     
+    if (defender.buffs.ac)
+        for (var i = 0; i < defender.buffs.ac.length; i++)
+            if (defender.buffs.ac[i].count)
+                defenderAC += defender.buffs.ac[i].bonus;
     if (!attacker.weapon)
         attacker.weapon = attacker.unarmed;
     attack = baseAttack + attacker.weapon.getAttribute("attack");
     if (attacker == player)
         attack = applyPerks(attack,attacker.weapon.getAttribute("killVerb"),"attack");
     
-    for (var i = 0; i < player.buffs.critChance.length; i++)
-        critThreshold -= player.buffs.critChance[i].count;
-    if (attack > defender.ac || attack == 20) {
+    if (player.buffs.critChance)
+        for (var i = 0; i < player.buffs.critChance.length; i++)
+            critThreshold -= player.buffs.critChance[i].count;
+    if (attack > defenderAC || attack == 20) {
         result = getDamage(attacker.weapon.getAttribute("damage")[0],attacker.weapon.getAttribute("damage")[1]);
         if (attacker.buffs.damage)
             for (var i = 0; i < attacker.buffs.damage.length; i++) {
@@ -366,9 +405,7 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     }
     if (attacker == player)
         result = applyPerks(result,attacker.weapon.getAttribute("killVerb"),"damage");
-    console.log(critThreshold);
     critThreshold = applyPerks(critThreshold,attacker.weapon.getAttribute("killVerb"),"crit");
-    console.log(critThreshold);
     if (baseAttack >= critThreshold) {
         result = [result * 2,true];
     }
@@ -416,9 +453,24 @@ function updateHP(target) {
     }    
 }
 
-function moveText(given,val) {
+function updateMana(target) {
+    if (target.maxMana == 0)
+        $("#" + target.charType + "ManaMax").hide();
+    else if (target.mana < 0) {
+        document.getElementById(target.charType + "Mana").style.width = "0px";
+        document.getElementById(target.charType + "ManaText").innerHTML = "0/" + target.maxMana;
+    }
+    else {
+        document.getElementById(target.charType + "Mana").style.width = (target.mana/target.maxMana) * 250 + "px";
+        document.getElementById(target.charType + "ManaText").innerHTML = "" + target.mana + "/" + target.maxMana;
+    }
+}
+
+function moveText(given,val,type = "health") {
     var span;
-    if (val > 0)
+    if (type == "mana")
+        span = "<span class='blue'>";
+    else if (val > 0)
         span = "<span class='green'>";
     else
         span = "<span class='red'>";
@@ -462,16 +514,34 @@ function toggleItems() {
 
 function triggerItem(given) {
     var healAmount;
+    var property, propertyCap;
     if (given.potion.hp) {
-        if (player.hp + given.potion.hp > player.maxHP)
-            healAmount = player.maxHP - player.hp;
-        else 
-            healAmount = given.potion.hp;
-        moveText("player",healAmount);
-        changeHP(healAmount,player);
-        document.getElementById("combatLog").innerHTML += "<tr><td>" + player.name + " drank a potion, healing <span class='green'>" + healAmount + "</span> damage.</td></tr>";
+        property = "hp";
+        propertyCap = "HP";
     }
-    removeItem(given);
+    else if (given.potion.mana) {
+        property = "mana";
+        propertyCap = "Mana";
+    }
+    if (property) {
+        if (player[property] + given.potion[property] > player["max" + propertyCap])
+            healAmount = player["max" + propertyCap] - player[property];
+        else 
+            healAmount = given.potion[property];
+        if (property == "hp") {
+            changeHP(healAmount,player);
+            moveText("player",healAmount);
+            document.getElementById("combatLog").innerHTML += "<tr><td>" + player.name + " drank a health potion, healing <span class='green'>" + healAmount + "</span> damage.</td></tr>";
+        }
+        else {
+            player.mana += healAmount;
+            moveText("player",healAmount,"mana");
+            updateMana(player);
+            document.getElementById("combatLog").innerHTML += "<tr><td>" + player.name + " drank a mana potion, restoring <span class='blue'>" + healAmount + "</span> mana.</td></tr>";
+        }
+            
+    }
+    removeItem(inventory,given);
     updateItems();
     wait();
 }
@@ -481,10 +551,10 @@ function updateItems() {
     var noItems = true;
     $(".abilityButton").hide();
     for (var i = 0; i < potionList.length; i++) {
-        if (inventoryCount(potionList[i])) {
+        if (inventoryCount(inventory,potionList[i])) {
             $(".abilityButton")[curr].innerHTML = potionList[i].getName();
-            if (inventoryCount(potionList[i]) > 1)
-                $(".abilityButton")[curr].innerHTML += " x" + inventoryCount(potionList[i]);
+            if (inventoryCount(inventory,potionList[i]) > 1)
+                $(".abilityButton")[curr].innerHTML += " x" + inventoryCount(inventory,potionList[i]);
             $(".abilityButton")[curr].style.display = "table";
             $(".abilityButton")[curr].setAttribute("onClick","javascript: triggerItem(" + potionList[i].name + ");");
             curr++;

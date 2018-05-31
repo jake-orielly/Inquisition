@@ -7,3 +7,6 @@ UI doesn’t indicate/explain items that you’re not high enough level to make
 Plants re-grow when you exit and re-enter the map (i.e. got to village and come back out)
 Fix “the rat” vs “rat” situation in combat log
 Can’t stash item stacks in treasure chest
+No indication of level up in combat
+Druid & Demon skill names
+If ability is on cool down item shows as on cool down 

@@ -23,7 +23,7 @@ var needTool;
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,requiredPerk:woodcuttingAptitude,xp:15}};
 var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,requiredPerk:miningAptitude,xp:17},coal_vein:{toolLevel:3,resource:coal,requiredPerk:miningAptitude,xp:25}};
-var herbList = {herb_plant:{toolLevel:0,resource:herb,xp:9},mushroom_plant:{toolLevel:0,resource:mushroom,requiredPerk:alchemyAptitude,xp:14}};
+var herbList = {herb_plant:{toolLevel:0,resource:herb,xp:9},mushroom_plant:{toolLevel:0,resource:mushroom,requiredPerk:alchemyAptitude,xp:14},berry_plant:{toolLevel:0,resource:berry,xp:7}};
 
 var shouldCloseInventory = false;
 var shopEntrance;
@@ -90,7 +90,7 @@ function makeBoard() {
 }
 
 function makePerkSortButtons(sorted = "general") {
-    var categories = ["combat","harvesting","crafting"];
+    var categories = ["combat","magic","harvesting","crafting"];
     var onclick = "onclick='toggleSortActive(this)'";
     var result = "<td><p id=generalPerkSort " + onclick + ">General</p></td>";
     for (var i = 0; i < categories.length; i++) {
@@ -189,6 +189,9 @@ function mapAddons(map) {
 		addBoardObject("smelter",16,17);
 		addBoardObject("anvil",16,18);
 		addBoardObject("distillery",31,31);
+        addBoardObject("distillery",31,31);
+        addBoardObject("berry_plant",30,15);
+        addBoardObject("berry_plant",31,15);
 	}
     else if (map == villageMap) {
         npcList = [];
@@ -362,6 +365,7 @@ addItem(inventory,gold,500);
 addItem(inventory,hp_potion_small);
 addItem(inventory,iron_axe);
 addItem(inventory,iron_pickaxe);
+addItem(inventory,glass_vial);
 
 function startEncounter(given) {
     $("#worldMapContainer").hide();
@@ -726,9 +730,16 @@ function chopText(text) {
 function showInventory() {
     updateInventory();
     $("#inventory").show();
+    updateHPMana();
+}
+
+function updateHPMana() {
     $("#hpBarCurr").height("calc(" + parseInt(player.hp/player.maxHP * 100) + "% - 1px)");
     heightDif = $("#hpBarMax").height() - $("#hpBarCurr").height();
     $("#hpBarCurr").css("margin-top",heightDif-1);
+    $("#manaBarCurr").height("calc(" + parseInt(player.mana/player.maxMana * 100) + "% - 1px)");
+    heightDif = $("#manaBarMax").height() - $("#manaBarCurr").height();
+    $("#manaBarCurr").css("margin-top",heightDif-1);
 }
 
 function showSkills() {
@@ -826,9 +837,9 @@ function itemClick(given) {
         
         if (player.hp > player.maxHP)
             player.hp = player.maxHP;
-        $("#hpBarCurr").height("calc(" + parseInt(player.hp/player.maxHP * 100) + "% - 1px)");
-        heightDif = $("#hpBarMax").height() - $("#hpBarCurr").height();
-        $("#hpBarCurr").css("margin-top",heightDif-1);
+        if (player.mana > player.maxMana)
+            player.mana = player.maxMana;
+        updateHPMana();
         if (item.potion)
             addItem(inventory,item.craftable.recipe[item.craftable.recipe.length-1].item);
         removeItem(inventory,item);

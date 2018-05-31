@@ -13,6 +13,8 @@ playerSkills.piercing = {xp:0,level:1,name:"Piercing",img:"art/copper_short_swor
 playerSkills.chopping = {xp:0,level:1,name:"Chopping",img:"art/copper_axe.png",category:"combat"};
 playerSkills.crushing = {xp:0,level:1,name:"Crushing",img:"art/copper_mace.png",category:"combat"};
 playerSkills.unarmed = {xp:0,level:1,name:"Unarmed",img:"art/fist.png",category:"combat"};
+playerSkills.druid = {xp:0,level:1,name:"Druid",img:"art/leaf.png",category:"magic"};
+playerSkills.demon = {xp:0,level:1,name:"Demon",img:"art/demonSkill.png",category:"magic"};
 
 function harvest(given) {
     var skill;
@@ -120,8 +122,11 @@ var miningAptitude = {name:"Mining Aptitude",img:"art/iron_vein.png",description
 var smithingAptitude = {name:"Smithing Aptitude",img:"art/iron_bar.png",description:"You can smith iron weapons and armor.",requirements:{smithing:3},categories:["general","smithing"],compName:"smithingAptitude"};
 var cookingAptitude = {name:"Cooking Aptitude",img:"art/seasoned_meat.png",description:"You can cook more complex foods.",requirements:{cooking:3},categories:["general","cooking"],compName:"cookingAptitude"};
 var alchemyAptitude = {name:"Alchemy Aptitude",img:"art/hp_potion_medium.png",description:"You can craft more powerful potions.",requirements:{alchemy:3},categories:["general","alchemy"],compName:"alchemyAptitude"};
+var druidicAptitude = {name:"Druidic Aptitude",img:"art/leaf.png",description:"Unlock more powerful druid spells, and druid spells cost less mana.",requirements:{druid:3},categories:["general","druid"],compName:"druidicAptitude"};
+var demonicAptitude = {name:"Demonic Aptitude",img:"art/demonSkill.png",description:"Unlock more powerful demon spells, and demon spells cost less mana.",requirements:{demon:3},categories:["general","demon"],compName:"demonicAptitude"};
 
-var perkList = [piercingAptitude,choppingAptitude,crushingAptitude,unarmedAptitude,woodcuttingAptitude,miningAptitude,smithingAptitude,cookingAptitude,alchemyAptitude];
+
+var perkList = [piercingAptitude,choppingAptitude,crushingAptitude,unarmedAptitude,druidicAptitude,demonicAptitude,woodcuttingAptitude,miningAptitude,smithingAptitude,cookingAptitude,alchemyAptitude];
 
 /*function extraOre(given) {
     if (parseInt(Math.random()*100+1) <= 15)
