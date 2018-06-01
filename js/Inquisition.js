@@ -7,7 +7,6 @@ var characters;
 var abilitiesOpen = false;
 var itemsOpen = false;
 
-var retaliationBuff = {image:"retaliationBuff",bonus:1,count:0};
 var woundedFuryBuff = {image:"woundedFuryBuff",bonus:1,count:0};
 
 player = createPlayer();
@@ -58,24 +57,6 @@ function startCombat(given) {
         $(".abilityButton")[i].classList.remove("coolDown");
 }
 
-function Ability(charType,name,description,maxCooldown,buff,categories,func) {
-    this.charType = charType;
-    this.name = name; 
-    this.description = description;
-    this.maxCooldown = maxCooldown;
-    if (maxCooldown == -1)
-        this.cooldown = -1;
-    else 
-        this.cooldown = 0;
-    this.buff = buff;
-    this.categories = categories;
-    this.func = func;
-}
-
-function retaliation(charType) {
-    return new Ability(charType,"Retaliation","Every time you take damage, you gain bonus attack, which is expended the next time you strike.",-1,retaliationBuff,{damageTriggers:retaliationFunc,buffs:{damage:retaliationBuff}},noFunc);
-}
-
 function doubleEdge(charType) {
     return new Ability(charType,"Double Edge","A wild strike that hits both you and your enemy.",1,{},{},doubleEdgeFunc)
 }
@@ -90,9 +71,11 @@ function noFunc() {
 
 function updateAbilities() {
     for (var i = 0; i < player.abilities.length; i++) {
-        $(".abilityButton")[i].innerHTML = player.abilities[i].name;
-        $(".abilityButton")[i].setAttribute("onClick","javascript: triggerAbility(player," + i + ");");
-        $(".abilityButton")[i].style.display='block';
+        if (player.abilities[i].maxCooldown > -1) {
+            $(".abilityButton")[i].innerHTML = player.abilities[i].name;
+            $(".abilityButton")[i].setAttribute("onClick","javascript: triggerAbility(player," + i + ");");
+            $(".abilityButton")[i].style.display='block';
+        }
     }
 }
 
@@ -199,11 +182,6 @@ function doubleEdgeFunc() {
 
     combatText += "</td></tr>";
     document.getElementById("combatLog").innerHTML += combatText;
-}
-
-function retaliationFunc(val) {
-    retaliationBuff.count += val*-1;
-    showBuff(retaliationBuff,this.charType);
 }
 
 function woundedFuryFunc() {
@@ -368,10 +346,6 @@ function applyPerks(given,killVerb,attribute) {
 
 function attackRoll() {
     return parseInt(Math.random()*20+1);
-}
-
-function getDamage(x,y) {
-    return parseInt(Math.random()*(y-(x-1))+x);
 }
 
 function updateHP(target) {

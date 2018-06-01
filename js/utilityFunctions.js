@@ -8,6 +8,10 @@ function dropdownToggle(given) {
     //$("#perkDropdown").toggle();
 }
 
+function getDamage(x,y) {
+    return parseInt(Math.random()*(y-(x-1))+x);
+}
+
 // Close the dropdown if the user clicks outside of it
 window.onclick = function(event) {
   if (!event.target.matches('.dropbtn')) {

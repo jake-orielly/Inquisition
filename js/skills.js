@@ -122,9 +122,10 @@ var miningAptitude = {name:"Mining Aptitude",img:"art/iron_vein.png",description
 var smithingAptitude = {name:"Smithing Aptitude",img:"art/iron_bar.png",description:"You can smith iron weapons and armor.",requirements:{smithing:3},categories:["general","smithing"],compName:"smithingAptitude"};
 var cookingAptitude = {name:"Cooking Aptitude",img:"art/seasoned_meat.png",description:"You can cook more complex foods.",requirements:{cooking:3},categories:["general","cooking"],compName:"cookingAptitude"};
 var alchemyAptitude = {name:"Alchemy Aptitude",img:"art/hp_potion_medium.png",description:"You can craft more powerful potions.",requirements:{alchemy:3},categories:["general","alchemy"],compName:"alchemyAptitude"};
-var druidicAptitude = {name:"Druidic Aptitude",img:"art/leaf.png",description:"Unlock more powerful druid spells, and druid spells cost less mana.",requirements:{druid:3},categories:["general","druid"],compName:"druidicAptitude"};
-druidicAptitude.abilities = [regrowth];
-var demonicAptitude = {name:"Demonic Aptitude",img:"art/demonSkill.png",description:"Unlock more powerful demon spells, and demon spells cost less mana.",requirements:{demon:3},categories:["general","demon"],compName:"demonicAptitude"};
+var druidicAptitude = {name:"Druidic Aptitude",img:"art/leaf.png",description:"Unlock 2 powerful druid spells.",requirements:{druid:3},categories:["general","druid"],compName:"druidicAptitude"};
+druidicAptitude.abilities = [regrowth,rejuvination];
+var demonicAptitude = {name:"Demonic Aptitude",img:"art/demonSkill.png",description:"Unlock 2 powerful demon spells.",requirements:{demon:3},categories:["general","demon"],compName:"demonicAptitude"};
+demonicAptitude.abilities = [hellfire,retaliation];
 
 
 var perkList = [piercingAptitude,choppingAptitude,crushingAptitude,unarmedAptitude,druidicAptitude,demonicAptitude,woodcuttingAptitude,miningAptitude,smithingAptitude,cookingAptitude,alchemyAptitude];

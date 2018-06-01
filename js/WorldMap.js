@@ -173,6 +173,7 @@ function showPerks(perks = perkList) {
 }
 
 function buyPerk(given) {
+    var buffCategory, buffToPush;
     for (var i = 0; i < perkList.length; i++)
         if (given == perkList[i]) {
             perkPointsUsed += 5;
@@ -181,8 +182,16 @@ function buyPerk(given) {
             if (perkPoints - perkPointsUsed < 5)
                 $("#perksButton").removeClass("perksButtonActive");
             if (given.abilities)
-                for (var j = 0; j < given.abilities.length; j++)
+                for (var j = 0; j < given.abilities.length; j++) {
                     player.abilities.push(given.abilities[j](player.charType))
+                    if (given.abilities[j](player.charType).categories.damageTrigger)
+                        player.damageTriggers.push(given.abilities[j](player.charType).categories.damageTrigger);
+                    if (given.abilities[j](player.charType).categories.buffs) {
+                        buffCategory = Object.keys(given.abilities[j]("player").categories.buffs);
+                        buffToPush = given.abilities[j]("player").categories.buffs[buffCategory];
+                        player.buffs[buffCategory].push(buffToPush);
+                    }
+                }
         }
     showPerks();
 }
