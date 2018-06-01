@@ -46,6 +46,8 @@ for i in range(len(readFile)):
             result[curr].append("\"wood_floor\"")
         elif (readFile[i:i+7] == "#d38808"):
             result[curr].append("\"wood_door\"")
+        elif (readFile[i:i+7] == "#ff0000"):
+            result[curr].append("\"berry_plant\"")
 
 
     elif readFile[i:i+4] == "<TR>":

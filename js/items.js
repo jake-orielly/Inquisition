@@ -1,7 +1,7 @@
 var oak_logs = new Item("oak_logs",false,false,3);
 var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var herb = new Item("herb",false,false,7);
-var berry = new Item("berry",false,false,6);
+var berry = new Item("berry",true,false,6);
 berry.food = {hp:5};
 var mushroom = new Item("mushroom",false,false,11);
 var meat = new Item("meat",false,false,4);
@@ -10,6 +10,12 @@ var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,null,[{it
 cooked_meat.food = {hp:8};
 var seasoned_meat = new Item("seasoned_meat",false,false,16,new Craftable(14,cookingAptitude,[{item:meat,amount:1},{item:herb,amount:1}]));
 seasoned_meat.food = {hp:14};
+var salad = new Item("salad",false,false,26,new Craftable(25,null,[{item:herb,amount:2},{item:berry,amount:1}]));
+salad.food = {hp:8,mana:8};
+var mushroom_stew = new Item("mushroom_stew",false,false,50,new Craftable(60,cookingAptitude,[{item:cooked_meat,amount:2},{item:mushroom,amount:2}]));
+mushroom_stew.food = {hp:20,mana:15};
+
+var foodList = [cooked_meat,seasoned_meat,salad,mushroom_stew];
 
 var copper_ore = new Item("copper_ore",false,false,3);
 var copper_bar = new Item("copper_bar",true,false,8,new Craftable(15,null,[{item:copper_ore,amount:2}]));
@@ -102,7 +108,6 @@ function Craftable(xp,requiredPerk,recipe) {
 	this.recipe = recipe;
 }
 
-var foodList = [cooked_meat,seasoned_meat];
 var smeltList = [copper_bar,iron_bar];
 var smithList = [copper_axe, copper_pickaxe, copper_short_sword, copper_mace, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_short_sword, iron_mace, iron_chestplate,iron_platelegs];
 var potionList = [hp_potion_small,hp_potion_medium,mana_potion_small,mana_potion_medium];
