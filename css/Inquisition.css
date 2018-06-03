@@ -204,6 +204,22 @@
     font-size: 24px;
 }
 
+.buffHidden {
+    display:none;
+}
+
+.buffHover {
+    display: block;
+    position: absolute;
+    background-color: #FFF;
+    border: 1px solid #CCC;
+    margin: 2px 10px;
+    padding: 4px 6px;
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+}
+
 .relative {
     position:relative;
 }

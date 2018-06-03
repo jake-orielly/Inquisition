@@ -151,6 +151,12 @@ function triggerAbility(owner,given) {
 }
 
 function showBuff(buff,charType) {
+    var description;
+    if (typeof buff.description == "function")
+        description = buff.description();
+    else
+        description = buff.description;
+    
     charType = "player";
     if (buff.count < 1) {
             hideBuff(buff.image);
@@ -159,7 +165,7 @@ function showBuff(buff,charType) {
         var result = "<tr id='" + buff.image + "Row'><td><div class='relative'><img class='buffImage' src=art/" + buff.image + ".png >"
         if (buff.count > 1)
             result += "<p class='buffText " + charType + "BuffText' id='" + buff.image + "'>" + buff.count + "</p>";
-        result += "</div></td></tr>";
+        result += "</div><span class='buffHidden'>" + description + "</span></td></tr>";
         document.getElementById("playerBuffTable").innerHTML += result;
     }
     else { 
@@ -172,6 +178,15 @@ function showBuff(buff,charType) {
         document.getElementById(buff.image).classList = "bigBuffText ";
         document.getElementById(buff.image).classList += charType + "BigBuffText";
     }
+    
+    $("#playerBuffTable>tr").mouseenter(function() {
+        $(this).find("span").removeClass("buffHidden");
+        $(this).find("span").addClass("buffHover");
+    });
+    $("#playerBuffTable>tr").mouseleave(function() {
+        $(this).find("span").addClass("buffHidden");
+        $(this).find("span").removeClass("buffHover");
+    });
 }
 
 function hideBuff(given) {
@@ -253,7 +268,7 @@ function playerCooldownTick() {
         for (var j = 0; j < player.buffs[i].length; j++)
             if (player.buffs[i][j].count > 0 && player.buffs[i][j].degrades){
                 player.buffs[i][j].count--;
-                showBuff(   player.buffs[i][j]);
+                showBuff(player.buffs[i][j]);
             }
     for (var i = 0; i < player.abilities.length; i++) {
         if (player.abilities[i].cooldown > 0)
