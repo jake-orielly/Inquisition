@@ -1,5 +1,6 @@
 var oak_logs = new Item("oak_logs",false,false,3);
 var evergreen_logs = new Item("evergreen_logs",false,false,8);
+
 var herb = new Item("herb",false,false,7);
 var berry = new Item("berry",true,false,6);
 berry.food = {hp:5};
@@ -55,6 +56,10 @@ var mana_potion_small = new Item("mana_potion_small",false,false,35,new Craftabl
 mana_potion_small.potion = {mana:5};
 var mana_potion_medium = new Item("mana_potion_medium",false,false,95,new Craftable(43,alchemyAptitude,[{item:herb,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
 mana_potion_medium.potion = {mana:10};
+
+var elanor_ring = new Item("elanor_ring",false,false,250);
+var monster_tusk = new Item("monster_tusk",false,false,400);
+monster_tusk.questItem = true;
 
 var gold = new Item("gold",true,false,1);
 var flint_box = new Item("flint_box",false,false,5);

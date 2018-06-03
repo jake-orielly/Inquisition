@@ -19,6 +19,7 @@ var npcList = [];
 var conversation, conversationChoice;
 var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10","chest","chest_open"];
 var needTool;
+var quests = {southernBeast:{phase:0}};
 
 var toolModifierLevel = {copper:1,iron:2,steel:3};
 var treeList = {oak:{toolLevel:1,resource:oak_logs,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,requiredPerk:woodcuttingAptitude,xp:15}};
@@ -29,8 +30,12 @@ var shouldCloseInventory = false;
 var shopEntrance;
 
 var caveTreasure = [];
+var elanorTreasure = [];
 var treasureTemp = [hp_potion_medium,hp_potion_medium];
 fillTreasure(caveTreasure,treasureTemp);
+treasureTemp = [elanor_ring];
+fillTreasure(elanorTreasure,treasureTemp);
+
 var currTreasure;
 
 function fillTreasure(treasure,list) {
@@ -103,11 +108,11 @@ function makePerkSortButtons(sorted = "general") {
         }
         result += "</div></div></td>";
     }
+    result += "<td><p id=featPerkSort " + onclick + ">Feats</p></td>";
     $("#perkSortButtonList").html(result);
 }
 
 function toggleSortActive(given) {
-    console.log(1);
     var tempPerkList = [];
     for (var i = 0; i < perkList.length; i++)
         for(var j = 0; j < perkList[i].categories.length; j++)
@@ -214,8 +219,10 @@ function mapAddons(map) {
         makeNPC(10,10,"questGiver");
     }
     else if (map == caveMap) {
-        makeBoss(33,35,"monster");
         addBoardObject("chest",33,37);
+        addBoardObject("skeleton",31,34);
+        if (quests.southernBeast.phase < 2)
+            makeBoss(33,35,"monster");
     }
     
     else if (map == shopInterior) {
@@ -303,7 +310,7 @@ function updateBoard(camX = 0,camY = 0) {
         boardHTML += "</tr>";
     }
     
-    if (mapTable == caveMap && playerX == 29 && playerY == 33 && !monsterAttack) {
+    if (mapTable == caveMap && playerX == 29 && playerY == 33 && !monsterAttack && quests.southernBeast.phase < 2) {
         monsterAttack = true;
         cameraMove();
         setTimeout(function() {
@@ -863,7 +870,7 @@ function itemClick(given) {
 }
 
 function sell(given) {
-    if(inventory[given].item.name != "gold") {
+    if(inventory[given].item.name != "gold" && !inventory[given].item.questItem) {
         addItem(inventory,gold,(inventory[given].item.value*inventory[given].amount));
         removeItem(inventory,inventory[given].item,inventory[given].amount);
         updateInventory();
@@ -871,10 +878,12 @@ function sell(given) {
 }
 
 function stashItem(given) {
-    addItem(currTreasure,inventory[given].item,inventory[given].amount);
-    removeItem(inventory,inventory[given].item,inventory[given].amount);
-    updateInventory();
-    showTreasure();
+    if (!inventory[given].item.questItem) {
+        addItem(currTreasure,inventory[given].item,inventory[given].amount);
+        removeItem(inventory,inventory[given].item,inventory[given].amount);
+        updateInventory();
+        showTreasure();
+    }
 }
 
 document.addEventListener('keydown', function(event) {
@@ -901,16 +910,18 @@ document.addEventListener('keydown', function(event) {
 });
 
 function conversationSelect(direction) {
+    var currKeys;
     if (!textLoop && !holdText) {
 	    currConvo = conversation[0];
 	    for (var i = 1; i < conversation.length; i++)
 	    	currConvo = currConvo[conversation[i]];
         conversationChoice += direction;
         $("#dialogueText").html("");
-        for (var i = 0; i < currConvo.responses.length; i++) {
-            if (i == Math.abs(conversationChoice % currConvo.responses.length))
+        currKeys = Object.keys(currConvo.responses);
+        for (var i = 0; i < currKeys.length; i++) {
+            if (i == Math.abs(conversationChoice % currKeys.length))
                 $("#dialogueText").html($("#dialogueText").html() + ">");
-            $("#dialogueText").html($("#dialogueText").html() + capitalize(currConvo.responses[i]) + "<br>");
+            $("#dialogueText").html($("#dialogueText").html() + capitalize(Object.values(currConvo.responses)[i]) + "<br>");
         }
     }
 }
@@ -924,14 +935,21 @@ function tileAction() {
     var toolMap = ["axe","pickaxe","pickaxe"];
     var toolLevelMap = ["copper","iron"];
     var skillMap = [playerSkills.woodcutting.level,playerSkills.mining.level,playerSkills.alchemy.level];
-    var currX, currY, currNPC;
+    var currX, currY, currNPC, currChoice;
     
     if (!conversation) {
+        if (board[playerY][playerX][2] == "skeleton") {
+            currTreasure = elanorTreasure;
+            showTreasure(currTreasure);
+            shouldCloseInventory = true;
+            showInventory();
+            updateBoard();
+        }
 	    for (var i = 0; i < cardinalOffset.length; i++) {
             currX = playerX + cardinalOffset[i][0];
             currY = playerY + cardinalOffset[i][1];
 
-            for (var j = 0; j < board[currY][currX].length; j++)
+            for (var j = 0; j < board[currY][currX].length; j++) {
                 if(board[currY][currX][j] == "chest" || board[currY][currX][j] == "chest_open") {
                     currTreasure = caveTreasure;
                     board[currY][currX][j] = "chest_open";
@@ -939,7 +957,8 @@ function tileAction() {
                     shouldCloseInventory = true;
                     showInventory();
                     updateBoard();
-                }
+                }   
+            }
             
             for (var j = 0; j < npcList.length; j++) {
                 if (currX == npcList[j][0] && currY == npcList[j][1]) {
@@ -966,11 +985,14 @@ function tileAction() {
 		    }
 		    
 		    if (conversationChoice != null) {
-		        conversation.push(currConvo.responses[conversationChoice]);
-		        showDialogue(conversation[0],currConvo.responses[conversationChoice]);
-                if (currConvo[currConvo.responses[conversationChoice]].backtrack) {
+                currChoice = Object.keys(currConvo.responses)[conversationChoice];
+                if (currConvo[currChoice].func)
+                    currConvo[currChoice].func();
+		        conversation.push(currChoice);
+		        showDialogue(conversation[0],currChoice);
+                if (currConvo[currChoice].backtrack) {
                     for (var i = 0; i < conversation.length; i++)
-                        if (conversation[i] == currConvo[currConvo.responses[conversationChoice]].backtrack)
+                        if (conversation[i] == currConvo[currChoice].backtrack)
                             conversation = conversation.splice(0,2);
                 }
 		        conversationChoice = null;
@@ -978,7 +1000,7 @@ function tileAction() {
 		    else if (currConvo.responses) {
 			    $("#dialogueText").html(">");
 	            conversationChoice = 0;
-	            for (var i = 0; i < currConvo.responses.length; i++)
+	            for (var i in currConvo.responses)
 	                $("#dialogueText").html($("#dialogueText").html() + capitalize(currConvo.responses[i]) + "<br>");
 		    }
 		    else {

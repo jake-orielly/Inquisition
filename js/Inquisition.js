@@ -101,6 +101,26 @@ function changeHP(val,target) {
 function endCombat(target) {
     for (var i = 0; i < $(".abilityButton").length; i++)
         $(".abilityButton")[i].classList.add("coolDown");
+    if (currEnemy.name == "the cave beast") {
+        quests.southernBeast.phase = 2;        
+        board[32][35].splice(2);
+        board[32][36].splice(2);
+        board[33][35].splice(2);
+        board[33][36].splice(2);
+        updateBoard();
+        $(".monsterInvis").hide();
+        if (!questGiver.slain)
+            updateQuestGiverLines()
+        questGiver.slain.responses.show = "[Show tusk]";
+        questGiver.slain.show = {line:"Truly you are a hero. We owe you a great debt " + player.name + ". Take this is a token of our gratitude."}
+        questGiver.slain.show.func = function() {
+            quests.southernBeast.phase = 3;
+            questGiver.line = "You're a hero to this town";
+            questGiver.responses = null;
+            addItem(inventory,gold,500);
+            monster_tusk.questItem = false;
+        };
+    }
     dead = target;
     loot(currEnemy);
     setTimeout(function(){
