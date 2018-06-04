@@ -5,7 +5,7 @@ var tool_shopkeeper = {portrait:"art/tool_shopkeeper_head.png",shop:toolStoreInv
 
 var armor_shopkeeper = {portrait:"art/armor_shopkeeper_head.png",shop:armorStoreInventory,line:"Sturdy armor. Good craftsmanship."};
 
-var alchemy_shopkeeper = {portrait:"art/alchemy_shopkeeper_head.png",shop:alchemyStoreInventory,line:"Potions for whatever ails you!"};
+var alchemy_shopkeeper = {portrait:"art/alchemy_shopkeeper_head.png",shop:alchemyStoreInventory,line:"Potions for whatever ails you."};
 
 var questGiver = {portrait:"art/questGiver_head.png",line:"It's no secret that the southern woods are dangerous. Been that way for years. But lately things have gotten out of hand. They say a cursed beast lives in a cave deep in the south. There's a hearty reward for anyone who slays it. Are you interested?",responses:{yes:"yes",no:"no"},yes:{line:"Good. Let me know when you've slain the beast. Any questions before you go?"},no:"Well then you're no use to me."};
 questGiver.yes.func = function(){

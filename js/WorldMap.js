@@ -207,8 +207,6 @@ function mapAddons(map) {
 		addBoardObject("anvil",16,18);
 		addBoardObject("distillery",31,31);
         addBoardObject("distillery",31,31);
-        addBoardObject("berry_plant",30,15);
-        addBoardObject("berry_plant",31,15);
 	}
     else if (map == villageMap) {
         npcList = [];
@@ -966,6 +964,20 @@ function tileAction() {
                     currNPC = window["" + board[npcList[j][1]][npcList[j][0]].slice(-1)[0]];
                     if (currNPC.shop)
                         showShop(currNPC.shop);
+                    if(currNPC == alchemy_shopkeeper) {
+                        if (inventoryCount(inventory,elanor_ring)) {
+                            alchemy_shopkeeper.line = "I heard you went to the beast's cave. Did you find a ring by any chance?";
+                            alchemy_shopkeeper.responses = {yes:"Yes [Give Ring]",no:"no"};
+                            alchemy_shopkeeper.yes = {line:"Thank you. You don't know how much this means to me."};
+                            alchemy_shopkeeper.no = {line:"Oh... alright. Thank you anyway."};
+                        }
+                        else {
+                            alchemy_shopkeeper.line = "Potions for whatever ails you!";
+                            alchemy_shopkeeper.responses = null;
+                            alchemy_shopkeeper.yes = null;
+                            alchemy_shopkeeper.no = null;
+                        }
+                    }
 				    conversation.push(currNPC);
                     showDialogue(currNPC,"line");
                 }
