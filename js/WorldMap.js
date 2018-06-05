@@ -969,6 +969,9 @@ function tileAction() {
                             alchemy_shopkeeper.line = "I heard you went to the beast's cave. Did you find a ring by any chance?";
                             alchemy_shopkeeper.responses = {yes:"Yes [Give Ring]",no:"no"};
                             alchemy_shopkeeper.yes = {line:"Thank you. You don't know how much this means to me."};
+                            alchemy_shopkeeper.yes.func = function() {
+                                removeItem(inventory,elanor_ring);
+                            }
                             alchemy_shopkeeper.no = {line:"Oh... alright. Thank you anyway."};
                         }
                         else {
