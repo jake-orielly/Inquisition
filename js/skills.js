@@ -126,11 +126,12 @@ var druidicAptitude = {name:"Druidic Aptitude",img:"art/leaf.png",description:"U
 druidicAptitude.abilities = [regrowth,rejuvination];
 var demonicAptitude = {name:"Demonic Aptitude",img:"art/demonSkill.png",description:"Unlock 2 powerful demon spells.",requirements:{demon:3},categories:["general","demon"],compName:"demonicAptitude"};
 demonicAptitude.abilities = [hellfire,retaliation];
+var veganSurvival = {name:"Vegan Survival",img:"art/salad.png",description:"Vegan foods heal twice as much. Can no longer eat meat.",requirements:{druid:5,cooking:5},categories:["general","druid","cooking"],compName:"veganSurvival"};
 
 //Feats 
 var beastSlayer = {name:"Beast Slayer",img:"art/monster_tusk.png",description:"You're the mighty beast slayer.",requirements:{demon:0},categories:["feats"],compName:"beastSlayer",functional:{attack:function(given){return given+2},damage:function(given){return given+1}}};
 
-var perkList = [piercingAptitude,choppingAptitude,crushingAptitude,unarmedAptitude,druidicAptitude,demonicAptitude,woodcuttingAptitude,miningAptitude,smithingAptitude,cookingAptitude,alchemyAptitude];
+var perkList = [piercingAptitude,choppingAptitude,crushingAptitude,unarmedAptitude,druidicAptitude,demonicAptitude,woodcuttingAptitude,miningAptitude,smithingAptitude,cookingAptitude,alchemyAptitude,veganSurvival];
 
 /*function extraOre(given) {
     if (parseInt(Math.random()*100+1) <= 15)

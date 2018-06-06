@@ -831,7 +831,9 @@ function buy(given) {
 
 function itemClick(given) {
     var item = inventory[given].item;
-    var keys,curr;
+    var isEdible = true;
+    var modifier = 1;
+    var keys,curr,ingredient;
     
     if ($("#shop").is(":visible")) {
         sell(given);
@@ -843,6 +845,23 @@ function itemClick(given) {
         updateInventory();
     }
     else if (item.food || item.potion) {
+        if (hasPerk(veganSurvival) && item.food) {
+            console.log(item);
+            if (item.craftable)
+                for (var i = 0; i < item.craftable.recipe.length; i++) {
+                    ingredient = item.craftable.recipe[i].item;
+                    if (ingredient == meat || ingredient == cooked_meat)
+                        isEdible = false;
+                }
+            else 
+                if (item == meat || item == cooked_meat)
+                    isEdible = false;
+            if (!isEdible)
+                return;
+            else
+                modifier = 2;
+        }
+        
         if (item.food)
             curr = item.food;
         else 
@@ -850,7 +869,7 @@ function itemClick(given) {
         
         keys = Object.keys(curr);
         for (var i = 0; i < keys.length; i++)
-            player[keys[i]] += curr[keys[i]];
+            player[keys[i]] += curr[keys[i]] * modifier;
         
         if (player.hp > player.maxHP)
             player.hp = player.maxHP;

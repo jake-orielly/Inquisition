@@ -3,10 +3,11 @@ var evergreen_logs = new Item("evergreen_logs",false,false,8);
 
 var herb = new Item("herb",false,false,7);
 var berry = new Item("berry",true,false,6);
-berry.food = {hp:5};
+berry.food = {hp:3};
 var mushroom = new Item("mushroom",false,false,11);
+mushroom.food = {mana:5};
 var meat = new Item("meat",false,false,4);
-meat.food = {hp:3};
+meat.food = {hp:4};
 var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,null,[{item:meat,amount:1}]));
 cooked_meat.food = {hp:8};
 var seasoned_meat = new Item("seasoned_meat",false,false,16,new Craftable(14,cookingAptitude,[{item:meat,amount:1},{item:herb,amount:1}]));
