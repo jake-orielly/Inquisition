@@ -4,15 +4,11 @@ function makeShortSword(modifiers) {
 }
 
 function makeMace(modifiers) {
-    return new Weapon(4,[4,6],"mace","swung with","crushing",modifiers);
+    return new Weapon(3,[4,6],"mace","swung with","crushing",modifiers);
 }
 
 function makeMorningStar(modifiers) {
     return new Weapon(3,[4,7],"morningstar","swung with","crushing",modifiers);
-}
-
-function makeCleaver(modifiers) {
-    return new Weapon(4,[4,5],"cleaver","chopped with","chopping",modifiers);
 }
 
 function makeDagger(modifiers) {

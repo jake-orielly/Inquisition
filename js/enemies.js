@@ -1,15 +1,16 @@
 function caveBeast() {
-    var caveBeast = new Character(45,25,15,makeCleaver(),"the cave beast",["it","it's"],"enemy","monster");
+    var caveBeast = new Character(45,25,15,makeAxe(),"the cave beast",["it","it's"],"enemy","monster");
     caveBeast.loot = [{item:monster_tusk,odds:100,amount:1}];
     caveBeast.size = "large";
     return caveBeast;
 }
 
-function rat() {
-    var rat = new Character(5,0,5,makeCleaver(),"the rat",["it","it's"],"enemy","chest");
-    rat.makeMove = baseAI;
-    rat.loot = [{item:meat,odds:100,amount:1}];
-    return rat;
+function wolf() {
+    var wolf = new Character(10,0,9,null,"the wolf",["it","it's"],"enemy","chest");
+    wolf.weapon = new Weapon(2,[1,3],"claw","clawed with","piercing",[]);
+    wolf.makeMove = baseAI;
+    wolf.loot = [{item:meat,odds:100,amount:1}];
+    return wolf;
 }
 
 function fallenKnight() {
@@ -20,8 +21,9 @@ function fallenKnight() {
 }
 
 function createPlayer() {
-    var player = new Character(30,20,13,null,"Jake",["him","his"],"player","player");
+    var player = new Character(10,5,10,null,"Jake",["him","his"],"player","player");
     player.abilities = [oakSkin(player.charType),bloodBoil(player.charType)];
+    player.unarmed = new Weapon(2,[1,3],"fist","punched with","pummeled");
     initCharacter(player);
     return player;
 }
@@ -42,7 +44,6 @@ var Character = function(maxHP,maxMana,ac,weapon,name,pronounSet,charType,image,
     this.damageTriggers = [];
     this.hpTriggers = [];
     this.buffs = {};
-    this.unarmed = new Weapon(2,[1,3],"fist","punched with","pummeled");
     
     this.getAC = function() {
         var result = this.ac;

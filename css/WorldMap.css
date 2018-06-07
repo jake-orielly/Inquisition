@@ -28,11 +28,12 @@
 }
 
 .craftTable {
-    position:absolute;
     bottom:70px;
     padding: 5px;
-    background-color: rgb(204,204,204);
-    border: 8px solid rgb(61,61,61);
+}
+
+.craftTable tr td{
+    padding: 0.5em 0;
 }
 
 #skills {
@@ -79,10 +80,15 @@
 }
 
 .craftMenu {
-    position: relative;
+    position: absolute;
     display:none;
+    background-color: rgb(204,204,204);
+    border: 8px solid rgb(61,61,61);
     bottom:10px;
-    right:0px;
+    left:10px;
+    overflow: auto;
+    max-height: 24.5em;
+    padding:1em;
 }
 
 .xpBarMax {
@@ -174,11 +180,6 @@
     position: absolute;
     right: 4px;
     top: 4px;
-}
-
-#perkSortButtonList button, #generalPerkSort, #featPerkSort {
-    border-radius: 6px;
-    font-size: 20px;
 }
 
 #perkPoints {
@@ -415,23 +416,21 @@ button:focus {
     outline:0;
 }
 
-.dropbtn, #generalPerkSort, #featPerkSort {
+.dropbtn, .craftSort, #generalPerkSort, #featPerkSort {
     background-color: #3498DB;
     color: white;
     padding: 12px;
     border: none;
     cursor: pointer;
+    border-radius: 6px;
+    font-size: 20px;
 }
 
 #generalPerkSort, #featPerkSort {
     font-family: sans-serif;
 }
 
-.dropbtn {
-    font-size: 16px;
-}
-
-.dropbtn:hover, .dropbtn:focus {
+.dropbtn:hover, .craftSort:hover, #generalPerkSort:hover, #featPerkSort:hover, .dropbtn:focus, .craftSort:focus, #generalPerkSort:focus, #featPerkSort:focus{
     background-color: #2980B9;
 }
 

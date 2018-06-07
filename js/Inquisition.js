@@ -21,7 +21,7 @@ function startCombat(given) {
     if (given)
         currEnemy = given();
     else
-        currEnemy = rat();
+        currEnemy = wolf();
     characters = [player,currEnemy];
     
     types = Object.keys(player.buffs);
@@ -328,7 +328,12 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     var curr, attack;
     var baseAttack = attackRoll();
     var defenderAC = defender.ac;
-    var wepType = attacker.weapon.getAttribute("killVerb");
+    var wepType;
+    
+    if (attacker.weapon == null)
+        wepType = "unarmed";
+    else
+        wepType = attacker.weapon.getAttribute("killVerb");
     
     if (defender.buffs.ac)
         for (var i = 0; i < defender.buffs.ac.length; i++)

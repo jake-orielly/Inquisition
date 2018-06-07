@@ -4,7 +4,8 @@ var visibleCols = 11;
 var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 15;
-var playerY = 28;
+//var playerY = 28;
+var playerY = 16;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
@@ -461,7 +462,7 @@ function movePlayer(x,y) {
             updateBoard();
         }
         
-        if (tileType == "empty")
+        if (tileType == "empty" && !inTown)
             nextEncounter -= 5;
             
         else if (tileType == "village") {
@@ -621,7 +622,7 @@ function showMenu(given) {
     var result = "";
     var currList = craftListMaster[given];
     for (var i = 0; i < currList.length; i++) {
-        if (canCraft(currList[i])) {
+        if (canCraft(currList[i]) || true) {
             result += "<tr>";
             result += "<td><img onclick='craft(" + currList[i].name + ")' src='art/" + currList[i].name + ".png'><td>";
             result += "<td onclick='craft(" + currList[i].name + ")'>" + currList[i].getName() + "<td>";

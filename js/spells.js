@@ -2,7 +2,7 @@ var bloodBoilBuff = {image:"bloodBoilBuff",bonus:5,count:0};
 bloodBoilBuff.description = "Dmg +5";
 function bloodBoil(charType) {
     var result =  new Ability(charType, "Blood Boil","Your blood boils with demonic strength, increasing the damage of your next attack but damaging you.",3,{buffs:{damage:bloodBoilBuff}},bloodBoilFunc);
-    result.manaCost = 5;
+    result.manaCost = 4;
     return result;
 }
 
@@ -23,7 +23,7 @@ var oakSkinBuff = {image:"oakSkinBuff",bonus:4,count:0,degrades:1};
 oakSkinBuff.description = "AC +4";
 function oakSkin(charType) {
     var result = new Ability(charType, "Oak Skin","Bless yourself with skin linke oak bark, gaining 4 AC.",6,{buffs:{ac:oakSkinBuff}},oakSkinFunc);
-    result.manaCost = 8;
+    result.manaCost = 5;
     return result;
 }
 
