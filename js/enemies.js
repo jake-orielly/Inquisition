@@ -1,6 +1,7 @@
 function caveBeast() {
     var caveBeast = new Character(45,25,15,makeCleaver(),"the cave beast",["it","it's"],"enemy","monster");
     caveBeast.loot = [{item:monster_tusk,odds:100,amount:1}];
+    caveBeast.size = "large";
     return caveBeast;
 }
 

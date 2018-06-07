@@ -328,6 +328,7 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     var curr, attack;
     var baseAttack = attackRoll();
     var defenderAC = defender.ac;
+    var wepType = attacker.weapon.getAttribute("killVerb");
     
     if (defender.buffs.ac)
         for (var i = 0; i < defender.buffs.ac.length; i++)
@@ -337,7 +338,7 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
         attacker.weapon = attacker.unarmed;
     attack = baseAttack + attacker.weapon.getAttribute("attack");
     if (attacker == player)
-        attack = applyPerks(attack,attacker.weapon.getAttribute("killVerb"),"attack");
+        attack = applyPerks(attack,wepType,"attack");
     
     if (player.buffs.critChance)
         for (var i = 0; i < player.buffs.critChance.length; i++)
@@ -355,10 +356,10 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
             }
     }
     if (attacker == player)
-        result = applyPerks(result,attacker.weapon.getAttribute("killVerb"),"damage");
-    critThreshold = applyPerks(critThreshold,attacker.weapon.getAttribute("killVerb"),"crit");
+        result = applyPerks(result,wepType,"damage");
+    critThreshold = applyPerks(critThreshold,wepType,"crit");
     if (baseAttack >= critThreshold) {
-        result = [result * 2,true];
+        result = [result * applyPerks(2,wepType,"critDamage"),true];
     }
     return result;
 }
