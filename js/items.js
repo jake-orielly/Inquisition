@@ -25,6 +25,9 @@ var iron_ore = new Item("iron_ore",false,false,11);
 var iron_bar = new Item("iron_bar",true,false,24,new Craftable(25,smithingAptitude,[{item:iron_ore,amount:2}]));
 var coal = new Item("coal",false,false,16);
 
+var copper_dagger = new Item("copper_dagger",false,makeDagger(["copper"]),9,new Craftable(12,null,[{item:copper_bar,amount:1},{item:oak_logs,amount:1}]));
+var iron_dagger = new Item("iron_dagger",false,makeDagger(["iron"]),25,new Craftable(30,smithingAptitude,[{item:iron_bar,amount:1},{item:evergreen_logs,amount:1}]));
+
 var copper_short_sword = new Item("copper_short_sword",false,makeShortSword(["copper"]),12,new Craftable(16,null,[{item:copper_bar,amount:2},{item:oak_logs,amount:1}]));
 var iron_short_sword = new Item("iron_short_sword",false,makeShortSword(["iron"]),40,new Craftable(42,smithingAptitude,[{item:iron_bar,amount:2},{item:evergreen_logs,amount:1}]));
 
@@ -73,7 +76,7 @@ var shops = [generalStoreInventory,toolStoreInventory,armorStoreInventory,alchem
 
 var shopTemp = [flint_box,meat,oak_logs,evergreen_logs,copper_bar,iron_bar];
 fillShop(generalStoreInventory,shopTemp);
-shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe,copper_short_sword,iron_short_sword,copper_mace,iron_mace];
+shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe,copper_dagger,iron_dagger,copper_short_sword,iron_short_sword,copper_mace,iron_mace];
 fillShop(toolStoreInventory,shopTemp);
 shopTemp = [copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs];
 fillShop(armorStoreInventory,shopTemp);
@@ -115,6 +118,6 @@ function Craftable(xp,requiredPerk,recipe) {
 }
 
 var smeltList = [copper_bar,iron_bar];
-var smithList = [copper_axe, copper_pickaxe, copper_short_sword, copper_mace, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_short_sword, iron_mace, iron_chestplate,iron_platelegs];
+var smithList = [copper_axe, copper_pickaxe, copper_dagger, copper_short_sword, copper_mace, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_dagger, iron_short_sword, iron_mace, iron_chestplate,iron_platelegs];
 var potionList = [hp_potion_small,hp_potion_medium,mana_potion_small,mana_potion_medium];
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};

@@ -4,8 +4,8 @@ var visibleCols = 11;
 var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 15;
-//var playerY = 28;
-var playerY = 16;
+var playerY = 28;
+//var playerY = 16;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
@@ -213,9 +213,10 @@ function mapAddons(map) {
         npcList = [];
         makeHouse(6,14,"general_shopkeeper");
         makeHouse(3,12,"tool_shopkeeper");
-        makeHouse(4,4,"armor_shopkeeper");
-        makeHouse(6,1,"alchemy_shopkeeper");
-        makeNPC(10,10,"questGiver");
+        makeHouse(4,3,"armor_shopkeeper");
+        makeHouse(13,1,"alchemy_shopkeeper");
+        makeHouse(11,11,"inkeeper");
+        makeNPC(6,10,"questGiver");
     }
     else if (map == caveMap) {
         addBoardObject("chest",33,37);
@@ -225,12 +226,17 @@ function mapAddons(map) {
     }
     
     else if (map == shopInterior) {
+        var npc;
         npcList = [];
         for (var i = 0; i < shopMap.length; i++)
             if ((shopMap[i][0] - shopEntrance[0] == -1) ||  (shopMap[i][0] - shopEntrance[0] == 0) && shopMap[i][1] == (shopEntrance[1]-1)) {
-                makeNPC(4,4,shopMap[i][2]);
+                npc = shopMap[i][2];
                 break;
             }
+        makeNPC(4,4,npc);
+        if (npc == "inkeeper"){
+            addBoardObject("bed",2,2);
+        }
     }
 }
 
@@ -380,6 +386,7 @@ function bossMap(x,y,z) {
 }
 
 addItem(inventory,gold,500);
+addItem(inventory,copper_dagger);
 addItem(inventory,hp_potion_small);
 addItem(inventory,iron_axe);
 addItem(inventory,iron_pickaxe);
@@ -504,7 +511,8 @@ function makeHouse(x,y,given) {
 	addBoardObject("houseInvis",x,y+1);
 	addBoardObject("houseInvis",x-1,y);
 	addBoardObject("houseInvis",x-1,y+1);
-    shopMap.push([y,x,given]);
+    if (given)
+        shopMap.push([y,x,given]);
 }
 
 function makeBoss(x,y,given) {
@@ -904,7 +912,9 @@ function stashItem(given) {
     }
 }
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', keyResponse);
+
+function keyResponse(event) {
     if (!inCombat && !monsterAttack) {
         if (event.keyCode == 87) {
             if (conversationChoice == undefined)
@@ -925,7 +935,7 @@ document.addEventListener('keydown', function(event) {
         else if (event.keyCode == 69)
             tileAction();
     }
-});
+}
 
 function conversationSelect(direction) {
     var currKeys;

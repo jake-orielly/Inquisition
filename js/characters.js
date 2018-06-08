@@ -7,6 +7,46 @@ var armor_shopkeeper = {portrait:"art/armor_shopkeeper_head.png",shop:armorStore
 
 var alchemy_shopkeeper = {portrait:"art/alchemy_shopkeeper_head.png",shop:alchemyStoreInventory,line:"Potions for whatever ails you."};
 
+var inkeeper = {portrait:"art/inkeeper_head.png",line:"Would you like to stay the night? Only 10 gold.",responses:{yes:"I could use a rest. [pay 10g]",no:"Maybe another time."}};
+inkeeper.no = {line:"Alright. Come back any time!"};
+inkeeper.yes = {};
+inkeeper.yes.func = function() {
+    console.log(inventoryCount(inventory,gold));
+    if (inventoryCount(inventory,gold) < 10)
+        inkeeper.yes.line = "Oh dear. I'm afraid you don't have enough.";
+    else {
+        inkeeper.yes.line = "Very good!";
+        removeItem(inventory,gold,10);
+        $("#inventory").hide();
+        $("#skills").hide();
+        $("#perks").hide();
+        player.hp = player.maxHP;
+        player.mana = player.maxMana;
+        playerToBed();
+    }
+}
+
+function playerToBed() {
+    document.removeEventListener('keydown', keyResponse);
+    setTimeout(function() {
+        tileAction();
+        setTimeout(function() {
+            /*TODO
+            Make move work regardless of start square
+            make transition speed based on distance
+            fade in/out of black
+            */
+            $("#playerHTML").css("transform","translate(" + 64 * -2 + "px,0)");
+            setTimeout(function(){
+                $("#playerHTML").css("transform","translate(" + 64 * -2 + "px," + 64 * -3 + "px)");
+                setTimeout(function() {
+                    document.addEventListener('keydown', keyResponse);
+                },1100);
+            }, 1000);
+        },300)
+    }, 1500)
+}
+
 var questGiver = {portrait:"art/questGiver_head.png",line:"It's no secret that the southern woods are dangerous. Been that way for years. But lately things have gotten out of hand. They say a cursed beast lives in a cave deep in the south. There's a hearty reward for anyone who slays it. Are you interested?",responses:{yes:"yes",no:"no"},yes:{line:"Good. Let me know when you've slain the beast. Any questions before you go?"},no:"Well then you're no use to me."};
 questGiver.yes.func = function(){
     quests.southernBeast.phase = 1;
