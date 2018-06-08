@@ -475,6 +475,16 @@ button:focus {
     overflow: auto;
 }
 
+#sleepContainer {
+    position:absolute;
+    z-index:10;
+    display: none;
+}
+
+#sleepScreen {
+    fill:rgb(0,0,0,0);
+}
+
 .dropdown p:hover:not(.sortActive) {background-color: #ddd}
 
 .unselectable {

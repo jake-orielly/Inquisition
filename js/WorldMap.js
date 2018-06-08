@@ -18,7 +18,7 @@ var monsterAttack = false;
 var shopMap = [];
 var npcList = [];
 var conversation, conversationChoice;
-var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10","chest","chest_open"];
+var illegalTerrain = ["ocean","mountain","cave_wall","barrier","wood_wall","house00","house10","chest","chest_open","bed"];
 var needTool;
 var quests = {southernBeast:{phase:0}};
 

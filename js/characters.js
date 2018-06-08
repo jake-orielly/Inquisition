@@ -27,21 +27,42 @@ inkeeper.yes.func = function() {
 }
 
 function playerToBed() {
+    var sleepTick = 0;
+    var sleepScreenInterval;
     document.removeEventListener('keydown', keyResponse);
     setTimeout(function() {
+        $("#sleepContainer").show();
         tileAction();
         setTimeout(function() {
-            /*TODO
-            Make move work regardless of start square
-            make transition speed based on distance
-            fade in/out of black
-            */
-            $("#playerHTML").css("transform","translate(" + 64 * -2 + "px,0)");
+            if (playerX < playerY)
+                $("#playerHTML").css("transform","translate(" + 64 * (2 - playerX) + "px,0)");
+            else 
+                $("#playerHTML").css("transform","translate(0," + 64 * (2 - playerY) + "px)");
             setTimeout(function(){
-                $("#playerHTML").css("transform","translate(" + 64 * -2 + "px," + 64 * -3 + "px)");
+                $("#playerHTML").css("transform","translate(" + 64 * (2 - playerX) + "px," + 64 * (2 - playerY) + "px)");
+                playerX = 2;
+                playerY = 2;
                 setTimeout(function() {
-                    document.addEventListener('keydown', keyResponse);
-                },1100);
+                    sleepScreenInterval = setInterval( function() {
+                        sleepTick += 0.1;
+                        $("#sleepScreen").css("fill","rgb(0,0,0," + sleepTick + ")");
+                        if (sleepTick >= 1) {
+                            setTimeout(function() {
+                                sleepScreenInterval = setInterval( function() {
+                                    sleepTick -= 0.1;
+                                    $("#sleepScreen").css("fill","rgb(0,0,0," + sleepTick + ")");
+                                    if (sleepTick <= 0) {
+                                        updateBoard();
+                                        document.addEventListener('keydown', keyResponse);
+                                        $("#sleepContainer").hide();
+                                        clearInterval(sleepScreenInterval);
+                                    }
+                                },100);
+                            },750);
+                            clearInterval(sleepScreenInterval);
+                        }
+                    },100);
+                },1350);
             }, 1000);
         },300)
     }, 1500)
