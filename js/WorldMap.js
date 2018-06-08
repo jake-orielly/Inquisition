@@ -4,8 +4,8 @@ var visibleCols = 11;
 var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 15;
-var playerY = 28;
-//var playerY = 16;
+//var playerY = 28;
+var playerY = 16;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
@@ -38,6 +38,8 @@ treasureTemp = [elanor_ring];
 fillTreasure(elanorTreasure,treasureTemp);
 
 var currTreasure;
+var craftMenuAll = false;
+var currMenu;
 
 function fillTreasure(treasure,list) {
 	for (var i = 0; i < list.length; i++) {
@@ -407,6 +409,11 @@ function movePlayer(x,y) {
     var legalTile = true;
     var isHouse = (newLocation.children().hasClass("house01") || newLocation.children().hasClass("house11"));
     
+    if ($("#craftMenu").is(":visible")) {
+        $("#craftMenu").hide();
+        craftMenuAll = false;
+    }
+    
     for (var i = 0; i < illegalTerrain.length; i++) 
         if ($("#" + [newY] + "-" + [newX]).children().hasClass(illegalTerrain[i]))
             legalTile = false;
@@ -603,12 +610,13 @@ function inventoryCount(source,given) {
 }
 
 function toggleMenu(given) {
-    if ($("#" + given + "Menu").is(":visible")) {
+    currMenu = given;
+    if ($("#craftMenu").is(":visible")) {
         if (shouldCloseInventory) {
             shouldCloseInventory = false;
             $("#inventory").hide();
         }
-        $("#" + given + "Menu").hide();
+        $("#craftMenu").hide();
     }
     else {
         if (!($("#inventory").is(":visible")))
@@ -626,22 +634,32 @@ function hideMenus() {
     }
 }
 
+function craftMenuSwitch(given) {
+    craftMenuAll = given;
+    showMenu(currMenu);
+}
+
 function showMenu(given) {
     var result = "";
     var currList = craftListMaster[given];
     for (var i = 0; i < currList.length; i++) {
-        if (canCraft(currList[i]) || true) {
+        if (canCraft(currList[i]) || craftMenuAll) {
             result += "<tr>";
             result += "<td><img onclick='craft(" + currList[i].name + ")' src='art/" + currList[i].name + ".png'><td>";
-            result += "<td onclick='craft(" + currList[i].name + ")'>" + currList[i].getName() + "<td>";
-            result += "</tr>";
+            result += "<td onclick='craft(" + currList[i].name + ")'>";
+            result += "<p>" + currList[i].getName();
+            for (var j = 0; j < currList[i].craftable.recipe.length; j++) {
+                result += "<br>";
+                result += currList[i].craftable.recipe[j].item.getName() + " x" + currList[i].craftable.recipe[j].amount;
+            }
+            result += "</p></td></tr>";
         }
     }
     
     if (result == "")
-        result = "No recipes ";
-    $("#" + given + "MenuTable").html(result);
-    $("#" + given + "Menu").show();
+        result = "<span style='font-size:24px'>No recipes</span>";
+    $("#craftMenuTable").html(result);
+    $("#craftMenu").show();
 }
 
 function showShop(given) {

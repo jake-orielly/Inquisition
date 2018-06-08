@@ -129,19 +129,12 @@
             <div id="treasure">
                 <table cellspacing="0" id="treasureTable"></table>
             </div>
-            <div class="craftMenu" id="cookMenu">
-                <table cellspacing="0" class="craftTable" id="cookMenuTable"></table>
-            </div>
-            <div class="craftMenu" id="smeltMenu">
-                <button class="craftSort">Craftable</button>
-                <button class="craftSort">All</button>
-                <table cellspacing="0" class="craftTable" id="smeltMenuTable"></table>
-            </div>
-            <div class="craftMenu" id="smithMenu">
-                <table cellspacing="0" class="craftTable" id="smithMenuTable"></table>
-            </div>
-            <div class="craftMenu" id="alchemyMenu">
-                <table cellspacing="0" class="craftTable" id="alchemyMenuTable"></table>
+            <div id="craftMenu">
+                <button class="craftSort" onclick="craftMenuSwitch(false)">Craftable</button>
+                <button class="craftSort" onclick="craftMenuSwitch(true)">All</button>
+                <div id="craftMenuTableContainer">
+                    <table cellspacing="0" id="craftMenuTable"></table>
+                </div>
             </div>
             <div id="menuContainer">
                 <div id="toolNeeded">

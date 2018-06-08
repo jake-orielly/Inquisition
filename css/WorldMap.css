@@ -34,12 +34,13 @@
     right:0;
 }
 
-.craftTable {
+#craftMenuTable {
     bottom:70px;
     padding: 5px;
+    font-weight: bold;
 }
 
-.craftTable tr td{
+#craftMenuTable tr td{
     padding: 0.5em 0;
 }
 
@@ -86,16 +87,19 @@
     right: 312px;
 }
 
-.craftMenu {
+#craftMenu {
     position: absolute;
     display:none;
     background-color: rgb(204,204,204);
     border: 8px solid rgb(61,61,61);
     bottom:10px;
     left:10px;
-    overflow: auto;
-    max-height: 24.5em;
     padding:1em;
+}
+
+#craftMenuTableContainer {
+    max-height: 24.5em;
+    overflow: auto;
 }
 
 .xpBarMax {
