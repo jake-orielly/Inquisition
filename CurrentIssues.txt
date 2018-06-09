@@ -1,16 +1,12 @@
 Can only buy 1 item at a time from shop
-Inventory limit not enforced
 Player Death
-Map collapses when visible x & y are different, the two are probably backwards
 Buying item doesn’t remove it from shop inventory
 UI doesn’t indicate/explain items that you’re not high enough level to make
 Plants re-grow when you exit and re-enter the map (i.e. got to village and come back out)
 Fix “the rat” vs “rat” situation in combat log
-Can’t stash item stacks in treasure chest
 No indication of level up in combat
 Druid & Demon skill names
 If ability is on cool down item shows as on cool down 
 Problem with perk menu mouseover when scrolling
 How rejuvenation works/what is happening is not clear
 Need fire to cook salad
-Can’t eat berries when stacked

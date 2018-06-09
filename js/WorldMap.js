@@ -4,8 +4,7 @@ var visibleCols = 11;
 var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 15;
-//var playerY = 28;
-var playerY = 16;
+var playerY = 28;
 var nextEncounter = 50;
 var inCombat = false;
 var inventoryMax = 15;
@@ -697,7 +696,7 @@ function showTreasure() {
             if(curr < treasureInventory.length+1) {
                 result += "<img class='inventoryItem' onclick='lootItem(" + treasureInventory[curr-1].item.name + ")' src='art/" + treasureInventory[curr-1].item.name + ".png'>";
                 if (treasureInventory[curr-1].amount > 1)
-                    result += "<div class='inventoryAmountContainer'><p class='inventoryItemAmount'>" + treasureInventory[curr-1].amount + "</p></div>";
+                    result += "<div class='inventoryAmountContainer' onclick='lootItem(" + treasureInventory[curr-1].item.name + ")'><p class='inventoryItemAmount'>" + treasureInventory[curr-1].amount + "</p></div>";
             }
             result += "</td>";
         }
@@ -805,7 +804,7 @@ function updateInventory() {
             if(curr < inventory.length+1) {
                 result += "<img class='inventoryItem' onclick='itemClick(" + (curr-1) + ")' src='art/" + inventory[curr-1].item.name + ".png'>";
                 if (inventory[curr-1].amount > 1)
-                    result += "<div class='inventoryAmountContainer'><p class='inventoryItemAmount'>" + inventory[curr-1].amount + "</p></div>";
+                    result += "<div class='inventoryAmountContainer' onclick='itemClick(" + (curr-1) + ")'><p class='inventoryItemAmount'>" + inventory[curr-1].amount + "</p></div>";
             }
             result += "</td>";
         }
@@ -846,7 +845,7 @@ function updateEquipment() {
 }
 
 function buy(given) {
-    if ($("#shop").is(":visible")) {
+    if ($("#shop").is(":visible") && inventory.length < inventoryMax) {
         var playerGold = inventoryCount(inventory,gold);
         if(playerGold >= given.value) {
             addItem(inventory,given);
@@ -854,6 +853,8 @@ function buy(given) {
             updateInventory();
         }   
     }
+    else if (inventory.length >= inventoryMax)
+        inventoryFull();
 }
 
 function itemClick(given) {
@@ -861,7 +862,6 @@ function itemClick(given) {
     var isEdible = true;
     var modifier = 1;
     var keys,curr,ingredient;
-    
     if ($("#shop").is(":visible")) {
         sell(given);
     }
@@ -915,16 +915,16 @@ function itemClick(given) {
 
 function sell(given) {
     if(inventory[given].item.name != "gold" && !inventory[given].item.questItem) {
-        addItem(inventory,gold,(inventory[given].item.value*inventory[given].amount));
-        removeItem(inventory,inventory[given].item,inventory[given].amount);
+        addItem(inventory,gold,inventory[given].item.value);
+        removeItem(inventory,inventory[given].item);
         updateInventory();
     }   
 }
 
 function stashItem(given) {
     if (!inventory[given].item.questItem) {
-        addItem(currTreasure,inventory[given].item,inventory[given].amount);
-        removeItem(inventory,inventory[given].item,inventory[given].amount);
+        addItem(currTreasure,inventory[given].item);
+        removeItem(inventory,inventory[given].item);
         updateInventory();
         showTreasure();
     }
@@ -1099,14 +1099,18 @@ function tileAction() {
                 toolLevel = Math.max(toolLevel, toolModifierLevel[equipment.weapon.item.equipment.modifierNames[j]]);
     
     if(currResource && toolLevel >= currResource.toolLevel && hasPerk(currResource.requiredPerk)) {
-        harvest(currResource);
-        if (resourceType == 0)
-        	curr[curr.length-1] = curr[curr.length-1].toString() + "_stump";
-        else if (resourceType == 2)
-            curr[curr.length-1] = curr[curr.length-1].toString() + "_picked";
-        else 
-        	curr[curr.length-1] = "rock";
-        updateBoard();
+        if (inventory.length < inventoryMax) {
+            harvest(currResource);
+            if (resourceType == 0)
+                curr[curr.length-1] = curr[curr.length-1].toString() + "_stump";
+            else if (resourceType == 2)
+                curr[curr.length-1] = curr[curr.length-1].toString() + "_picked";
+            else 
+                curr[curr.length-1] = "rock";
+            updateBoard();
+        }
+        else
+            inventoryFull();
     }
     else {
         if (currResource && !hasPerk(currResource.requiredPerk)) {
@@ -1130,6 +1134,16 @@ function tileAction() {
     }
 }
 
+function inventoryFull() {
+    $("#toolNeededText").html("Inventory Full");
+    $("#toolNeededImage").attr("src", "art/inventoryFull.png");
+    $("#toolNeeded").fadeIn(200);
+    clearInterval(needTool);
+    needTool = setTimeout(function() {
+        $("#toolNeeded").fadeOut(200);
+    },900);
+}
+
 function hasPerk(given) {
     if (given == null)
         return true;
@@ -1148,10 +1162,7 @@ function craft(given) {
         addItem(inventory,given);
         
         for (var i = 0; i < 2; i++) {
-            toggleMenu("cook");
-            toggleMenu("smelt");
-            toggleMenu("smith");
-            toggleMenu("alchemy");
+            toggleMenu(currMenu);
         }
         updateInventory();
         if (!($("#inventory").is(":visible"))) {
@@ -1211,9 +1222,13 @@ function addItem (source,item,amount = 1) {
 }
 
 function lootItem(item,amount = 1) {
-    addItem(inventory,item,amount);
-    removeItem(currTreasure,item,amount);
-    showTreasure(currTreasure);
+    if (inventory.length < inventoryMax) {
+        addItem(inventory,item,amount);
+        removeItem(currTreasure,item,amount);
+        showTreasure(currTreasure);
+    }
+    else if (inventory.length >= inventoryMax)
+        inventoryFull();
 }
 
 function equipItem (given) {
@@ -1230,12 +1245,14 @@ function equipItem (given) {
 }
 
 function unEquipItem (given) {
-	if (equipment[given]) {
+	if (equipment[given] && inventory.length < inventoryMax) {
 	    addItem(inventory,equipment[given].item);
 	    player[given.toLowerCase()] = null;
 	    equipment[given] = null;
 	    updateEquipment();
     }
+    else if (inventory.length >= inventoryMax)
+        inventoryFull();
 }
 
 function removeItem (source,item,amount = 1) {
