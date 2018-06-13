@@ -8,6 +8,8 @@ function caveBeast() {
 function bug() {
     var bug = new Character(25,0,13,null,"the bug",["it","it's"],"enemy","bug");
     bug.weapon = new Weapon(4,[2,4],"claw","clawed with","piercing",[]);
+    bug.abilities = [acidSpit("enemy")];
+    bug.abilities[0].cooldown = parseInt(Math.random()*3);
     bug.makeMove = bugAI;
     return bug;
 }
@@ -80,11 +82,16 @@ function frothingHereticAI(target) {
 }
 
 function baseAI(target) {
-    return [makeAttack];
+    return [target,makeAttack];
 }
 
 function bugAI(target) {
-    return [target,makeAttack,makeAttack];
+    if (!currEnemy.abilities[0].cooldown) {
+        currEnemy.abilities[0].cooldown = currEnemy.abilities[0].maxCooldown;
+        return [target,acidSpit(currEnemy.charType)];
+    }
+    else
+        return [target,makeAttack,makeAttack];
 }
 
 

@@ -264,8 +264,12 @@ function playerCooldownTick() {
 function takeTurn(curr, target) {
     var result = "";
     var temp;
-    if (curr == currEnemy)
+    if (curr == currEnemy) {
+        for (var i = 0; i < currEnemy.abilities.length; i++)
+            if (currEnemy.abilities[i].cooldown > 0)
+                currEnemy.abilities[i].cooldown--;
         executeMove(currEnemy.makeMove(target),1,"");
+    }
     else {
         result = "<tr><td>" + makeAttack(curr,target) + "</tr></td>";
         turn++;
@@ -274,10 +278,16 @@ function takeTurn(curr, target) {
 }
 
 function executeMove(moves,num,currResult) {
-    var temp,result;
+    var temp,result,func;
+    
+    if (moves[num].func)
+        func = moves[num].func;
+    else 
+        func = moves[num];
+    console.log(func);
     if (num == moves.length-1) {
         setTimeout(function(){
-            result = currResult + "<tr><td>" + moves[num](currEnemy,player) + "</td></tr>";
+            result = currResult + "<tr><td>" + func(currEnemy,player) + "</td></tr>";
             document.getElementById("combatLog").innerHTML += result;
             turn++;
             setTimeout(function(){
@@ -290,7 +300,7 @@ function executeMove(moves,num,currResult) {
     }
     else {
         setTimeout(function(){
-            executeMove(moves,num+1,currResult + "<tr><td>" + moves[num](currEnemy,player) + "</td></tr>");
+            executeMove(moves,num+1,currResult + "<tr><td>" + func(currEnemy,player) + "</td></tr>");
         },1200);
     }
 }
@@ -329,7 +339,7 @@ function makeAttack(attacker, defender) {
     }
 }
 
-function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
+function calcAttack(attacker,defender,weapon = attacker.weapon) { //Todo add UI to alert player to crit
     var result = 0;
     var critThreshold = 20;
     var curr, attack;
@@ -337,18 +347,20 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
     var defenderAC = defender.ac;
     var wepType;
     
-    if (attacker.weapon == null)
+    if (weapon == null) {
         wepType = "unarmed";
+        weapon = attacker.unarmed;
+        attacker.weapon = attacker.unarmed;
+    }
     else
-        wepType = attacker.weapon.getAttribute("killVerb");
+        wepType = weapon.getAttribute("killVerb");
     
     if (defender.buffs.ac)
         for (var i = 0; i < defender.buffs.ac.length; i++)
             if (defender.buffs.ac[i].count)
                 defenderAC += defender.buffs.ac[i].bonus;
-    if (!attacker.weapon)
-        attacker.weapon = attacker.unarmed;
-    attack = baseAttack + attacker.weapon.getAttribute("attack");
+    console.log(defenderAC);
+    attack = baseAttack + weapon.getAttribute("attack");
     if (attacker == player)
         attack = applyPerks(attack,wepType,"attack");
     
@@ -356,7 +368,7 @@ function calcAttack(attacker,defender) { //Todo add UI to alert player to crit
         for (var i = 0; i < player.buffs.critChance.length; i++)
             critThreshold -= player.buffs.critChance[i].count;
     if (attack > defenderAC || attack == 20) {
-        result = getDamage(attacker.weapon.getAttribute("damage")[0],attacker.weapon.getAttribute("damage")[1]);
+        result = getDamage(weapon.getAttribute("damage")[0],weapon.getAttribute("damage")[1]);
         if (attacker.buffs.damage)
             for (var i = 0; i < attacker.buffs.damage.length; i++) {
                 curr = attacker.buffs.damage[i];

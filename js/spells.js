@@ -29,6 +29,7 @@ function oakSkin(charType) {
 
 function oakSkinFunc(target) {
     var combatText = "<tr><td>";
+    console.log(this);
     this.categories.buffs["ac"].count += 3;
     giveAttackXP("druid",17);
     combatText += capitalize(target.name) + " blessed " + target.perPronoun + "self, gaining 8 AC!";
@@ -80,15 +81,15 @@ function hellfire(charType) {
 function hellfireFunc(owner) {
 	var target;
 	var combatText;
-	var damage = [-10,-15];
+	var damage = [10,15];
     giveAttackXP("demon",37);
 	damage = getDamage(damage[0],damage[1]);
 	if (owner == player)
 		target = currEnemy;
 	else
 		target = player;
-	changeHP(damage,target);
-	moveText(target.charType,damage);
+	changeHP(damage*-1,target);
+	moveText(target.charType,damage*-1);
 	combatText = "<tr><td>";
 	combatText += owner.name + " blasted " + target.name + " with raging hellfire dealing <span class='red'>" + damage + "</span>.";
     combatText += "</td></tr>";
@@ -96,7 +97,7 @@ function hellfireFunc(owner) {
 }
 
 var retaliationBuff = {image:"retaliationBuff",bonus:1,count:0};
-retaliationBuff.description = function() {
+    retaliationBuff.description = function() {
     return "Dmg +" + this.count;
 }
 
@@ -121,4 +122,45 @@ function Ability(charType,name,description,maxCooldown,categories,func) {
         this.cooldown = 0;
     this.categories = categories;
     this.func = func;
+}
+
+// Enemy Spells
+
+function acidSpit(charType) {
+    var result = new Ability(charType,"Acid Spit","Spit Acid at your enemy.",5,{buffs:{ac:acidSpitBuff}},acidSpitFunc);
+    return result;
+}
+
+var acidSpitBuff = {image:"acidSpitBuff",bonus:-3,count:0,degrades:1};
+acidSpitBuff.description = "AC -3";
+
+function acidSpitFunc(owner,target) {
+	var target;
+	var combatText;
+    var spellWeapon = new Weapon(6,[3,5],"","","spell");
+    var crit = false;
+    var critAddon = "";
+    var critLogAddon = "dealt";
+    damage = calcAttack(owner,target,spellWeapon);
+    combatText = "<tr><td>";
+    if (damage[1]) {
+        damage = damage[0];
+        crit = true;
+        critAddon = "<br>CRIT!"
+        critLogAddon = "crit, dealing"
+    }
+    if (damage == 0) {
+        moveText(target.charType,"MISS");
+        combatText += owner.name + " spat acid at " + target.name + " but missed.";
+    }
+    else {
+        changeHP(damage*-1,target);
+        moveText(target.charType,(damage*-1) + critAddon);
+        player.buffs.ac.push(acidSpitBuff)
+        acidSpit("enemy").categories.buffs["ac"].count += 4;
+        showBuff(acidSpit("enemy").categories.buffs["ac"],acidSpit("enemy").charType);
+        combatText += owner.name + " spat acid at " + target.name + " and " + critLogAddon + " <span class='red'>" + damage + "</span> damage.";
+    }
+    combatText += "</td></tr>";
+    return combatText;	
 }
