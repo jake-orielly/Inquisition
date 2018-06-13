@@ -231,17 +231,8 @@ function playerTurn() {
         $(".actionButton").css("color","grey");
         $(".actionButton").css("cursor","default");
         takeTurn(characters[0],characters[1]);
-        if (!dead) {
-            setTimeout(function(){
-                takeTurn(characters[1],characters[0])
-                setTimeout(function(){
-                    isPlayerTurn = true
-                    $(".actionButton").css("color","black");
-                    $(".actionButton").css("cursor","pointer");
-                    playerCooldownTick();
-                },1000);
-            }, 1000);
-        }
+        if (!dead)
+            takeTurn(characters[1],characters[0])
     }
 }
 
@@ -251,15 +242,7 @@ function wait() {
         $(".abilityButton").hide();
         $(".actionButton").css("color","grey");
         $(".actionButton").css("cursor","default");
-        setTimeout(function(){
-            takeTurn(characters[1],characters[0])
-            setTimeout(function(){
-                isPlayerTurn = true
-                $(".actionButton").css("color","black");
-                $(".actionButton").css("cursor","pointer");
-                playerCooldownTick();
-            },1000);
-        }, 1000);
+        takeTurn(characters[1],characters[0])
     }
 }
 
@@ -279,13 +262,37 @@ function playerCooldownTick() {
 }
 
 function takeTurn(curr, target) {
-    var result;
+    var result = "";
+    var temp;
     if (curr == currEnemy)
-        result = currEnemy.makeMove(target);
-    else
+        executeMove(currEnemy.makeMove(target),1,"");
+    else {
         result = "<tr><td>" + makeAttack(curr,target) + "</tr></td>";
-    turn++;
-    document.getElementById("combatLog").innerHTML += result;
+        turn++;
+        document.getElementById("combatLog").innerHTML += result;
+    }
+}
+
+function executeMove(moves,num,currResult) {
+    var temp,result;
+    if (num == moves.length-1) {
+        setTimeout(function(){
+            result = currResult + "<tr><td>" + moves[num](currEnemy,player) + "</td></tr>";
+            document.getElementById("combatLog").innerHTML += result;
+            turn++;
+            setTimeout(function(){
+                isPlayerTurn = true
+                $(".actionButton").css("color","black");
+                $(".actionButton").css("cursor","pointer");
+                playerCooldownTick();
+            },1200);
+        },800);
+    }
+    else {
+        setTimeout(function(){
+            executeMove(moves,num+1,currResult + "<tr><td>" + moves[num](currEnemy,player) + "</td></tr>");
+        },1200);
+    }
 }
 
 function makeAttack(attacker, defender) {

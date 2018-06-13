@@ -5,6 +5,13 @@ function caveBeast() {
     return caveBeast;
 }
 
+function bug() {
+    var bug = new Character(25,0,13,null,"the bug",["it","it's"],"enemy","bug");
+    bug.weapon = new Weapon(4,[2,4],"claw","clawed with","piercing",[]);
+    bug.makeMove = bugAI;
+    return bug;
+}
+
 function wolf() {
     var wolf = new Character(10,0,9,null,"the wolf",["it","it's"],"enemy","chest");
     wolf.weapon = new Weapon(2,[1,3],"claw","clawed with","piercing",[]);
@@ -73,7 +80,11 @@ function frothingHereticAI(target) {
 }
 
 function baseAI(target) {
-    return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
+    return [makeAttack];
+}
+
+function bugAI(target) {
+    return [target,makeAttack,makeAttack];
 }
 
 

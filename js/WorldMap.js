@@ -139,10 +139,10 @@ function showPerks(perks = perkList) {
         requirements = "";
         if (!meetsRequirements(perks[i])) {
             result += "<tr class='greyedOut'>";
-            requirements = "Requires: ";
+            requirements = "Requires: " + "<br>";
             for (var j in perks[i].requirements)
-                requirements += capitalize(j) + ": " + perks[i].requirements[j];
-            requirements = "<span class='perkRequirement'>" + requirements + "</span>";
+                requirements += capitalize(j) + ": " + perks[i].requirements[j] + "<br>";
+            requirements = "<div style='position:relative'><span class='perkRequirement'>" + requirements + "</span></div>";
         }
         else if (perkPoints - perkPointsUsed < 5) {
             result += "<tr class='greyedOut'>";
@@ -1188,13 +1188,15 @@ function canCraft(given) {
 function loot(given) {
     var curr;
     currTreasure = [];
-    for (var i = 0; i < given.loot.length; i++) {
-        curr = given.loot[i];
-        if (percentile() <= curr.odds) {
-            if (Array.isArray(curr.amount))
-                currTreasure.push(new InventoryItem(curr.item,rangeVal(curr.amount)));
-            else 
-                currTreasure.push(new InventoryItem(curr.item,curr.amount));
+    if (given.loot) {
+        for (var i = 0; i < given.loot.length; i++) {
+            curr = given.loot[i];
+            if (percentile() <= curr.odds) {
+                if (Array.isArray(curr.amount))
+                    currTreasure.push(new InventoryItem(curr.item,rangeVal(curr.amount)));
+                else 
+                    currTreasure.push(new InventoryItem(curr.item,curr.amount));
+            }
         }
     }
     shouldCloseInventory = true;
