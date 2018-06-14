@@ -40,6 +40,8 @@ var currTreasure;
 var craftMenuAll = false;
 var currMenu;
 
+var worldBoardTemp;
+
 function fillTreasure(treasure,list) {
 	for (var i = 0; i < list.length; i++) {
 	    treasure.push(new InventoryItem(list[i],1));
@@ -299,17 +301,20 @@ function updateBoard(camX = 0,camY = 0) {
         for (var j = botX; j < topX; j++) {
                 boardHTML += "<td class='boardTile' id='" + i + "-" + j + "'>";
                 for (var k = 0; k < board[i][j].length; k++) {
-                    if (board[i][j][k] == "houseInvis")
-                        tileMod = houseMap(i,j,k);  
-                    else if (board[i][j][k] == "monsterInvis")
-                        tileMod = bossMap(i,j,k); 
-                    else if (board[i][j][k] == "stonePath") {
-                        tileMod = "' style = 'background:url(art/stonePathSheet.png)";
-                        tileMod += bitMask(i,j);
+                    if (isNaN(board[i][j][k])) {
+                        if (board[i][j][k] == "houseInvis")
+                            tileMod = houseMap(i,j,k);  
+                        else if (board[i][j][k] == "monsterInvis")
+                            tileMod = bossMap(i,j,k); 
+                        else if (board[i][j][k] == "stonePath") {
+                            tileMod = "' style = 'background:url(art/stonePathSheet.png)";
+                            tileMod += bitMask(i,j);
+                        }
+                        else 
+                            tileMod = "";
+
+                        boardHTML += "<img class='tileItem " + board[i][j][k] + tileMod + "' src='art/" + board[i][j][k] + ".png'>";
                     }
-                    else 
-                        tileMod = "";
-                    boardHTML += "<img class='tileItem " + board[i][j][k] + tileMod + "' src='art/" + board[i][j][k] + ".png'>";
                 }
             boardHTML += "</td>";
         }
@@ -448,6 +453,16 @@ function movePlayer(x,y) {
                 tileType = "village";
         else if (newLocation.children().hasClass("cave_entrance"))
                 tileType = "cave";
+        
+        if(!inTown)
+            for (var i = 0; i < board.length; i++)
+                for (var j = 0; j < board[i].length; j++)
+                    for (var k = 0; k < board[i][j].length; k++)
+                        if (!isNaN(board[i][j][k])) {
+                            board[i][j][k]--;
+                            if (board[i][j][k] == 0)
+                                board[i][j][k-1] = mapTable[i][j];
+                        }
                 
         if (isHouse) {
             playerX = 4;
@@ -458,11 +473,12 @@ function movePlayer(x,y) {
         }
 
         if (mapTable == villageMap && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[0].length-1))) {
+            console.log(1);
             playerX = 14;
             playerY = 29;
             inTown = false;
             mapTable = testMap;
-            makeBoard();
+            board = worldBoardTemp;
             updateBoard();
         }
         
@@ -482,6 +498,7 @@ function movePlayer(x,y) {
             inTown = true;
             playerX = (7 - x*7); //Player appears in village based on direction they entered from
             playerY = (7 - y*7);
+            worldBoardTemp = board;
             mapTable = villageMap;
             makeBoard();
             updateBoard();
@@ -1107,6 +1124,7 @@ function tileAction() {
                 curr[curr.length-1] = curr[curr.length-1].toString() + "_picked";
             else 
                 curr[curr.length-1] = "rock";
+            curr.push(parseInt(Math.random()*25)+25);
             updateBoard();
         }
         else

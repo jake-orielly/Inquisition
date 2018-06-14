@@ -2,7 +2,6 @@ Can only buy 1 item at a time from shop
 Player Death
 Buying item doesn’t remove it from shop inventory
 UI doesn’t indicate/explain items that you’re not high enough level to make
-Plants re-grow when you exit and re-enter the map (i.e. got to village and come back out)
 Fix “the rat” vs “rat” situation in combat log
 No indication of level up in combat
 Druid & Demon skill names
