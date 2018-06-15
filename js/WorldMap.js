@@ -1211,7 +1211,7 @@ function loot(given) {
             curr = given.loot[i];
             if (percentile() <= curr.odds) {
                 if (Array.isArray(curr.amount))
-                    currTreasure.push(new InventoryItem(curr.item,rangeVal(curr.amount)));
+                    currTreasure.push(new InventoryItem(curr.item,getDamage(curr.amount[0],curr.amount[1])));
                 else 
                     currTreasure.push(new InventoryItem(curr.item,curr.amount));
             }

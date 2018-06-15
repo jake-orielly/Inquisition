@@ -1,12 +1,37 @@
-function caveBeast() {
-    var caveBeast = new Character(45,25,15,makeAxe(),"the cave beast",["it","it's"],"enemy","monster");
-    caveBeast.loot = [{item:monster_tusk,odds:100,amount:1}];
-    caveBeast.size = "large";
-    return caveBeast;
+function wolf() {
+    var wolf = new Character(10,0,9,null,"the wolf",["it","it's"],"enemy","wolf");
+    wolf.weapon = new Weapon(2,[1,3],"claw","clawed with","piercing",[]);
+    wolf.makeMove = baseAI;
+    wolf.loot = [{item:meat,odds:100,amount:1}];
+    return wolf;
+}
+
+function bear() {
+    var bear = new Character(20,0,11,null,"the wolf",["it","it's"],"enemy","bear");
+    bear.weapon = new Weapon(1,[4,6],"claw","clawed with","piercing",[]);
+    bear.makeMove = baseAI;
+    bear.loot = [{item:meat,odds:100,amount:1}];
+    return bear;
+}
+
+function bugbear() {
+    var bugbear = new Character(27,0,16,null,"the bugbear",["it","it's"],"enemy","bugbear");
+    bugbear.weapon = makeMace(["iron"]);
+    bugbear.makeMove = baseAI;
+    bugbear.loot = [{item:copper_mace,odds:75,amount:1}];
+    return bugbear;
+}
+
+function treant() {
+    var treant = new Character(40,0,10,null,"the bugbear",["it","it's"],"enemy","treant");
+    treant.weapon = new Weapon(3,[4,12],"branch","slammed with","crushing",[]);
+    treant.makeMove = baseAI;
+    treant.loot = [{item:evergreen_logs,odds:75,amount:[1,3]}];
+    return treant;
 }
 
 function bug() {
-    var bug = new Character(25,0,13,null,"the bug",["it","it's"],"enemy","bug");
+    var bug = new Character(45,0,13,null,"the bug",["it","it's"],"enemy","bug");
     bug.weapon = new Weapon(4,[2,4],"claw","clawed with","piercing",[]);
     bug.abilities = [acidSpit("enemy")];
     bug.abilities[0].cooldown = parseInt(Math.random()*3);
@@ -14,12 +39,11 @@ function bug() {
     return bug;
 }
 
-function wolf() {
-    var wolf = new Character(10,0,9,null,"the wolf",["it","it's"],"enemy","chest");
-    wolf.weapon = new Weapon(2,[1,3],"claw","clawed with","piercing",[]);
-    wolf.makeMove = baseAI;
-    wolf.loot = [{item:meat,odds:100,amount:1}];
-    return wolf;
+function caveBeast() {
+    var caveBeast = new Character(45,25,15,makeAxe(),"the cave beast",["it","it's"],"enemy","monster");
+    caveBeast.loot = [{item:monster_tusk,odds:100,amount:1}];
+    caveBeast.size = "large";
+    return caveBeast;
 }
 
 function fallenKnight() {

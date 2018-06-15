@@ -10,3 +10,4 @@ Problem with perk menu mouseover when scrolling
 How rejuvenation works/what is happening is not clear
 Need fire to cook salad
 Acid buff gets put in perks twice and so degrades twice as fast
+Adding multiple items at once adds as stack even if not stackable
