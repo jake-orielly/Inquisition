@@ -526,7 +526,23 @@ function movePlayer(x,y) {
     }
 
     //if (nextEncounter <= 0)
-        //startEncounter();
+        //startEncounter(pickMonster());
+}
+
+function pickMonster() {
+    var monsters = [wolf,bear,treant,bugbear,bug];
+    var num;
+
+    if (mapTable == caveMap)
+        num = parseInt(Math.random()*2) + 3;
+
+    else if (playerY > 40)
+        num = parseInt(Math.random()*2) + 2;
+    
+    else
+        num = parseInt(Math.random()*2);
+    
+    return monsters[num];
 }
 
 function makeHouse(x,y,given) {

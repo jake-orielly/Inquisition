@@ -7,7 +7,7 @@ function wolf() {
 }
 
 function bear() {
-    var bear = new Character(20,0,11,null,"the wolf",["it","it's"],"enemy","bear");
+    var bear = new Character(20,0,11,null,"the bear",["it","it's"],"enemy","bear");
     bear.weapon = new Weapon(1,[4,6],"claw","clawed with","piercing",[]);
     bear.makeMove = baseAI;
     bear.loot = [{item:meat,odds:100,amount:[1,3]},{item:bear_claw,odds:75,amount:[1-3]}];

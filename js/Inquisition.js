@@ -259,9 +259,10 @@ function showPoisonedWeapon(attacker) {
         }
     
     if (!foundPoison)
-        for (var i = 0; i < player.buffs.weapon.length; i++)
-            if(player.buffs.weapon[i].image == "poisonedWeaponBuff")
-                player.buffs.weapon[i].count = 0;
+        if (player.buffs.weapon)
+            for (var i = 0; i < player.buffs.weapon.length; i++)
+                if(player.buffs.weapon[i].image == "poisonedWeaponBuff")
+                    player.buffs.weapon[i].count = 0;
 }
 
 function wait() {
