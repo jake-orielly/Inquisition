@@ -238,6 +238,10 @@ function playerTurn() {
 
 function wait() {
     if (isPlayerTurn && !dead) {
+        if (player.buffs.healing)
+            for (var i = 0; i < player.buffs.healing.length; i++)
+                if (player.buffs.healing[i].count > 0)
+                    player.buffs.healing[i].func(player);
         isPlayerTurn = false;
         $(".abilityButton").hide();
         $(".actionButton").css("color","grey");
@@ -264,6 +268,10 @@ function playerCooldownTick() {
 function takeTurn(curr, target) {
     var result = "";
     var temp;
+    if (curr.buffs.healing)
+        for (var i = 0; i < curr.buffs.healing.length; i++)
+            if (curr.buffs.healing[i].count > 0)
+                curr.buffs.healing[i].func(curr);
     if (curr == currEnemy) {
         for (var i = 0; i < currEnemy.abilities.length; i++)
             if (currEnemy.abilities[i].cooldown > 0)
@@ -328,6 +336,10 @@ function makeAttack(attacker, defender) {
         changeHP(attackResult,defender);
         moveText(defender.charType,attackResult + critAddon);   
         
+        for (var i = 0; i < attacker.weapon.modifiers.length; i++)
+            if (attacker.weapon.modifiers[i].func)
+                attacker.weapon.modifiers[i].func(defender);
+        
         if (attacker == player)
             giveAttackXP(attacker.weapon.killVerb,Math.abs(attackResult));
 
@@ -359,7 +371,6 @@ function calcAttack(attacker,defender,weapon = attacker.weapon) { //Todo add UI 
         for (var i = 0; i < defender.buffs.ac.length; i++)
             if (defender.buffs.ac[i].count)
                 defenderAC += defender.buffs.ac[i].bonus;
-    console.log(defenderAC);
     attack = baseAttack + weapon.getAttribute("attack");
     if (attacker == player)
         attack = applyPerks(attack,wepType,"attack");

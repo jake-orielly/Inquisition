@@ -124,6 +124,34 @@ function Ability(charType,name,description,maxCooldown,categories,func) {
     this.func = func;
 }
 
+//Weapon Spells
+
+function poison(target) {
+    var foundBuff = false;
+    if (target.buffs.healing) {
+        for (var i = 0; i < target.buffs.healing.length; i++)
+            if (target.buffs.healing[i].image == "poisonBuff") {
+                target.buffs.healing[i].count += 3;
+                foundBuff = true;
+            }
+        if (!foundBuff)
+            target.buffs.healing.push(poisonBuff(3,target));
+    }
+    else
+        target.buffs.healing = [poisonBuff(3,target)];
+    showBuff(target.buffs.healing[target.buffs.healing.length-1],target.charType);
+}
+
+function poisonBuff(given,target) {
+    var result = {image:"poisonBuff",bonus:-1,count:given,degrades:1};
+    result.description = "Does 1 damage per stack per turn.";
+    result.func = function(given) {
+        changeHP(this.bonus*this.count,target);
+        moveText(target.charType,(this.bonus*this.count));
+    }
+    return result;
+}
+
 // Enemy Spells
 
 function acidSpit(charType) {

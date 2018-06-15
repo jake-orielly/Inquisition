@@ -16,9 +16,9 @@ function bear() {
 
 function bugbear() {
     var bugbear = new Character(27,0,16,null,"the bugbear",["it","it's"],"enemy","bugbear");
-    bugbear.weapon = makeMace(["iron"]);
+    bugbear.weapon = makeMace(["iron","poisoned"]);
     bugbear.makeMove = baseAI;
-    bugbear.loot = [{item:copper_mace,odds:75,amount:1}];
+    bugbear.loot = [{item:iron_mace,odds:75,amount:1}];
     return bugbear;
 }
 
