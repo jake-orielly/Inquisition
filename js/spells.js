@@ -126,8 +126,23 @@ function Ability(charType,name,description,maxCooldown,categories,func) {
 
 //Weapon Spells
 
-function poison(target) {
+function poison(attacker,target) {
     var foundBuff = false;
+    var weapon;
+    
+    if (attacker.weapon)
+        weapon = attacker.weapon;
+    else
+        weapon = attacker.unarmed;
+    
+    for (var i = 0; i < weapon.modifiers.length; i++)
+        if (weapon.modifiers[i].func && weapon.modifiers[i].func.name == "poison") {
+            weapon.modifiers[i].count--;
+            if (weapon.modifiers[i].count == 0) {
+                weapon.modifiers.splice(i,1);
+                document.getElementById("combatLog").innerHTML += "<tr><td>The poison on " + attacker.name + "'s weapon ran out.</td></tr>";
+            }
+        }
     if (target.buffs.healing) {
         for (var i = 0; i < target.buffs.healing.length; i++)
             if (target.buffs.healing[i].image == "poisonBuff") {
@@ -147,8 +162,15 @@ function poisonBuff(given,target) {
     result.description = "Does 1 damage per stack per turn.";
     result.func = function(given) {
         changeHP(this.bonus*this.count,target);
-        moveText(target.charType,(this.bonus*this.count));
+        moveText(target.charType,(this.bonus*this.count),"poison");
+        document.getElementById("combatLog").innerHTML += "<tr><td>" + target.name + " took <span class='poisonText'>" + this.bonus*this.count*-1 + "</span> damage from poison.</td></tr>";
     }
+    return result;
+}
+
+function poisonedWeaponBuff(given,amount) {
+    var result = {image:"poisonedWeaponBuff",bonus:0,count:amount,degrades:0};
+    result.description = "Your weapon is poisoned";
     return result;
 }
 

@@ -36,6 +36,11 @@
     color: green;
 }
 
+.poisonText {
+    font-weight:bold;
+    color:#94b21c
+}
+
 #combatLogContainer {
     height: 25%;
     overflow-y: scroll;
@@ -170,10 +175,16 @@
     cursor: default;
 }
 
-#playerBuffTable, enemyBuffTable {
+#playerBuffTable {
     position: absolute;
     margin-left: 3;
     top: 3;
+}
+
+#enemyBuffTable {
+    position:absolute;
+    top: 3;
+    right: 3;
 }
 
 .buffImage {
@@ -195,10 +206,14 @@
     left: 65%;
 }
 
+.enemyBuffText, .enemyBigBuffText {
+    right: 15%;
+}
+
 .buffText, .bigBuffText {
     color: red;
     position: absolute;
-    top: 5%;
+    top: 15%;
     font-weight: 900;
     text-shadow: 2px 2px 2px black;
     font-size: 24px;

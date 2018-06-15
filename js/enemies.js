@@ -10,7 +10,7 @@ function bear() {
     var bear = new Character(20,0,11,null,"the wolf",["it","it's"],"enemy","bear");
     bear.weapon = new Weapon(1,[4,6],"claw","clawed with","piercing",[]);
     bear.makeMove = baseAI;
-    bear.loot = [{item:meat,odds:100,amount:1}];
+    bear.loot = [{item:meat,odds:100,amount:[1,3]},{item:bear_claw,odds:75,amount:[1-3]}];
     return bear;
 }
 
@@ -18,16 +18,24 @@ function bugbear() {
     var bugbear = new Character(27,0,16,null,"the bugbear",["it","it's"],"enemy","bugbear");
     bugbear.weapon = makeMace(["iron","poisoned"]);
     bugbear.makeMove = baseAI;
-    bugbear.loot = [{item:iron_mace,odds:75,amount:1}];
+    bugbear.loot = [{item:iron_mace,odds:75,amount:1},{item:poison_potion_small,odds:50,amount:1},{item:poison_potion_small,odds:20,amount:1}];
     return bugbear;
 }
 
 function treant() {
-    var treant = new Character(40,0,10,null,"the bugbear",["it","it's"],"enemy","treant");
+    var treant = new Character(40,0,10,null,"the treant",["it","it's"],"enemy","treant");
     treant.weapon = new Weapon(3,[4,12],"branch","slammed with","crushing",[]);
     treant.makeMove = baseAI;
     treant.loot = [{item:evergreen_logs,odds:75,amount:[1,3]}];
     return treant;
+}
+
+function targetDummy() {
+    var targetDummy = new Character(400,0,1,null,"the target dummy",["it","it's"],"enemy","treant");
+    targetDummy.weapon = new Weapon(0,[1,1],"weapon","attacked with","piercing",[]);
+    targetDummy.makeMove = baseAI;
+    targetDummy.loot = [];
+    return targetDummy;
 }
 
 function bug() {
@@ -54,7 +62,7 @@ function fallenKnight() {
 }
 
 function createPlayer() {
-    var player = new Character(10,5,10,null,"Jake",["him","his"],"player","player");
+    var player = new Character(100,5,100,null,"Jake",["him","his"],"player","player");
     player.abilities = [oakSkin(player.charType),bloodBoil(player.charType)];
     player.unarmed = new Weapon(2,[1,3],"fist","punched with","pummeled");
     initCharacter(player);

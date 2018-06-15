@@ -12,8 +12,6 @@ var woundedFuryBuff = {image:"woundedFuryBuff",bonus:1,count:0};
 player = createPlayer();
 
 function startCombat(given) {
-    var types;
-    
     turn = 0;
     dead = 0;
     isPlayerTurn = true;
@@ -24,13 +22,7 @@ function startCombat(given) {
         currEnemy = wolf();
     characters = [player,currEnemy];
     
-    types = Object.keys(player.buffs);
-    for (var i = 0; i < types.length; i++) {
-        for (var j = 0; j < player.buffs[types[i]].length; j++) {
-            player.buffs[types[i]][j].count = 0;
-            showBuff(player.buffs[types[i]][j]);
-        }
-    }
+    showAllBuffs(player);
     
     for (var i = 0; i < player.hpTriggers.length; i++)
                 player.hpTriggers[i]();
@@ -157,7 +149,6 @@ function showBuff(buff,charType) {
     else
         description = buff.description;
     
-    charType = "player";
     if (buff.count < 1) {
             hideBuff(buff.image);
     }
@@ -166,7 +157,7 @@ function showBuff(buff,charType) {
         if (buff.count > 1)
             result += "<p class='buffText " + charType + "BuffText' id='" + buff.image + "'>" + buff.count + "</p>";
         result += "</div><span class='buffHidden'>" + description + "</span></td></tr>";
-        document.getElementById("playerBuffTable").innerHTML += result;
+        document.getElementById(charType + "BuffTable").innerHTML += result;
     }
     else { 
         if(!$("#" + buff.image + "Row").is(":visible"))
@@ -179,11 +170,11 @@ function showBuff(buff,charType) {
         document.getElementById(buff.image).classList += charType + "BigBuffText";
     }
     
-    $("#playerBuffTable>tr").mouseenter(function() {
+    $("#" + charType + "BuffTable>tr").mouseenter(function() {
         $(this).find("span").removeClass("buffHidden");
         $(this).find("span").addClass("buffHover");
     });
-    $("#playerBuffTable>tr").mouseleave(function() {
+    $("#" + charType + "Table>tr").mouseleave(function() {
         $(this).find("span").addClass("buffHidden");
         $(this).find("span").removeClass("buffHover");
     });
@@ -230,10 +221,47 @@ function playerTurn() {
         $(".abilityButton").hide();
         $(".actionButton").css("color","grey");
         $(".actionButton").css("cursor","default");
+        showAllBuffs(player);
         takeTurn(characters[0],characters[1]);
         if (!dead)
             takeTurn(characters[1],characters[0])
     }
+}
+
+function showAllBuffs(given) {
+    showPoisonedWeapon(given);
+    for (var i in given.buffs) 
+            for (var j = 0; j < given.buffs[i].length; j++)
+                if (given.buffs[i][j].count > 0) {
+                    if (given.buffs[i][j].degrades)
+                        given.buffs[i][j].count--;
+                    showBuff(given.buffs[i][j],given.charType);
+                }
+}
+
+function showPoisonedWeapon(attacker) {
+    var weapon;
+    var foundPoison = false
+    if (attacker.weapon)
+        weapon = attacker.weapon;
+    else
+        weapon = attacker.unarmed;
+    for (var i = 0; i < weapon.modifiers.length; i++)
+        if (weapon.modifiers[i].func && weapon.modifiers[i].func.name == "poison") {
+            foundPoison = true;
+            if (player.buffs.weapon) {
+                for (var i = 0; i < player.buffs.weapon.length; i++)
+                    if (player.buffs.weapon[i].image == "poisonedWeaponBuff")
+                        player.buffs.weapon[i].count = weapon.modifiers[i].count;
+            }
+            else
+                player.buffs["weapon"] = [poisonedWeaponBuff(attacker,weapon.modifiers[i].count)];
+        }
+    
+    if (!foundPoison)
+        for (var i = 0; i < player.buffs.weapon.length; i++)
+            if(player.buffs.weapon[i].image == "poisonedWeaponBuff")
+                player.buffs.weapon[i].count = 0;
 }
 
 function wait() {
@@ -246,17 +274,12 @@ function wait() {
         $(".abilityButton").hide();
         $(".actionButton").css("color","grey");
         $(".actionButton").css("cursor","default");
+        showAllBuffs(player);
         takeTurn(characters[1],characters[0])
     }
 }
 
 function playerCooldownTick() {
-    for (var i in player.buffs) 
-        for (var j = 0; j < player.buffs[i].length; j++)
-            if (player.buffs[i][j].count > 0 && player.buffs[i][j].degrades){
-                player.buffs[i][j].count--;
-                showBuff(player.buffs[i][j]);
-            }
     for (var i = 0; i < player.abilities.length; i++) {
         if (player.abilities[i].cooldown > 0)
             player.abilities[i].cooldown--;
@@ -268,21 +291,38 @@ function playerCooldownTick() {
 function takeTurn(curr, target) {
     var result = "";
     var temp;
-    if (curr.buffs.healing)
-        for (var i = 0; i < curr.buffs.healing.length; i++)
-            if (curr.buffs.healing[i].count > 0)
-                curr.buffs.healing[i].func(curr);
+    
     if (curr == currEnemy) {
         for (var i = 0; i < currEnemy.abilities.length; i++)
             if (currEnemy.abilities[i].cooldown > 0)
                 currEnemy.abilities[i].cooldown--;
-        executeMove(currEnemy.makeMove(target),1,"");
+        if (currEnemy.buffs.healing)
+            setTimeout(function(){
+                if (processHeals(curr))
+                    setTimeout(function(){
+                        executeMove(currEnemy.makeMove(target),1,"");
+                    },800);
+            },800);
+        else
+            executeMove(currEnemy.makeMove(target),1,"");
     }
     else {
+        processHeals(curr)
         result = "<tr><td>" + makeAttack(curr,target) + "</tr></td>";
         turn++;
         document.getElementById("combatLog").innerHTML += result;
     }
+}
+
+function processHeals(curr) {
+    var healed = false;
+    if (curr.buffs.healing)
+        for (var i = 0; i < curr.buffs.healing.length; i++)
+            if (curr.buffs.healing[i].count > 0) {
+                curr.buffs.healing[i].func(curr);
+                healed = true;
+            }
+    return healed;
 }
 
 function executeMove(moves,num,currResult) {
@@ -292,13 +332,14 @@ function executeMove(moves,num,currResult) {
         func = moves[num].func;
     else 
         func = moves[num];
-    console.log(func);
+    
     if (num == moves.length-1) {
         setTimeout(function(){
             result = currResult + "<tr><td>" + func(currEnemy,player) + "</td></tr>";
             document.getElementById("combatLog").innerHTML += result;
             turn++;
             setTimeout(function(){
+                showAllBuffs(currEnemy);
                 isPlayerTurn = true
                 $(".actionButton").css("color","black");
                 $(".actionButton").css("cursor","pointer");
@@ -335,10 +376,9 @@ function makeAttack(attacker, defender) {
     else {
         changeHP(attackResult,defender);
         moveText(defender.charType,attackResult + critAddon);   
-        
         for (var i = 0; i < attacker.weapon.modifiers.length; i++)
             if (attacker.weapon.modifiers[i].func)
-                attacker.weapon.modifiers[i].func(defender);
+                attacker.weapon.modifiers[i].func(attacker,defender);
         
         if (attacker == player)
             giveAttackXP(attacker.weapon.killVerb,Math.abs(attackResult));
@@ -378,7 +418,7 @@ function calcAttack(attacker,defender,weapon = attacker.weapon) { //Todo add UI 
     if (player.buffs.critChance)
         for (var i = 0; i < player.buffs.critChance.length; i++)
             critThreshold -= player.buffs.critChance[i].count;
-    if (attack > defenderAC || attack == 20) {
+    if (attack > defenderAC || baseAttack == 20) {
         result = getDamage(weapon.getAttribute("damage")[0],weapon.getAttribute("damage")[1]);
         if (attacker.buffs.damage)
             for (var i = 0; i < attacker.buffs.damage.length; i++) {
@@ -407,12 +447,6 @@ function applyPerks(given,killVerb,attribute) {
                         if (k == attribute)
                             given = playerPerks[i].functional[k](given);
     return given;
-    /*for (var i = 0; i < playerPerks.length; i++)
-            for (var j in playerPerks[i].requirements)
-                if (j == attacker.weapon.getAttribute("killVerb"))
-                    for (var k in playerPerks[i].functional)
-                        if (k == "damage")
-                            result = playerPerks[i].functional[k](result);*/
 }
 
 function attackRoll() {
@@ -453,6 +487,8 @@ function moveText(given,val,type = "health") {
     var span;
     if (type == "mana")
         span = "<span class='blue'>";
+    else if (type == "poison")
+        span = "<span class='poisonText'>";
     else if (val > 0)
         span = "<span class='green'>";
     else
@@ -505,6 +541,9 @@ function triggerItem(given) {
     else if (given.potion.mana) {
         property = "mana";
         propertyCap = "Mana";
+    }
+    else if (given.potion.func) {
+        given.potion.func();
     }
     if (property) {
         if (player[property] + given.potion[property] > player["max" + propertyCap])

@@ -394,9 +394,9 @@ function bossMap(x,y,z) {
 addItem(inventory,gold,500);
 addItem(inventory,copper_dagger);
 addItem(inventory,hp_potion_small);
+addItem(inventory,poison_potion_small);
 addItem(inventory,iron_axe);
 addItem(inventory,iron_pickaxe);
-addItem(inventory,glass_vial);
 
 function startEncounter(given) {
     $("#worldMapContainer").hide();
@@ -666,6 +666,7 @@ function showMenu(given) {
             result += "<p>" + currList[i].getName();
             for (var j = 0; j < currList[i].craftable.recipe.length; j++) {
                 result += "<br>";
+                console.log(currList[i].craftable.recipe[j]);
                 result += currList[i].craftable.recipe[j].item.getName() + " x" + currList[i].craftable.recipe[j].amount;
             }
             result += "</p></td></tr>";
@@ -912,8 +913,12 @@ function itemClick(given) {
             curr = item.potion;
         
         keys = Object.keys(curr);
-        for (var i = 0; i < keys.length; i++)
-            player[keys[i]] += curr[keys[i]] * modifier;
+        for (var i = 0; i < keys.length; i++) {
+            if (keys[i] == "func")
+                curr.func();
+            else
+                player[keys[i]] += curr[keys[i]] * modifier;
+        }
         
         if (player.hp > player.maxHP)
             player.hp = player.maxHP;

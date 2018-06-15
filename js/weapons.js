@@ -37,7 +37,8 @@ var modifierList = {
     copper: {attack:1},
     iron: {attack:2, damage:1,ac:1.4},
     steel:{attack:3,damage:2,ac:1.8},
-    poisoned:{func:poison},
+    poisoned:{func:poison,count:4},
+    poisonDrenched:{func:poison,count:9},
     godly:{attack:10,damage:10,ac:10},
     the_iron_fortress:{ac:2,hp:8}};
 

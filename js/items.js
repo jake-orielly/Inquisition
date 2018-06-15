@@ -4,8 +4,39 @@ var evergreen_logs = new Item("evergreen_logs",false,false,8);
 var herb = new Item("herb",false,false,7);
 var berry = new Item("berry",true,false,6);
 berry.food = {hp:3};
+var bear_claw = new Item("bear_claw",false,false,9);
 var mushroom = new Item("mushroom",false,false,11);
 mushroom.food = {mana:5};
+
+var glass_vial = new Item("glass_vial",false,false,5);
+var glass_jar = new Item("glass_jar",false,false,10);
+
+var hp_potion_small = new Item("hp_potion_small",false,false,25,new Craftable(15,null,[{item:berry,amount:2},{item:glass_vial,amount:1}]));
+hp_potion_small.potion = {hp:5};
+var hp_potion_medium = new Item("hp_potion_medium",false,false,80,new Craftable(35,alchemyAptitude,[{item:berry,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
+hp_potion_medium.potion = {hp:10};
+
+var mana_potion_small = new Item("mana_potion_small",false,false,35,new Craftable(23,null,[{item:herb,amount:2},{item:glass_vial,amount:1}]));
+mana_potion_small.potion = {mana:5};
+var mana_potion_medium = new Item("mana_potion_medium",false,false,95,new Craftable(43,alchemyAptitude,[{item:herb,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
+mana_potion_medium.potion = {mana:10};
+
+var poison_potion_small = new Item("poison_potion_small",false,false,40,new Craftable(35,null,[{item:herb,amount:1},{item:berry,amount:1},{item:bear_claw,amount:1},{item:glass_vial,amount:1}]));
+poison_potion_small.potion = {func:function() {
+    if (player.weapon)
+        player.weapon.modifiers.push(modifierList.poisoned);
+    else
+        player.unarmed.modifiers.push(modifierList.poisoned);
+}};
+
+var poison_potion_medium = new Item("poison_potion_medium",false,false,90,new Craftable(50,alchemyAptitude,[{item:herb,amount:1},{item:mushroom,amount:1},{item:bear_claw,amount:1},{item:glass_jar,amount:1}]));
+poison_potion_medium.potion = {func:function() {
+    if (player.weapon)
+        player.weapon.modifiers.push(modifierList.poisonDrenched);
+    else
+        player.unarmed.modifiers.push(modifierList.poisonDrenched);
+}};
+
 var meat = new Item("meat",false,false,4);
 meat.food = {hp:4};
 var cooked_meat = new Item("cooked_meat",false,false,7,new Craftable(9,null,[{item:meat,amount:1}]));
@@ -48,19 +79,6 @@ var the_iron_fortress = new Item("the_iron_fortress",false, makeChestplate(["iro
 var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),45,new Craftable(30,null,[{item:copper_bar,amount:4}]));
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),115,new Craftable(75,smithingAptitude,[{item:iron_bar,amount:4}]));
 
-var glass_vial = new Item("glass_vial",false,false,5);
-var glass_jar = new Item("glass_jar",false,false,10);
-
-var hp_potion_small = new Item("hp_potion_small",false,false,25,new Craftable(15,null,[{item:berry,amount:2},{item:glass_vial,amount:1}]));
-hp_potion_small.potion = {hp:5};
-var hp_potion_medium = new Item("hp_potion_medium",false,false,80,new Craftable(35,alchemyAptitude,[{item:berry,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
-hp_potion_medium.potion = {hp:10};
-
-var mana_potion_small = new Item("mana_potion_small",false,false,35,new Craftable(23,null,[{item:herb,amount:2},{item:glass_vial,amount:1}]));
-mana_potion_small.potion = {mana:5};
-var mana_potion_medium = new Item("mana_potion_medium",false,false,95,new Craftable(43,alchemyAptitude,[{item:herb,amount:3},{item:mushroom,amount:1},{item:glass_jar,amount:1}]));
-mana_potion_medium.potion = {mana:10};
-
 var elanor_ring = new Item("elanor_ring",false,false,250);
 var monster_tusk = new Item("monster_tusk",false,false,400);
 monster_tusk.questItem = true;
@@ -80,7 +98,7 @@ shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe,copper_dagger,iron_d
 fillShop(toolStoreInventory,shopTemp);
 shopTemp = [copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs];
 fillShop(armorStoreInventory,shopTemp);
-shopTemp = [hp_potion_small,hp_potion_medium,mana_potion_small,mana_potion_medium,glass_vial,glass_jar,herb,mushroom,berry];
+shopTemp = [hp_potion_small,hp_potion_medium,mana_potion_small,mana_potion_medium,poison_potion_small,glass_vial,glass_jar,herb,berry,bear_claw,mushroom];
 fillShop(alchemyStoreInventory,shopTemp);
 
 function fillShop(shop,list) {
@@ -119,5 +137,5 @@ function Craftable(xp,requiredPerk,recipe) {
 
 var smeltList = [copper_bar,iron_bar];
 var smithList = [copper_axe, copper_pickaxe, copper_dagger, copper_short_sword, copper_mace, copper_chestplate, copper_platelegs,iron_axe,iron_pickaxe, iron_dagger, iron_short_sword, iron_mace, iron_chestplate,iron_platelegs];
-var potionList = [hp_potion_small,hp_potion_medium,mana_potion_small,mana_potion_medium];
+var potionList = [hp_potion_small,hp_potion_medium,mana_potion_small,mana_potion_medium,poison_potion_small,poison_potion_medium];
 var craftListMaster = {cook:foodList,smith:smithList,smelt:smeltList,alchemy:potionList};
