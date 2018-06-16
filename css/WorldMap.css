@@ -18,6 +18,10 @@
     display: inline-block;
 }
 
+.topLevelDiv {
+    position:absolute;
+}
+
 #playerHTML {
     transition: all 1.0s ease-in-out;
     -webkit-transition: all 1.0s ease-in-out; /** Chrome & Safari **/

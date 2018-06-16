@@ -171,8 +171,8 @@
 }
 
 .coolDown {
-    color: grey;
-    cursor: default;
+    color: grey !important;
+    cursor: default !important;
 }
 
 #playerBuffTable {

@@ -62,7 +62,7 @@ function fallenKnight() {
 }
 
 function createPlayer() {
-    var player = new Character(100,5,100,null,"Jake",["him","his"],"player","player");
+    var player = new Character(10,5,10,null,"Jake",["him","his"],"player","player");
     player.abilities = [oakSkin(player.charType),bloodBoil(player.charType)];
     player.unarmed = new Weapon(2,[1,3],"fist","punched with","pummeled");
     initCharacter(player);

@@ -13,3 +13,4 @@ Acid buff gets put in perks twice and so degrades twice as fast
 Adding multiple items at once adds as stack even if not stackable
 Poisoned weapon buff UI doesn’t work properly
 Game crash on cave beast turn
+Cast blood boil > wait > 2 blood boil icons

@@ -45,8 +45,7 @@ function startCombat(given) {
     document.getElementById("movesButton").className += " active";
     document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + currEnemy.image + ".png";
     
-    for (var i = 0; i < $(".abilityButton").length; i++)
-        $(".abilityButton")[i].classList.remove("coolDown");
+    $("#movesSection>tbody>tr>td>div").removeClass("coolDown");
 }
 
 function doubleEdge(charType) {
@@ -91,6 +90,9 @@ function changeHP(val,target) {
 }
 
 function endCombat(target) {
+    var delay = 0;
+    var amount;
+    
     for (var i = 0; i < $(".abilityButton").length; i++)
         $(".abilityButton")[i].classList.add("coolDown");
     if (currEnemy.name == "the cave beast") {
@@ -114,17 +116,65 @@ function endCombat(target) {
         };
     }
     dead = target;
-    loot(currEnemy);
+    if (dead == player) {
+        $("#movesSection>tbody>tr>td>div").addClass("coolDown");
+        delay = 1000;
+    }
     setTimeout(function(){
         document.getElementById("combatLog").innerHTML = "";
-        $("#worldMapContainer").show();
         $(".inquisition").hide();
+        $("#worldMapContainer").show();
         $(".actionButton").css("color","black");
         $(".actionButton").css("cursor","pointer");
         nextEncounter = parseInt(Math.random()*100)+50;
         inCombat = false;
-        showInventory();
-    },1000);
+        if (dead == player) {
+            playerDeath();
+        }
+        else {
+            loot(currEnemy);
+            showInventory();
+            for (var i in player.buffs)
+                for (var j in player.buffs[i])
+                    player.buffs[i][j].count = 0;
+        }
+    },(1000 + delay));
+}
+
+function playerDeath() {
+    var sleepTick = 0;
+    var sleepScreenInterval;
+    document.removeEventListener('keydown', keyResponse);
+    amount = parseInt(inventoryCount(inventory,gold) * .66);
+    removeItem(inventory,gold,amount);
+    player.hp = player.maxHP;
+    player.mana = player.maxMana;
+    mapTable = villageMap;
+    makeBoard();
+    $("#sleepContainer").show();
+    
+    sleepScreenInterval = setInterval( function() {
+        sleepTick += 0.05;
+        $("#sleepScreen").css("fill","rgb(0,0,0," + sleepTick + ")");
+        if (sleepTick >= 1) {
+            setTimeout(function() {
+                teleport(11,12);
+                sleepScreenInterval = setInterval( function() {
+                    sleepTick -= 0.05;
+                    $("#sleepScreen").css("fill","rgb(0,0,0," + sleepTick + ")");
+                    if (sleepTick <= 0) {
+                        document.addEventListener('keydown', keyResponse);
+                        $("#sleepContainer").hide();
+                        clearInterval(sleepScreenInterval);
+                        for (var i in player.buffs)
+                            for (var j in player.buffs[i])
+                                player.buffs[i][j].count = 0;
+                    }
+                },100);
+            },2000);
+            clearInterval(sleepScreenInterval);
+        }
+    },100);
 }
 
 function triggerAbility(owner,given) {
@@ -229,6 +279,7 @@ function playerTurn() {
 }
 
 function showAllBuffs(given) {
+    document.getElementById(given.charType + "BuffTable").innerHTML = "";
     showPoisonedWeapon(given);
     for (var i in given.buffs) 
             for (var j = 0; j < given.buffs[i].length; j++)
