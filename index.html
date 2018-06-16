@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120947391-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-120947391-1');
+    </script>
+    </head>
+    <body>
+        <h1> Work in Progress </h1>
+        <p> Coming Soon </p>
+        <form id="userInput">
+            <p><input type="text" value="password"></p>
+            <p><span>Warning:</span> Game is currently using placeholder art, and as a result is in closed beta. Game content is not final. Contact jake.orielly@gmail.com</p>
+        </form> 
+        <button onclick="enterPassword()">Submit</button>
+        <script>
+            function enterPassword() {
+                input = document.getElementById("userInput").elements;
+                //http://i0.kym-cdn.com/entries/icons/mobile/000/026/380/lock.jpg
+                if (input[0].value == "cheeto")
+                    window.location.href = "http://jakeorielly.com/inquisition.html";
+            }
+        </script>
+    </body>
+</html>
