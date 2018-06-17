@@ -1,5 +1,6 @@
 var bloodBoilBuff = {image:"bloodBoilBuff",bonus:5,count:0};
 bloodBoilBuff.description = "Dmg +5";
+
 function bloodBoil(charType) {
     var result =  new Ability(charType, "Blood Boil","Your blood boils with demonic strength, increasing the damage of your next attack but damaging you.",3,{buffs:{damage:bloodBoilBuff}},bloodBoilFunc);
     result.manaCost = 4;
@@ -9,7 +10,10 @@ function bloodBoil(charType) {
 function bloodBoilFunc(target) {
     var selfDamage = -3;
     var combatText = "<tr><td>";
-    giveAttackXP("demon",17);
+    console.log(target);
+    console.log(this);
+    if (target.charType == "player")
+        giveAttackXP("demon",17);
     this.categories.buffs["damage"].count += 1;
     changeHP(selfDamage,target);
     moveText(target.charType,selfDamage);
@@ -214,3 +218,4 @@ function acidSpitFunc(owner,target) {
     combatText += "</td></tr>";
     return combatText;	
 }
+

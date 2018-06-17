@@ -379,7 +379,7 @@ function processHeals(curr) {
 
 function executeMove(moves,num,currResult) {
     var temp,result,func;
-    
+    console.log(moves[num]);
     if (moves[num].func)
         func = moves[num].func;
     else 
