@@ -267,6 +267,7 @@ function woundedFuryFunc() {
 
 function playerTurn() {
     if (isPlayerTurn && !dead) {
+        degradeBuffs(currEnemy);
         isPlayerTurn = false;
         $(".abilityButton").hide();
         $(".actionButton").css("color","grey");
@@ -280,48 +281,19 @@ function playerTurn() {
 
 function showAllBuffs(given) {
     document.getElementById(given.charType + "BuffTable").innerHTML = "";
-    showPoisonedWeapon(given);
     for (var i in given.buffs) 
             for (var j = 0; j < given.buffs[i].length; j++)
-                if (given.buffs[i][j].count > 0) {
-                    if (given.buffs[i][j].degrades)
-                        given.buffs[i][j].count--;
+                if (given.buffs[i][j].count > 0)
                     showBuff(given.buffs[i][j],given.charType);
-                }
-}
-
-function showPoisonedWeapon(attacker) {
-    var weapon;
-    var foundPoison = false
-    if (attacker.weapon)
-        weapon = attacker.weapon;
-    else
-        weapon = attacker.unarmed;
-    for (var i = 0; i < weapon.modifiers.length; i++)
-        if (weapon.modifiers[i].func && weapon.modifiers[i].func.name == "poison") {
-            foundPoison = true;
-            if (player.buffs.weapon) {
-                for (var i = 0; i < player.buffs.weapon.length; i++)
-                    if (player.buffs.weapon[i].image == "poisonedWeaponBuff")
-                        player.buffs.weapon[i].count = weapon.modifiers[i].count;
-            }
-            else
-                player.buffs["weapon"] = [poisonedWeaponBuff(attacker,weapon.modifiers[i].count)];
-        }
-    
-    if (!foundPoison)
-        if (player.buffs.weapon)
-            for (var i = 0; i < player.buffs.weapon.length; i++)
-                if(player.buffs.weapon[i].image == "poisonedWeaponBuff")
-                    player.buffs.weapon[i].count = 0;
 }
 
 function wait() {
     if (isPlayerTurn && !dead) {
-        if (player.buffs.healing)
-            for (var i = 0; i < player.buffs.healing.length; i++)
-                if (player.buffs.healing[i].count > 0)
-                    player.buffs.healing[i].func(player);
+        if (player.buffs.healingBuff)
+            for (var i = 0; i < player.buffs.healingBuff.length; i++)
+                if (player.buffs.healingBuff[i].count > 0)
+                    player.buffs.healingBuff[i].func(player);
+        degradeBuffs(currEnemy);
         isPlayerTurn = false;
         $(".abilityButton").hide();
         $(".actionButton").css("color","grey");
@@ -348,7 +320,7 @@ function takeTurn(curr, target) {
         for (var i = 0; i < currEnemy.abilities.length; i++)
             if (currEnemy.abilities[i].cooldown > 0)
                 currEnemy.abilities[i].cooldown--;
-        if (currEnemy.buffs.healing)
+        if (currEnemy.buffs.healingBuff)
             setTimeout(function(){
                 if (processHeals(curr))
                     setTimeout(function(){
@@ -359,19 +331,29 @@ function takeTurn(curr, target) {
             executeMove(currEnemy.makeMove(target),1,"");
     }
     else {
-        processHeals(curr)
+        processHeals(curr);
         result = "<tr><td>" + makeAttack(curr,target) + "</tr></td>";
         turn++;
         document.getElementById("combatLog").innerHTML += result;
     }
 }
 
+function degradeBuffs(given) {
+    for (var i in given.buffs) 
+            for (var j = 0; j < given.buffs[i].length; j++)
+                if (given.buffs[i][j].count > 0) {
+                    if (given.buffs[i][j].degrades)
+                        given.buffs[i][j].count--;
+                    showBuff(given.buffs[i][j],given.charType);
+                }
+}
+
 function processHeals(curr) {
     var healed = false;
-    if (curr.buffs.healing)
-        for (var i = 0; i < curr.buffs.healing.length; i++)
-            if (curr.buffs.healing[i].count > 0) {
-                curr.buffs.healing[i].func(curr);
+    if (curr.buffs.healingBuff)
+        for (var i = 0; i < curr.buffs.healingBuff.length; i++)
+            if (curr.buffs.healingBuff[i].count > 0) {
+                curr.buffs.healingBuff[i].func(curr);
                 healed = true;
             }
     return healed;
@@ -379,7 +361,7 @@ function processHeals(curr) {
 
 function executeMove(moves,num,currResult) {
     var temp,result,func;
-    console.log(moves[num]);
+    console.log("Enemy" + moves[num]);
     if (moves[num].func)
         func = moves[num].func;
     else 
@@ -392,6 +374,7 @@ function executeMove(moves,num,currResult) {
             turn++;
             setTimeout(function(){
                 showAllBuffs(currEnemy);
+                degradeBuffs(player);
                 isPlayerTurn = true
                 $(".actionButton").css("color","black");
                 $(".actionButton").css("cursor","pointer");
@@ -420,7 +403,6 @@ function makeAttack(attacker, defender) {
     }
 
     attackResult = attackResult*-1;
-
     if (attackResult == 0) {
         moveText(defender.charType,"MISS");
         return capitalize(attacker.name) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " but missed!";
@@ -464,6 +446,7 @@ function calcAttack(attacker,defender,weapon = attacker.weapon) { //Todo add UI 
             if (defender.buffs.ac[i].count)
                 defenderAC += defender.buffs.ac[i].bonus;
     attack = baseAttack + weapon.getAttribute("attack");
+    console.log(attack + " : " + defenderAC);
     if (attacker == player)
         attack = applyPerks(attack,wepType,"attack");
     
@@ -472,13 +455,13 @@ function calcAttack(attacker,defender,weapon = attacker.weapon) { //Todo add UI 
             critThreshold -= player.buffs.critChance[i].count;
     if (attack > defenderAC || baseAttack == 20) {
         result = getDamage(weapon.getAttribute("damage")[0],weapon.getAttribute("damage")[1]);
-        if (attacker.buffs.damage)
-            for (var i = 0; i < attacker.buffs.damage.length; i++) {
-                curr = attacker.buffs.damage[i];
+        if (attacker.buffs.damageBuff)
+            for (var i = 0; i < attacker.buffs.damageBuff.length; i++) {
+                curr = attacker.buffs.damageBuff[i];
                 if(curr.count) {
                     result += curr.count * curr.bonus;
                     curr.count = 0;
-                    hideBuff(curr.image);
+                    showAllBuffs(attacker);
                 }
             }
     }

@@ -1257,8 +1257,11 @@ function addItem (source,item,amount = 1) {
             }
         }
     }
-
-    source.push(new InventoryItem(item,amount));
+    else if (amount > 1)
+        for (var i = 0; i < amount; i++)
+            source.push(new InventoryItem(item,1));
+    else
+        source.push(new InventoryItem(item,amount));
     updateInventory();
 }
 

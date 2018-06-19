@@ -42,7 +42,8 @@ function bug() {
     var bug = new Character(45,0,13,null,"the bug",["it","it's"],"enemy","bug");
     bug.weapon = new Weapon(4,[2,4],"claw","clawed with","piercing",[]);
     bug.abilities = [acidSpit("enemy")];
-    bug.abilities[0].cooldown = parseInt(Math.random()*3);
+    bug.abilities[0].cooldown = 0;
+    //bug.abilities[0].cooldown = parseInt(Math.random()*3);
     bug.makeMove = bugAI;
     return bug;
 }
@@ -57,15 +58,15 @@ function caveBeast() {
     return caveBeast;
 }
 
-function fallenKnight() {
+/*function fallenKnight() {
     var fallenKnight = new Character(25,15,10,makeShortSword(),"the fallen knight",hisHers(),"enemy","fallenKnight");
     fallenKnight.abilities = [secondWind(fallenKnight.charType)];
     fallenKnight.makeMove = fallenKnightAI;
     return fallenKnight;
-}
+}*/
 
 function createPlayer() {
-    var player = new Character(10,5,10,null,"Jake",["him","his"],"player","player");
+    var player = new Character(100,5,10,null,"Jake",["him","his"],"player","player");
     player.abilities = [oakSkin(player.charType),bloodBoil(player.charType)];
     player.unarmed = new Weapon(2,[1,3],"fist","punched with","pummeled");
     initCharacter(player);
@@ -102,7 +103,7 @@ var Character = function(maxHP,maxMana,ac,weapon,name,pronounSet,charType,image,
     }
 }
 
-function fallenKnightAI(target) {
+/*function fallenKnightAI(target) {
     if(this.hp < this.maxHP) {
         triggerAbility(currEnemy,0);
     }
@@ -114,7 +115,7 @@ function frothingHereticAI(target) {
         triggerAbility(currEnemy,0);
     }
     return "<tr><td>" + makeAttack(this,target) + "</tr></td>";
-}
+}*/
 
 function baseAI(target) {
     return [target,makeAttack];
@@ -132,7 +133,7 @@ function bugAI(target) {
 function caveBeastAI(target) {
     if (!currEnemy.abilities[0].cooldown) {
         currEnemy.abilities[0].cooldown = currEnemy.abilities[0].maxCooldown;
-        return [target,currEnemy.abilities[0]];
+        return [target,bloodBoil(currEnemy.charType).func(currEnemy)];
     }
     else
         return [target,makeAttack];
@@ -147,13 +148,7 @@ function initCharacter(given) {
             curr = given.abilities[i].categories;
             for (var j = 0; j < Object.keys(curr).length; j++) {
                 curr2 = Object.keys(curr)[j];
-                if (curr2 != "buffs")
-                    given[curr2].push(curr[curr2]);
-                else {//Push the buff onto the right buff sub category 
-                    if (!given[curr2][Object.keys(curr[curr2])])
-                        given[curr2][Object.keys(curr[curr2])] = [];
-                    given[curr2][Object.keys(curr[curr2])].push(curr[curr2][Object.keys(curr[curr2])]);
-                }
+                given[curr2].push(curr[curr2]);
             }
         }
     }

@@ -27,6 +27,7 @@ poison_potion_small.potion = {func:function() {
         player.weapon.modifiers.push(modifierList.poisoned);
     else
         player.unarmed.modifiers.push(modifierList.poisoned);
+    incrementBuff(player,poisonedWeaponBuff(4));
 }};
 
 var poison_potion_medium = new Item("poison_potion_medium",false,false,90,new Craftable(50,alchemyAptitude,[{item:herb,amount:1},{item:mushroom,amount:1},{item:bear_claw,amount:1},{item:glass_jar,amount:1}]));
@@ -35,6 +36,7 @@ poison_potion_medium.potion = {func:function() {
         player.weapon.modifiers.push(modifierList.poisonDrenched);
     else
         player.unarmed.modifiers.push(modifierList.poisonDrenched);
+    incrementBuff(player,poisonedWeaponBuff(9));
 }};
 
 var meat = new Item("meat",false,false,4);
