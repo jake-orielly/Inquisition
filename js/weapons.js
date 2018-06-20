@@ -39,8 +39,20 @@ var modifierList = {
     steel:{attack:3,damage:2,ac:1.8},
     poisoned:{func:poison,count:4},
     poisonDrenched:{func:poison,count:9},
-    godly:{attack:10,damage:10,ac:10},
-    the_iron_fortress:{ac:2,hp:8}};
+    godly:{attack:10,damage:10,ac:10}};
+
+modifierList.the_iron_fortress = {ac:2};
+modifierList.the_iron_fortress.equipFunc = function() {
+    player.maxHP += 5;
+    player.hp += 5;
+    incrementBuff(player,ironFortressBuff(1));
+};
+modifierList.the_iron_fortress.unEquipFunc = function() {
+    player.maxHP -= 5;
+    if (player.hp > player.maxHP)
+        player.hp = player.maxHP;
+    incrementBuff(player,ironFortressBuff(-1));
+};
 
 
 //Base weapon code

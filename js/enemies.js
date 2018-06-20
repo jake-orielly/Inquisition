@@ -1,13 +1,13 @@
 function wolf() {
-    var wolf = new Character(10,0,9,null,"the wolf",["it","it's"],"enemy","wolf");
-    wolf.weapon = new Weapon(2,[1,3],"claw","clawed with","piercing",[]);
+    var wolf = new Character(8,0,9,null,"the wolf",["it","it's"],"enemy","wolf");
+    wolf.weapon = new Weapon(4,[1,4],"claw","clawed with","piercing",[]);
     wolf.makeMove = baseAI;
     wolf.loot = [{item:meat,odds:100,amount:1}];
     return wolf;
 }
 
 function bear() {
-    var bear = new Character(20,0,11,null,"the bear",["it","it's"],"enemy","bear");
+    var bear = new Character(15,0,11,null,"the bear",["it","it's"],"enemy","bear");
     bear.weapon = new Weapon(1,[4,6],"claw","clawed with","piercing",[]);
     bear.makeMove = baseAI;
     bear.loot = [{item:meat,odds:100,amount:[1,3]},{item:bear_claw,odds:75,amount:[1-3]}];
@@ -66,7 +66,7 @@ function caveBeast() {
 }*/
 
 function createPlayer() {
-    var player = new Character(100,5,10,null,"Jake",["him","his"],"player","player");
+    var player = new Character(15,5,12,null,"Jake",["him","his"],"player","player");
     player.abilities = [oakSkin(player.charType),bloodBoil(player.charType)];
     player.unarmed = new Weapon(2,[1,3],"fist","punched with","pummeled");
     initCharacter(player);
@@ -96,7 +96,7 @@ var Character = function(maxHP,maxMana,ac,weapon,name,pronounSet,charType,image,
             return result;
         else {
             for (var curr in equipment)
-                if (equipment[curr].item.equipment.ac)
+                if (equipment[curr] && equipment[curr].item.equipment.ac)
                     result += equipment[curr].item.equipment.ac;
             return result;
         }
@@ -133,7 +133,7 @@ function bugAI(target) {
 function caveBeastAI(target) {
     if (!currEnemy.abilities[0].cooldown) {
         currEnemy.abilities[0].cooldown = currEnemy.abilities[0].maxCooldown;
-        return [target,bloodBoil(currEnemy.charType).func(currEnemy)];
+        return [target,bloodBoil(currEnemy.charType)];
     }
     else
         return [target,makeAttack];

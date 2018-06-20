@@ -8,4 +8,3 @@ If ability is on cool down item shows as on cool down
 Problem with perk menu mouseover when scrolling
 How rejuvenation works/what is happening is not clear
 Need fire to cook salad
-Cave beast crashes on turn because AI is broken

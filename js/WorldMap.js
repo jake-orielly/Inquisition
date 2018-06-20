@@ -31,7 +31,7 @@ var shopEntrance;
 
 var caveTreasure = [];
 var elanorTreasure = [];
-var treasureTemp = [hp_potion_medium,hp_potion_medium];
+var treasureTemp = [the_iron_fortress,hp_potion_medium,hp_potion_medium];
 fillTreasure(caveTreasure,treasureTemp);
 treasureTemp = [elanor_ring];
 fillTreasure(elanorTreasure,treasureTemp);
@@ -538,7 +538,8 @@ function pickMonster() {
 
     else if (playerY > 40)
         num = parseInt(Math.random()*2) + 2;
-    
+    else if (perkPoints + perkPointsUsed < 8)
+        num = 0;
     else
         num = parseInt(Math.random()*2);
     
@@ -1285,11 +1286,17 @@ function equipItem (given) {
         equipment[given.equipment.slot] = new InventoryItem(given, 1);
     else
         equipment[given.equipment.slot] = new InventoryItem(given, 1);
+    for (var i = 0; i < given.equipment.modifiers.length; i++)
+        if (given.equipment.modifiers[i].equipFunc)
+            given.equipment.modifiers[i].equipFunc();
     updateEquipment();
 }
 
 function unEquipItem (given) {
 	if (equipment[given] && inventory.length < inventoryMax) {
+        for (var i = 0; i < equipment[given].item.equipment.modifiers.length; i++)
+            if (equipment[given].item.equipment.modifiers[i].unEquipFunc)
+                equipment[given].item.equipment.modifiers[i].unEquipFunc();
 	    addItem(inventory,equipment[given].item);
 	    player[given.toLowerCase()] = null;
 	    equipment[given] = null;

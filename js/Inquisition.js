@@ -341,11 +341,10 @@ function takeTurn(curr, target) {
 function degradeBuffs(given) {
     for (var i in given.buffs) 
             for (var j = 0; j < given.buffs[i].length; j++)
-                if (given.buffs[i][j].count > 0) {
+                if (given.buffs[i][j].count > 0)
                     if (given.buffs[i][j].degrades)
                         given.buffs[i][j].count--;
-                    showBuff(given.buffs[i][j],given.charType);
-                }
+    showAllBuffs(given);
 }
 
 function processHeals(curr) {
@@ -361,7 +360,7 @@ function processHeals(curr) {
 
 function executeMove(moves,num,currResult) {
     var temp,result,func;
-    console.log("Enemy" + moves[num]);
+    console.log(moves);
     if (moves[num].func)
         func = moves[num].func;
     else 
@@ -373,8 +372,8 @@ function executeMove(moves,num,currResult) {
             document.getElementById("combatLog").innerHTML += result;
             turn++;
             setTimeout(function(){
-                showAllBuffs(currEnemy);
                 degradeBuffs(player);
+                showAllBuffs(currEnemy);
                 isPlayerTurn = true
                 $(".actionButton").css("color","black");
                 $(".actionButton").css("cursor","pointer");
@@ -430,7 +429,7 @@ function calcAttack(attacker,defender,weapon = attacker.weapon) { //Todo add UI 
     var critThreshold = 20;
     var curr, attack;
     var baseAttack = attackRoll();
-    var defenderAC = defender.ac;
+    var defenderAC = defender.getAC();
     var wepType;
     
     if (weapon == null) {

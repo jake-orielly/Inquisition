@@ -155,6 +155,12 @@ function poisonedWeaponBuff(amount) {
     return result;
 }
 
+//Equipment Spells
+
+function ironFortressBuff(amount) {
+    return {image:"the_iron_fortress",bonus:5,count:amount,degrades:0,description:"HP +5",category:"equipBuff"};
+}
+
 // Enemy Spells
 function acidSpit(charType) {
     var result = new Ability(charType,"Acid Spit","Spit Acid at your enemy.",5,null,acidSpitFunc);
@@ -194,6 +200,24 @@ function acidSpitFunc(owner,target) {
     return combatText;	
 }
     
+function terrifyingRoarBuff(amount) {
+    return {image:"terrifyingRoarBuff",bonus:5,count:amount,description:"Dmg +5",category:"damageBuff"};
+}
+
+function terrifyingRoar(charType) {
+    var result =  new Ability(charType, "Blood Boil","Your blood boils with demonic strength, increasing the damage of your next attack but damaging you.",3,null,bloodBoilFunc);
+    result.manaCost = 4;
+    return result;
+}
+
+function terrifyingRoarFunc(target) {
+    var combatText = "<tr><td>";
+    incrementBuff(target,bloodBoilBuff(1));
+    combatText += capitalize(target.name) + "'s blood boils with demonic energy inflicting <span class='red'>" + Math.abs(selfDamage) + "</span> damage, and boosting the damage of " + target.possPronoun + " next attack!";
+    combatText += "</td></tr>";
+    document.getElementById("combatLog").innerHTML += combatText;
+}
+
 //Utility Functions
 
 function Ability(charType,name,description,maxCooldown,categories,func) {
