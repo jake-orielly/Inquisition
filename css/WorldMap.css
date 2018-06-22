@@ -87,6 +87,10 @@
     margin: 0.5em 0.5em 0;
 }
 
+tr.spaceUnder>td {
+  padding-bottom: 0.5em;
+}
+
 .perksButton {
     width: 100%;
     height: 24px;

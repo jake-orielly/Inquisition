@@ -2,6 +2,7 @@ var playerSkills = {};
 var playerPerks = [];
 var perkPoints = 0;
 var perkPointsUsed = 0;
+var upgradePointsUsed = 0;
 var lvlUpTextInterval;
 
 playerSkills.woodcutting = {xp:0,level:1,name:"Woodcutting",img:"art/oak.png",category:"harvesting"};
@@ -15,6 +16,30 @@ playerSkills.crushing = {xp:0,level:1,name:"Crushing",img:"art/copper_mace.png",
 playerSkills.unarmed = {xp:0,level:1,name:"Unarmed",img:"art/fist.png",category:"combat"};
 playerSkills.druid = {xp:0,level:1,name:"Druid",img:"art/leaf.png",category:"magic"};
 playerSkills.demon = {xp:0,level:1,name:"Demon",img:"art/demonSkill.png",category:"magic"};
+
+var upgrades = [new Upgrade("HP",5,3), new Upgrade("Mana",3,3), new Upgrade("AC",1,4)];
+    
+function Upgrade(stat,amount,cost) {
+    this.stat = stat;
+    this.amount = amount;
+    this.cost = cost;
+    this.func = function() {
+        if (this.stat == "HP") {
+            player.maxHP += amount;
+            player.hp += amount;
+        }
+        else if (this.stat == "Mana") {
+            player.maxMana += amount;
+            player.mana += amount;
+        }
+        else if (this.stat == "AC")
+            player.ac += amount;
+        else 
+            alert("Error 4: Invalid Upgrade Stat");
+        upgradePointsUsed += this.cost;
+        this.cost = parseInt(this.cost + this.cost*0.5);
+    }
+}
 
 function harvest(given) {
     var skill;

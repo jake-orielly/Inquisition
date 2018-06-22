@@ -822,8 +822,30 @@ function updateHPMana() {
 
 function showSkills() {
     updateSkills();
+    updateUpgrades();
     $("#skills").css("display","inline-block");
     $("#upgrades").css("display","inline-block");
+}
+
+function updateUpgrades() {
+    var result = "";
+    $("#upgradePoints").html('Points: ' + (perkPoints - upgradePointsUsed));
+    for (var i = 0; i < upgrades.length; i++) {
+        result += '<tr onclick="buyUpgrade(\'' + upgrades[i].stat + '\')" class="spaceUnder">';
+        result += '<td>'+ upgrades[i].stat + ' +' + upgrades[i].amount + '</td>'
+        result += '<td>(' + upgrades[i].cost + ')</td>'
+        result += '</tr>';
+    }
+    $("#upgradeTable").html(result);
+}
+
+function buyUpgrade(given) {
+    for (var i = 0; i < upgrades.length; i++)
+        if ((perkPoints - upgradePointsUsed) >= upgrades[i].cost) {
+            if (upgrades[i].stat == given)
+                upgrades[i].func();
+            updateUpgrades();
+        }
 }
 
 function updateInventory() {
