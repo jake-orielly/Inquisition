@@ -14,7 +14,8 @@
         </script>
 
     </head>
-    <body oncontextmenu="return false;" class="unselectable">
+    <script>//oncontextmenu="return false;"</script>
+    <body class="unselectable">
         <div class="inquisition" id="battleSection">
             <div id="enemyContainer">
                 <div class="hpMax" id="enemyHPMax">
@@ -114,18 +115,41 @@
                     <div id="hpBarMax"><div id="hpBarCurr"></div></div>
                 </div>
             </div>
-            <div id="skills">
-                <table>
-                    <tr>
-                        <td><img src="art/perk_gem_empty.png" id="perkGem0"></td>
-                        <td><img src="art/perk_gem_empty.png" id="perkGem1"></td>
-                        <td><img src="art/perk_gem_empty.png" id="perkGem2"></td>
-                        <td><img src="art/perk_gem_empty.png" id="perkGem3"></td>
-                        <td><img src="art/perk_gem_empty.png" id="perkGem4"></td>
-                    </tr>
-                </table>
-                <button class="perksButton" id="perksButton" onclick="togglePerks()">Perks</button>
-                <table cellspacing="0" id="skillsTable"></table>
+            <div class="menuOuter" id="skills">
+                <div class="menuInner">
+                    <table>
+                        <tr>
+                            <td><img src="art/perk_gem_empty.png" id="perkGem0"></td>
+                            <td><img src="art/perk_gem_empty.png" id="perkGem1"></td>
+                            <td><img src="art/perk_gem_empty.png" id="perkGem2"></td>
+                            <td><img src="art/perk_gem_empty.png" id="perkGem3"></td>
+                            <td><img src="art/perk_gem_empty.png" id="perkGem4"></td>
+                        </tr>
+                    </table>
+                    <button class="perksButton" id="perksButton" onclick="togglePerks()">Perks</button>
+                    <table cellspacing="0" id="skillsTable"></table>
+                </div>
+            </div>
+            <div class="menuOuter" id="upgrades">
+                <div class="menuInner">
+                    <p>Upgrades:</p>
+                    <hr>
+                    <p>Points: 5</p>
+                    <table>
+                        <tr>
+                            <td>HP +5</td>
+                            <td>(3)</td>
+                        </tr>
+                        <tr>
+                            <td>Mana +3</td>
+                            <td>(3)</td>
+                        </tr>
+                        <tr>
+                            <td>AC +1</td>
+                            <td>(3)</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
             <div id="perks">
                 <img class="closeButton" onclick="togglePerks()" src="art/close.png">

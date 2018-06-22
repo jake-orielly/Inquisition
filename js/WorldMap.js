@@ -618,8 +618,10 @@ function toggleInventory() {
 }
 
 function toggleSkills() { 
-    if ($("#skills").is(":visible"))
+    if ($("#skills").is(":visible")) {
         $("#skills").hide();
+        $("#upgrades").hide();
+    }
     else 
         showSkills();
 }
@@ -821,6 +823,7 @@ function updateHPMana() {
 function showSkills() {
     updateSkills();
     $("#skills").css("display","inline-block");
+    $("#upgrades").css("display","inline-block");
 }
 
 function updateInventory() {

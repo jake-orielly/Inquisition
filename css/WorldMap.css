@@ -48,17 +48,43 @@
     padding: 0.5em 0;
 }
 
-#skills {
+#skills, #upgrades {
     position:absolute;
     display:none;
+    padding: 5px;
+    bottom: 64px;
+}
+
+.menuOuter {
+    border-radius:12px;
+    background: rgb(125,126,125);
+    background: -moz-radial-gradient(center, ellipse cover,  rgba(125,126,125,1) 0%, rgba(14,14,14,1) 100%);
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(125,126,125,1) 0%,rgba(14,14,14,1) 100%);
+    background: radial-gradient(ellipse at center,  rgba(125,126,125,1) 0%,rgba(14,14,14,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d7e7d', endColorstr='#0e0e0e',GradientType=1 );
+}
+
+.menuInner {
+    display:inline-block;
     padding: 5px;
     background: #eeeeee;
     background: -moz-linear-gradient(top,  #eeeeee 0%, #cccccc 100%);
     background: -webkit-linear-gradient(top,  #eeeeee 0%,#cccccc 100%);
     background: linear-gradient(to bottom,  #eeeeee 0%,#cccccc 100%);
-    border: 8px solid rgb(61,61,61);
-    bottom: 64px;
-    right: 2px;
+    border-radius: 12px;
+}
+
+#skills {
+    right: 0.5em;
+}
+
+#upgrades {
+    text-align: center;
+    right: 8.25em;
+}
+
+#upgrades .menuInner p {
+    margin: 0.5em 0.5em 0;
 }
 
 .perksButton {
@@ -200,7 +226,7 @@
     border-radius: 12px;
 }
 
-mouseoverRight {
+.mouseoverRight {
     right: 4.5em;
 }
 
