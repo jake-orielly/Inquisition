@@ -22,9 +22,9 @@ var needTool;
 var quests = {southernBeast:{phase:0}};
 
 var toolModifierLevel = {copper:1,iron:2,steel:3};
-var treeList = {oak:{toolLevel:1,resource:oak_logs,xp:6},evergreen:{toolLevel:2,resource:evergreen_logs,requiredPerk:woodcuttingAptitude,xp:15}};
-var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,xp:8},iron_vein:{toolLevel:2,resource:iron_ore,requiredPerk:miningAptitude,xp:17},coal_vein:{toolLevel:3,resource:coal,requiredPerk:miningAptitude,xp:25}};
-var herbList = {herb_plant:{toolLevel:0,resource:herb,xp:9},mushroom_plant:{toolLevel:0,resource:mushroom,requiredPerk:alchemyAptitude,xp:14},berry_plant:{toolLevel:0,resource:berry,xp:7}};
+var treeList = {oak:{toolLevel:1,resource:oak_logs,xp:7},evergreen:{toolLevel:2,resource:evergreen_logs,requiredPerk:woodcuttingAptitude,xp:17}};
+var veinList = {copper_vein:{toolLevel:1,resource:copper_ore,xp:7},iron_vein:{toolLevel:2,resource:iron_ore,requiredPerk:miningAptitude,xp:17},coal_vein:{toolLevel:3,resource:coal,requiredPerk:miningAptitude,xp:25}};
+var herbList = {herb_plant:{toolLevel:0,resource:herb,xp:7},mushroom_plant:{toolLevel:0,resource:mushroom,requiredPerk:alchemyAptitude,xp:17},berry_plant:{toolLevel:0,resource:berry,xp:5}};
 
 var shouldCloseInventory = false;
 var shopEntrance;

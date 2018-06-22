@@ -7,7 +7,7 @@ var armor_shopkeeper = {portrait:"art/armor_shopkeeper_head.png",shop:armorStore
 
 var alchemy_shopkeeper = {portrait:"art/alchemy_shopkeeper_head.png",shop:alchemyStoreInventory,line:"Potions for whatever ails you."};
 
-var inkeeper = {portrait:"art/inkeeper_head.png",line:"Would you like to stay the night? Only 10 gold.",responses:{yes:"I could use a rest. [pay 10g]",no:"Maybe another time."}};
+var inkeeper = {portrait:"art/inkeeper_head.png",line:"Would you like to stay the night? Only 10 gold. Or maybe a hot meal?",responses:{yes:"I could use a rest. [pay 10g]",no:"Maybe another time."}};
 inkeeper.no = {line:"Alright. Come back any time!"};
 inkeeper.yes = {};
 inkeeper.yes.func = function() {
