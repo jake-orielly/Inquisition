@@ -397,6 +397,7 @@ addItem(inventory,hp_potion_small);
 addItem(inventory,poison_potion_small);
 addItem(inventory,iron_axe);
 addItem(inventory,iron_pickaxe);
+addItem(inventory,iron_chestplate);
 
 function startEncounter(given) {
     $("#worldMapContainer").hide();
@@ -698,7 +699,7 @@ function showMenu(given) {
 
 function showShop(given) {
     var shopInventory = given;
-    var result, curr;
+    var result, curr, addon;
     for (var i = 0; i < 5; i++) {
         result += "<tr>";
         for (var j = 0; j < 5; j++) {
@@ -706,7 +707,8 @@ function showShop(given) {
             result += "<td>";
             result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
             if(curr < shopInventory.length+1) {
-                result += "<img class='inventoryItem' onclick='buy(" + shopInventory[curr-1].item.name + ")' src='art/" + shopInventory[curr-1].item.name + ".png'>";
+                addon = "<span class='inventoryMouseover mouseoverBottom'>" + shopInventory[curr-1].item.getName() + "<br>Cost: " + shopInventory[curr-1].item.value + "</span>";
+                result += "<img class='inventoryItem' onclick='buy(" + shopInventory[curr-1].item.name + ")' src='art/" + shopInventory[curr-1].item.name + ".png'>" + addon;
                 if (shopInventory[curr-1].amount > 1)
                     result += "<div class='inventoryAmountContainer'><p class='inventoryItemAmount'>" + shopInventory[curr-1].amount + "</p></div>";
             }
@@ -855,8 +857,16 @@ function updateInventory() {
         result += "<tr>";
         for (var j = 0; j < 3; j++) {
             curr = i*3 + j+1;
-            if (inventory[curr-1])
-                addon = "<span class='inventoryMouseover mouseoverRight'>" + inventory[curr-1].item.getName() + "</span>";
+            if (inventory[curr-1]) {
+                addon = "<span class='inventoryMouseover mouseoverBottom'>" + inventory[curr-1].item.getName();
+                if (inventory[curr-1] && inventory[curr-1].item.equipment.attack)
+                    addon += "<br> ATK: " + inventory[curr-1].item.equipment.attack + "<br> DMG: " + inventory[curr-1].item.equipment.damage[0] + " - " + inventory[curr-1].item.equipment.damage[1];
+                else if (inventory[curr-1] && inventory[curr-1].item.equipment.ac)
+                    addon += "<br> AC: " + inventory[curr-1].item.equipment.ac;
+                if ($("#shop").is(":visible"))
+                    addon += "<br> Cost: " + inventory[curr-1].item.value;
+                addon += "</span>";
+            }
             result += "<td>" + addon;
             result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
             if(curr < inventory.length+1) {
@@ -870,7 +880,7 @@ function updateInventory() {
     }
     
     $("#inventoryTable").html(result);
-    $("#inventoryTable>tr>td").contextmenu(function() {
+    $("#inventoryTable>tr>td,#shopTable>tr>td").contextmenu(function() {
         if ($(".inventoryMouseOver").is(":visible"))
             $(".inventoryMouseOver").hide();
         $(this).find("span").show();
@@ -900,9 +910,14 @@ function updateEquipment() {
     for (var curr in equipment) {
 	    if (equipment[curr]) {
 		    itemImage = "<img class='inventoryItem equipmentItem' onclick='unEquipItem(\"" + curr + "\")' src=art/" + equipment[curr].item.name + ".png>";
-            addon = "<span class='inventoryMouseover'>" + equipment[curr].item.getName() + "</span>";
-	        $("#" + equipment[curr].item.equipment.slot + "Slot").append(itemImage);
-            $("#" + equipment[curr].item.equipment.slot + "Slot").append(addon);
+            addon = "<span class='inventoryMouseover mouseoverBottom'>" + equipment[curr].item.getName();
+            if (curr == "weapon")
+                addon += "<br> ATK: " + equipment[curr].item.equipment.attack + "<br> DMG: " + equipment[curr].item.equipment.damage[0] + " - " + equipment[curr].item.equipment.damage[1];
+            else if (equipment[curr].item.equipment.ac)
+                addon += "<br> AC: " + equipment[curr].item.equipment.ac;
+            addon += "</span>";
+	        $("#" + equipment[curr].item.equipment.slot + "Slot>div").append(itemImage);
+            $("#" + equipment[curr].item.equipment.slot + "Slot>div").append(addon);
         }
     }
     $(".equipmentItem").contextmenu(function() {

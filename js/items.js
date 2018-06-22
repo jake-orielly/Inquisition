@@ -75,7 +75,7 @@ var iron_pickaxe = new Item("iron_pickaxe",false,makePickaxe(["iron"]),120,new C
 
 var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copper"]),95,new Craftable(45, null,[{item:copper_bar,amount:7}]));
 var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),336,new Craftable(90,smithingAptitude,[{item:iron_bar,amount:7}]));
-var the_iron_fortress = new Item("the_iron_fortress",false, makeChestplate(["iron","the_iron_fortress"]),345);
+var the_iron_fortress = new Item("the_iron_fortress",false, makeChestplate(["iron","the_iron_fortress"]),545);
 
 var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),53,new Craftable(30,null,[{item:copper_bar,amount:4}]));
 var iron_platelegs = new Item("iron_platelegs",false,makePlatelegs(["iron"]),192,new Craftable(75,smithingAptitude,[{item:iron_bar,amount:4}]));

@@ -15,7 +15,7 @@
 
     </head>
     <script>//oncontextmenu="return false;"</script>
-    <body class="unselectable">
+    <body oncontextmenu="return false;" class="unselectable">
         <div class="inquisition" id="battleSection">
             <div id="enemyContainer">
                 <div class="hpMax" id="enemyHPMax">
@@ -108,9 +108,9 @@
                 <table cellspacing="0" id="inventoryTable"></table>
                 <div id="equipment">
                     <img id="equipmentBackground" src='art/equipmentBackground.png'>
-                    <div class="equipmentSlot" id="weaponSlot" style="right: 187; top:142px;"><img src='art/inventorySlot.png'></div>
-                    <div class="equipmentSlot" id="chestSlot" style="right: 117px; top:74px;" src='art/inventorySlot.png'><img src='art/inventorySlot.png'></div>
-                    <div class="equipmentSlot" id="legsSlot" style="right: 117px; top:157px;" src='art/inventorySlot.png'><img src='art/inventorySlot.png'></div>
+                    <div class="equipmentSlot" id="weaponSlot" style="right: 187; top:142px;"><div><img src='art/inventorySlot.png'></div></div>
+                    <div class="equipmentSlot" id="chestSlot" style="right: 117px; top:74px;"><div><img src='art/inventorySlot.png'></div></div>
+                    <div class="equipmentSlot" id="legsSlot" style="right: 117px; top:157px;"><div><img src='art/inventorySlot.png'></div></div>
                     <div id="manaBarMax"><div id="manaBarCurr"></div></div>
                     <div id="hpBarMax"><div id="hpBarCurr"></div></div>
                 </div>
