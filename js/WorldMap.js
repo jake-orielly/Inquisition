@@ -473,7 +473,6 @@ function movePlayer(x,y) {
         }
 
         if (mapTable == villageMap && ((newX == 0 || newX == board.length-1) || (newY == 0 || newY == board[0].length-1))) {
-            console.log(1);
             playerX = 14;
             playerY = 29;
             inTown = false;
@@ -683,7 +682,6 @@ function showMenu(given) {
             result += "<p>" + currList[i].getName();
             for (var j = 0; j < currList[i].craftable.recipe.length; j++) {
                 result += "<br>";
-                console.log(currList[i].craftable.recipe[j]);
                 result += currList[i].craftable.recipe[j].item.getName() + " x" + currList[i].craftable.recipe[j].amount;
             }
             result += "</p></td></tr>";
@@ -826,15 +824,15 @@ function showSkills() {
 }
 
 function updateInventory() {
-    var result;
-    var curr;
-    var heightDif;
+    var result,curr,heightDif,addon;
     
     for (var i = 0; i < 5; i++) {
         result += "<tr>";
         for (var j = 0; j < 3; j++) {
             curr = i*3 + j+1;
-            result += "<td>";
+            if (inventory[curr-1])
+                addon = "<span class='inventoryMouseover mouseoverRight'>" + inventory[curr-1].item.getName() + "</span>";
+            result += "<td>" + addon;
             result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
             if(curr < inventory.length+1) {
                 result += "<img class='inventoryItem' onclick='itemClick(" + (curr-1) + ")' src='art/" + inventory[curr-1].item.name + ".png'>";
@@ -847,6 +845,11 @@ function updateInventory() {
     }
     
     $("#inventoryTable").html(result);
+    $("#inventoryTable>tr>td").contextmenu(function() {
+        if ($(".inventoryMouseOver").is(":visible"))
+            $(".inventoryMouseOver").hide();
+        $(this).find("span").show();
+    });
 }
 
 function updateSkills() {
@@ -867,16 +870,21 @@ function createSkillsTable() {
 }
 
 function updateEquipment() {
-    var itemImage;
-    for (var i = 0; i < $(".equipmentItem").length; i++) {
-	    $(".equipmentItem").remove();
-    }
+    var itemImage,addon;
+    $(".equipmentItem").remove();
     for (var curr in equipment) {
 	    if (equipment[curr]) {
 		    itemImage = "<img class='inventoryItem equipmentItem' onclick='unEquipItem(\"" + curr + "\")' src=art/" + equipment[curr].item.name + ".png>";
+            addon = "<span class='inventoryMouseover'>" + equipment[curr].item.getName() + "</span>";
 	        $("#" + equipment[curr].item.equipment.slot + "Slot").append(itemImage);
+            $("#" + equipment[curr].item.equipment.slot + "Slot").append(addon);
         }
     }
+    $(".equipmentItem").contextmenu(function() {
+        if ($(".inventoryMouseOver").is(":visible"))
+            $(".inventoryMouseOver").hide();
+        $(this).parent().find("span").show();
+    });
 }
 
 function buy(given) {
@@ -908,7 +916,6 @@ function itemClick(given) {
     }
     else if (item.food || item.potion) {
         if (hasPerk(veganSurvival) && item.food) {
-            console.log(item);
             if (item.craftable)
                 for (var i = 0; i < item.craftable.recipe.length; i++) {
                     ingredient = item.craftable.recipe[i].item;
@@ -1257,6 +1264,7 @@ function addItem (source,item,amount = 1) {
                 return;
             }
         }
+        source.push(new InventoryItem(item,amount));
     }
     else if (amount > 1)
         for (var i = 0; i < amount; i++)
@@ -1300,6 +1308,7 @@ function unEquipItem (given) {
 	    addItem(inventory,equipment[given].item);
 	    player[given.toLowerCase()] = null;
 	    equipment[given] = null;
+        $(".equipmentItem").parent().find("span").remove();
 	    updateEquipment();
     }
     else if (inventory.length >= inventoryMax)

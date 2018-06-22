@@ -14,7 +14,9 @@ function getDamage(x,y) {
 
 // Close the dropdown if the user clicks outside of it
 window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-	$('.dropdown-content').hide();
-  }
+    if ($(".inventoryMouseOver").is(":visible"))
+        $(".inventoryMouseOver").hide();
+    if (!event.target.matches('.dropbtn')) {
+        $('.dropdown-content').hide();
+    }
 }
