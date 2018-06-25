@@ -39,7 +39,7 @@ function targetDummy() {
 }
 
 function bug() {
-    var bug = new Character(30,0,13,null,"the bug",["it","it's"],"enemy","bug");
+    var bug = new Character(45,0,15,null,"the bug",["it","it's"],"enemy","bug");
     bug.weapon = new Weapon(6,[4,8],"claw","clawed with","piercing",[]);
     bug.abilities = [acidSpit("enemy")];
     bug.abilities[0].cooldown = parseInt(Math.random()*3);

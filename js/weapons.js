@@ -35,7 +35,7 @@ function makePlatelegs(modifiers) {
 var modifierList = {
     rusty:{attack:-1,damage:-1},
     copper: {attack:1},
-    iron: {attack:2, damage:1,ac:1.7},
+    iron: {attack:4, damage:2,ac:1.7},
     //steel:{attack:3,damage:2,ac:1.8},
     poisoned:{func:poison,count:4},
     poisonDrenched:{func:poison,count:9},
