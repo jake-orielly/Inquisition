@@ -1,5 +1,5 @@
 function wolf() {
-    var wolf = new Character(8,0,9,null,"the wolf",["it","it's"],"enemy","wolf");
+    var wolf = new Character(7,0,9,null,"the wolf",["it","it's"],"enemy","wolf");
     wolf.weapon = new Weapon(4,[1,4],"claw","clawed with","piercing",[]);
     wolf.makeMove = baseAI;
     wolf.loot = [{item:meat,odds:100,amount:1}];
@@ -7,15 +7,15 @@ function wolf() {
 }
 
 function bear() {
-    var bear = new Character(15,0,11,null,"the bear",["it","it's"],"enemy","bear");
-    bear.weapon = new Weapon(1,[4,6],"claw","clawed with","piercing",[]);
+    var bear = new Character(12,0,7,null,"the bear",["it","it's"],"enemy","bear");
+    bear.weapon = new Weapon(0,[3,6],"claw","clawed with","piercing",[]);
     bear.makeMove = baseAI;
     bear.loot = [{item:meat,odds:100,amount:[1,3]},{item:bear_claw,odds:75,amount:[1-3]}];
     return bear;
 }
 
 function bugbear() {
-    var bugbear = new Character(27,0,16,null,"the bugbear",["it","it's"],"enemy","bugbear");
+    var bugbear = new Character(12,0,17,null,"the bugbear",["it","it's"],"enemy","bugbear");
     bugbear.weapon = makeMace(["iron","poisoned"]);
     bugbear.makeMove = baseAI;
     bugbear.loot = [{item:iron_mace,odds:75,amount:1},{item:poison_potion_small,odds:50,amount:1},{item:poison_potion_small,odds:20,amount:1}];
@@ -23,7 +23,7 @@ function bugbear() {
 }
 
 function treant() {
-    var treant = new Character(40,0,10,null,"the treant",["it","it's"],"enemy","treant");
+    var treant = new Character(25,0,11,null,"the treant",["it","it's"],"enemy","treant");
     treant.weapon = new Weapon(3,[4,12],"branch","slammed with","crushing",[]);
     treant.makeMove = baseAI;
     treant.loot = [{item:evergreen_logs,odds:75,amount:[1,3]}];
@@ -42,8 +42,7 @@ function bug() {
     var bug = new Character(45,0,13,null,"the bug",["it","it's"],"enemy","bug");
     bug.weapon = new Weapon(4,[2,4],"claw","clawed with","piercing",[]);
     bug.abilities = [acidSpit("enemy")];
-    bug.abilities[0].cooldown = 0;
-    //bug.abilities[0].cooldown = parseInt(Math.random()*3);
+    bug.abilities[0].cooldown = parseInt(Math.random()*3);
     bug.makeMove = bugAI;
     return bug;
 }
@@ -51,7 +50,6 @@ function bug() {
 function caveBeast() {
     var caveBeast = new Character(120,50,15,makeAxe(),"the cave beast",["it","it's"],"enemy","monster");
     caveBeast.loot = [{item:monster_tusk,odds:100,amount:1}];
-    caveBeast.size = "large";
     caveBeast.abilities = [bloodBoil(caveBeast.charType)];
     caveBeast.makeMove = caveBeastAI;
     initCharacter(caveBeast);
@@ -97,7 +95,7 @@ var Character = function(maxHP,maxMana,ac,weapon,name,pronounSet,charType,image,
         else {
             for (var curr in equipment)
                 if (equipment[curr] && equipment[curr].item.equipment.ac)
-                    result += equipment[curr].item.equipment.ac;
+                    result += equipment[curr].item.equipment.getAttribute("ac");
             return result;
         }
     }

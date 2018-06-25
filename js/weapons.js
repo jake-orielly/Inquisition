@@ -24,19 +24,19 @@ function makePickaxe(modifiers) {
 }
 
 function makeChestplate(modifiers) {
-    return new Armor(6,"chestplate","chest",modifiers);
+    return new Armor(3,"chestplate","chest",modifiers);
 }
 
 function makePlatelegs(modifiers) {
-    return new Armor(4,"platelegs","legs",modifiers);
+    return new Armor(2,"platelegs","legs",modifiers);
 }
 
 //Weapon modifiers
 var modifierList = {
     rusty:{attack:-1,damage:-1},
     copper: {attack:1},
-    iron: {attack:2, damage:1,ac:1.4},
-    steel:{attack:3,damage:2,ac:1.8},
+    iron: {attack:2, damage:1,ac:1.7},
+    //steel:{attack:3,damage:2,ac:1.8},
     poisoned:{func:poison,count:4},
     poisonDrenched:{func:poison,count:9},
     godly:{attack:10,damage:10,ac:10}};

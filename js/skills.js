@@ -138,9 +138,9 @@ function updateXPBar(skill) {
 
 //Perks
 
-var piercingAptitude = {name:"Piercing Aptitude",img:"art/copper_short_sword.png",description:"+3 attack, and +1 crit range with piercing weapons",requirements:{piercing:3},categories:["general","piercing"],compName:"piercingAptitude",functional:{attack:function(given){return given+3},crit:function(given){return given-1}}};
-var choppingAptitude = {name:"Chopping Aptitude",img:"art/copper_axe.png",description:"+2 attack and +1 damage with chopping weapons",requirements:{chopping:3},categories:["general","chopping"],compName:"choppingAptitude",functional:{attack:function(given){return given+2},damage:function(given){return given+1}}};
-var crushingAptitude = {name:"Crushing Aptitude",img:"art/copper_mace.png",description:"+2 damage with crushing weapons",requirements:{crushing:3},categories:["general","crushing"],compName:"crushingAptitude",functional:{damage:function(given){return given+2}}};
+var piercingAptitude = {name:"Piercing Aptitude",img:"art/copper_short_sword.png",description:"+5 attack, and +1 crit range with piercing weapons",requirements:{piercing:3},categories:["general","piercing"],compName:"piercingAptitude",functional:{attack:function(given){return given+5},crit:function(given){return given-1}}};
+var choppingAptitude = {name:"Chopping Aptitude",img:"art/copper_axe.png",description:"+2 attack and +2 damage with chopping weapons",requirements:{chopping:3},categories:["general","chopping"],compName:"choppingAptitude",functional:{attack:function(given){return given+2},damage:function(given){return given+2}}};
+var crushingAptitude = {name:"Crushing Aptitude",img:"art/copper_mace.png",description:"+1 attack and +4 damage with crushing weapons",requirements:{crushing:3},categories:["general","crushing"],compName:"crushingAptitude",functional:{attack:function(given){return given+1},damage:function(given){return given+4}}};
 var unarmedAptitude = {name:"Unarmed Aptitude",img:"art/fist.png",description:"+5 attack, +2 damage, and +2 crit range when not using a weapon",requirements:{unarmed:3},categories:["general","unarmed"],compName:"unarmedAptitude",functional:{attack:function(given){return given+5},damage:function(given){return given+2},crit:function(given){return given-2}}};
 var woodcuttingAptitude = {name:"Woodcutting Aptitude",img:"art/evergreen.png",description:"You can chop evergreen trees with an iron axe.",requirements:{woodcutting:3},categories:["general","woodcutting"],compName:"woodcuttingAptitude"};
 var miningAptitude = {name:"Mining Aptitude",img:"art/iron_vein.png",description:"You can mine iron ore with an iron pickaxe.",requirements:{mining:3},categories:["general","mining"],compName:"miningAptitude"};
@@ -151,11 +151,7 @@ var druidicAptitude = {name:"Druidic Aptitude",img:"art/leaf.png",description:"U
 druidicAptitude.abilities = [regrowth,rejuvination];
 var demonicAptitude = {name:"Demonic Aptitude",img:"art/demonSkill.png",description:"Unlock 2 powerful demon spells.",requirements:{demon:3},categories:["general","demon"],compName:"demonicAptitude"};
 demonicAptitude.abilities = [hellfire,retaliation];
-var theBiggerTheyAre = {name:"The Bigger They Are",img:"art/tree_fall.png",description:"+3 damage against large enemies when using chopping weapons.",requirements:{chopping:5,woodcutting:5},categories:["general","chopping","woodcutting"],compName:"theBiggerTheyAre",functional:{damage:function(given){
-    if (currEnemy.size && currEnemy.size == "large")
-        return given + 3;
-    else 
-        return given;}}};
+var theBiggerTheyAre = {name:"The Bigger They Are",img:"art/tree_fall.png",description:"+3 damage when using chopping weapons.",requirements:{chopping:5,woodcutting:5},categories:["general","chopping","woodcutting"],compName:"theBiggerTheyAre",functional:{damage:function(given){return given + 3;}}};
 var findTheVein = {name:"Find The Vein",img:"art/find_the_vein.png",description:"Critical hits do 3x damage instead of 2x when using piercing weapons",requirements:{piercing:5,mining:5},categories:["general","piercing","mining"],compName:"findTheVein",functional:{critDamage:function(given){return 3}}};
 var forgedInFire = {name:"Forged In Fire",img:"art/forged_in_fire.png",description:"Gain bonus damage with crushing weapons based on your AC",requirements:{crushing:5,smithing:5},categories:["general","crushing","smithing"],compName:"forgedInFire",functional:{damage:function(given){return parseInt(given+parseInt(player.getAC()/4))}}};
 var veganSurvival = {name:"Vegan Survival",img:"art/salad.png",description:"Vegan foods heal twice as much. Can no longer eat meat.",requirements:{druid:5,cooking:5},categories:["general","druid","cooking"],compName:"veganSurvival"};
