@@ -5,10 +5,12 @@
 
 .hp {
     background-color: green;
+    text-align: left;
 }
 
 .mana {
-    background-color:cadetblue
+    background-color:cadetblue;
+    text-align: left;
 }
 
 .hpMax, .manaMax {
@@ -121,6 +123,7 @@
     display:inline-block;
     position:absolute;
     bottom:0;
+    left:0;
 }
 
 #enemyContainer {
@@ -133,7 +136,7 @@
     position:relative;
 }
 
-.actionButton, .abilityButton {
+.actionButton, .abilityButton, .itemButton {
     font-size: 24px;
     font-weight: 900;
     cursor: pointer;
@@ -141,10 +144,10 @@
     margin-right: 15px;
 }
 
-.actionButton::selection, .abilityButton::selection {
+.actionButton::selection, .abilityButton::selection, .itemButton::selection {
     background: rgba(0,0,0,0); /*Makes highlight of text invisible*/
 }
-.actionButton::-moz-selection, .abilityButton::-moz-selection {
+.actionButton::-moz-selection, .abilityButton::-moz-selection, .itemButton::-moz-selection {
     background: rgba(0,0,0,0);
 }
 

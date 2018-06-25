@@ -23,6 +23,7 @@ function startCombat(given) {
     characters = [player,currEnemy];
     
     showAllBuffs(player);
+    showAllBuffs(currEnemy);
     
     for (var i = 0; i < player.hpTriggers.length; i++)
                 player.hpTriggers[i]();
@@ -41,6 +42,7 @@ function startCombat(given) {
     
     $("#combatLogContainer").hide();
     $(".abilityButton").hide();
+    $(".itemButton").hide();
     document.getElementById("movesSection").style.display = "block";
     document.getElementById("movesButton").className += " active";
     document.getElementById("enemyImgContainer").getElementsByTagName('img')[0].src = "art/" + currEnemy.image + ".png";
@@ -93,8 +95,10 @@ function endCombat(target) {
     var delay = 0;
     var amount;
     
-    for (var i = 0; i < $(".abilityButton").length; i++)
+    for (var i = 0; i < $(".abilityButton").length; i++) {
         $(".abilityButton")[i].classList.add("coolDown");
+        $(".itemButton")[i].classList.add("coolDown");
+    }
     if (currEnemy.name == "the cave beast") {
         quests.southernBeast.phase = 2;        
         board[32][35].splice(2);
@@ -270,6 +274,7 @@ function playerTurn() {
         degradeBuffs(currEnemy);
         isPlayerTurn = false;
         $(".abilityButton").hide();
+        $(".itemButton").hide();
         $(".actionButton").css("color","grey");
         $(".actionButton").css("cursor","default");
         showAllBuffs(player);
@@ -296,6 +301,7 @@ function wait() {
         degradeBuffs(currEnemy);
         isPlayerTurn = false;
         $(".abilityButton").hide();
+        $(".itemButton").hide();
         $(".actionButton").css("color","grey");
         $(".actionButton").css("cursor","default");
         showAllBuffs(player);
@@ -540,7 +546,7 @@ function textReset(given) {
 function toggleAbilities() {
     if (!dead) {
         if (itemsOpen) {
-            $(".abilityButton").hide();
+            $(".itemButton").hide();
             itemsOpen = false;
         }
         if ($(".abilityButton").is(":visible"))
@@ -554,11 +560,11 @@ function toggleAbilities() {
 function toggleItems() {
     if (!dead) {
         if (abilitiesOpen) {
-            $(".abilityButton").hide();
+            $(".itemButton").hide();
             abilitiesOpen = false;
         }
-        if ($(".abilityButton").is(":visible"))
-            $(".abilityButton").hide();
+        if ($(".itemButton").is(":visible"))
+            $(".itemButton").hide();
         else
             updateItems();
         itemsOpen = !itemsOpen;
@@ -606,20 +612,21 @@ function updateItems() {
     var curr = 0;
     var noItems = true;
     $(".abilityButton").hide();
+    $(".itemButton").hide();
     for (var i = 0; i < potionList.length; i++) {
         if (inventoryCount(inventory,potionList[i])) {
-            $(".abilityButton")[curr].innerHTML = potionList[i].getName();
+            $(".itemButton")[curr].innerHTML = potionList[i].getName();
             if (inventoryCount(inventory,potionList[i]) > 1)
-                $(".abilityButton")[curr].innerHTML += " x" + inventoryCount(inventory,potionList[i]);
-            $(".abilityButton")[curr].style.display = "table";
-            $(".abilityButton")[curr].setAttribute("onClick","javascript: triggerItem(" + potionList[i].name + ");");
+                $(".itemButton")[curr].innerHTML += " x" + inventoryCount(inventory,potionList[i]);
+            $(".itemButton")[curr].style.display = "table";
+            $(".itemButton")[curr].setAttribute("onClick","javascript: triggerItem(" + potionList[i].name + ");");
             curr++;
             noItems = false;
         }
     }
     if (noItems) {
-        $(".abilityButton")[curr].innerHTML = "[No Items]";
-        $(".abilityButton")[curr].style.display = "table";
+        $(".itemButton")[curr].innerHTML = "[No Items]";
+        $(".itemButton")[curr].style.display = "table";
     }
 }
 
