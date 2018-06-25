@@ -445,7 +445,7 @@ function calcAttack(attacker,defender,weapon = attacker.weapon) { //Todo add UI 
             if (defender.buffs.ac[i].count)
                 defenderAC += defender.buffs.ac[i].bonus;
     attack = baseAttack + weapon.getAttribute("attack");
-    console.log(attack + " : " + defenderAC);
+
     if (attacker == player)
         attack = applyPerks(attack,wepType,"attack");
     

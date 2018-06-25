@@ -1,5 +1,5 @@
 function wolf() {
-    var wolf = new Character(7,0,9,null,"the wolf",["it","it's"],"enemy","wolf");
+    var wolf = new Character(8,0,9,null,"the wolf",["it","it's"],"enemy","wolf");
     wolf.weapon = new Weapon(4,[1,4],"claw","clawed with","piercing",[]);
     wolf.makeMove = baseAI;
     wolf.loot = [{item:meat,odds:100,amount:1}];
@@ -39,8 +39,8 @@ function targetDummy() {
 }
 
 function bug() {
-    var bug = new Character(45,0,13,null,"the bug",["it","it's"],"enemy","bug");
-    bug.weapon = new Weapon(4,[2,4],"claw","clawed with","piercing",[]);
+    var bug = new Character(30,0,13,null,"the bug",["it","it's"],"enemy","bug");
+    bug.weapon = new Weapon(6,[4,8],"claw","clawed with","piercing",[]);
     bug.abilities = [acidSpit("enemy")];
     bug.abilities[0].cooldown = parseInt(Math.random()*3);
     bug.makeMove = bugAI;

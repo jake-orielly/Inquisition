@@ -174,7 +174,7 @@ function acidSpitBuff(amount) {
 function acidSpitFunc(owner,target) {
 	var target;
 	var combatText;
-    var spellWeapon = new Weapon(16,[3,5],"","","spell");
+    var spellWeapon = new Weapon(9,[3,5],"","","spell");
     var crit = false;
     var critAddon = "";
     var critLogAddon = "dealt";
