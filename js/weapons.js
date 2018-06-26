@@ -1,26 +1,26 @@
 //Weapon templates
 function makeShortSword(modifiers) {
-    return new Weapon(5,[3,5],"short sword","swung with","piercing",modifiers);
+    return new Weapon(5,[3,5],"short sword","swung at","piercing",modifiers);
 }
 
 function makeMace(modifiers) {
-    return new Weapon(3,[4,6],"mace","swung with","crushing",modifiers);
+    return new Weapon(3,[4,6],"mace","swung at","crushing",modifiers);
 }
 
 function makeMorningStar(modifiers) {
-    return new Weapon(3,[4,7],"morningstar","swung with","crushing",modifiers);
+    return new Weapon(3,[4,7],"morningstar","swung at","crushing",modifiers);
 }
 
 function makeDagger(modifiers) {
-    return new Weapon(3,[3,4],"dagger","lunged with","piercing",modifiers);
+    return new Weapon(3,[3,4],"dagger","lunged at","piercing",modifiers);
 }
 
 function makeAxe(modifiers) {
-    return new Weapon(4,[4,5],"axe","chopped with","chopping",modifiers);
+    return new Weapon(4,[4,5],"axe","chopped at","chopping",modifiers);
 }
 
 function makePickaxe(modifiers) {
-    return new Weapon(6,[2,3],"pickaxe","swung with","piercing",modifiers);
+    return new Weapon(6,[2,3],"pickaxe","swung at","piercing",modifiers);
 }
 
 function makeChestplate(modifiers) {
@@ -88,7 +88,7 @@ function Armor(ac,name,slot,modifierNames = []) {
 }
 
 function getAttribute(object, given) {
-    if (!object[given])
+    if (object[given] == undefined || object[given] == null)
         console.log("Error 1: Requested invalid attribute");
     else {
         var result;   

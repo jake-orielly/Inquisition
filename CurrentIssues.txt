@@ -1,6 +1,5 @@
 Buying item doesn’t remove it from shop inventory, selling doesn’t add it
 UI doesn’t indicate/explain items that you’re not high enough level to make
-Fix “the rat” vs “rat” situation in combat log
 Problem with perk menu mouseover when scrolling
 How rejuvenation works/what is happening is not clear
 Need fire to cook salad

@@ -188,13 +188,13 @@ function acidSpitFunc(owner,target) {
     }
     if (damage == 0) {
         moveText(target.charType,"MISS");
-        combatText += owner.name + " spat acid at " + target.name + " but missed.";
+        combatText += capitalize(owner.name) + " spat acid at " + target.name + " but missed.";
     }
     else {
         changeHP(damage*-1,target);
         moveText(target.charType,(damage*-1) + critAddon);
         incrementBuff(target,acidSpitBuff(4));
-        combatText += owner.name + " spat acid at " + target.name + " and " + critLogAddon + " <span class='red'>" + damage + "</span> damage.";
+        combatText += capitalize(owner.name) + " spat acid at " + target.name + " and " + critLogAddon + " <span class='red'>" + damage + "</span> damage.";
     }
     combatText += "</td></tr>";
     return combatText;	

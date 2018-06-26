@@ -565,6 +565,7 @@ button:focus {
     position:absolute;
     z-index:10;
     display: none;
+    left: 0;
 }
 
 #sleepScreen {

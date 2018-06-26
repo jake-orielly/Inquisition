@@ -410,7 +410,7 @@ function makeAttack(attacker, defender) {
     attackResult = attackResult*-1;
     if (attackResult == 0) {
         moveText(defender.charType,"MISS");
-        return capitalize(attacker.name) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " but missed!";
+        return capitalize(attacker.name) + " " + attacker.weapon.verb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name + " but missed!";
     }
     else {
         changeHP(attackResult,defender);
@@ -423,7 +423,7 @@ function makeAttack(attacker, defender) {
             giveAttackXP(attacker.weapon.killVerb,Math.abs(attackResult));
 
         if (defender.hp > 0)
-            return capitalize(attacker.name) + " " + attacker.weapon.verb + " " + attacker.possPronoun + " " + attacker.weapon.name + " at " + defender.name + " and " + critLogAddon + " <span class='red'>" + Math.abs(attackResult) + "</span> damage. " + capitalize(defender.name) + " now has <span class='red'>" + defender.hp + "</span> health."; 
+            return capitalize(attacker.name) + " " + attacker.weapon.verb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name + " and " + critLogAddon + " <span class='red'>" + Math.abs(attackResult) + "</span> damage. " + capitalize(defender.name) + " now has <span class='red'>" + defender.hp + "</span> health."; 
         else {
             return capitalize(attacker.name) + " " + critLogAddon + " <span class='red'>" + + Math.abs(attackResult) + "</span> damage, and " + attacker.weapon.killVerb + " " + defender.name + " with " + attacker.possPronoun + " " + attacker.weapon.name;
         }
@@ -451,7 +451,7 @@ function calcAttack(attacker,defender,weapon = attacker.weapon) { //Todo add UI 
             if (defender.buffs.ac[i].count)
                 defenderAC += defender.buffs.ac[i].bonus;
     attack = baseAttack + weapon.getAttribute("attack");
-
+    
     if (attacker == player)
         attack = applyPerks(attack,wepType,"attack");
     
