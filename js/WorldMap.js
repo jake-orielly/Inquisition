@@ -1,7 +1,7 @@
 var mapTable = testMap;
 var boardHTML = "";
 var visibleCols = 11;
-var visibleRows = 11;
+var visibleRows = 13;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 15;
 var playerY = 28;

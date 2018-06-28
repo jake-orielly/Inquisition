@@ -3,3 +3,5 @@ UI doesn’t indicate/explain items that you’re not high enough level to make
 Problem with perk menu mouseover when scrolling
 How rejuvenation works/what is happening is not clear
 Need fire to cook salad
+Right click empty space in inventory shows last item in list
+Removing item moves all items up, should leave empty space
