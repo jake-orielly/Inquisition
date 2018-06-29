@@ -31,6 +31,10 @@ function makePlatelegs(modifiers) {
     return new Armor(2,"platelegs","legs",modifiers);
 }
 
+function makeGloves(modifiers) {
+    return new Armor(1,"gloves","hands",modifiers);
+}
+
 //Weapon modifiers
 var modifierList = {
     rusty:{attack:-1,damage:-1},
@@ -39,6 +43,7 @@ var modifierList = {
     //steel:{attack:3,damage:2,ac:1.8},
     poisoned:{func:poison,count:4},
     poisonDrenched:{func:poison,count:9},
+    alchemist_gloves:{attack:5},
     godly:{attack:10,damage:10,ac:10}};
 
 modifierList.the_iron_fortress = {ac:2};

@@ -454,6 +454,19 @@ tr.spaceUnder>td {
     height:50px;
 }
 
+#chestSlot div img {
+    width: 8em;
+    height: 8em;
+    left: -2.5em;
+    top: -2.5em;
+}
+
+#legsSlot div img {
+    height: 8em;
+    width: 10em;
+    left: -3.5em;
+}
+
 #toolNeeded { 
     float:left;
     margin-right: 2em;
