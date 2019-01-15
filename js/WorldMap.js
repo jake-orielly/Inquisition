@@ -1,7 +1,7 @@
 var mapTable = testMap;
 var boardHTML = "";
 var visibleCols = 11;
-var visibleRows = 13;
+var visibleRows = 11;
 var playerHTML = "<img class='tileItem' id='playerHTML' src='art/soldier.png'>";
 var playerX = 15;
 var playerY = 28;
@@ -398,6 +398,7 @@ addItem(inventory,poison_potion_small);
 addItem(inventory,iron_axe);
 addItem(inventory,iron_pickaxe);
 addItem(inventory,iron_chestplate);
+addItem(inventory,leather_gloves);
 
 function startEncounter(given) {
     $("#worldMapContainer").hide();
@@ -905,18 +906,32 @@ function createSkillsTable() {
 }
 
 function updateEquipment() {
-    var itemImage,addon;
+    var itemImage,itemImageR,addon,img,imgR;
     $(".equipmentItem").remove();
     for (var curr in equipment) {
 	    if (equipment[curr]) {
-		    itemImage = "<img class='inventoryItem equipmentItem' onclick='unEquipItem(\"" + curr + "\")' src=art/" + equipment[curr].item.name + ".png>";
+            if (equipment[curr].item.wearable) {
+                img = equipment[curr].item.wearable.left;
+                itemImage = "<img class='inventoryItem equipmentItem' onclick='unEquipItem(\"" + curr + "\")' src=art/" + img + ".png>";
+                imgR = equipment[curr].item.wearable.right;
+                itemImageR = "<img class='inventoryItem equipmentItem' onclick='unEquipItem(\"" + curr + "\")' src=art/" + imgR + ".png>";
+            }
+            else {
+                img = equipment[curr].item.name;
+                itemImage = "<img class='inventoryItem equipmentItem' onclick='unEquipItem(\"" + curr + "\")' src=art/" + img + ".png>";
+            }
             addon = "<span class='inventoryMouseover mouseoverBottom'>" + equipment[curr].item.getName();
             if (curr == "weapon")
                 addon += "<br> ATK: " + equipment[curr].item.equipment.attack + "<br> DMG: " + equipment[curr].item.equipment.damage[0] + " - " + equipment[curr].item.equipment.damage[1];
             else if (equipment[curr].item.equipment.ac)
                 addon += "<br> AC: " + equipment[curr].item.equipment.ac;
             addon += "</span>";
-	        $("#" + equipment[curr].item.equipment.slot + "Slot>div").append(itemImage);
+            if (equipment[curr].item.wearable) {
+                $("#" + equipment[curr].item.equipment.slot + "Slot>div").eq(0).append(itemImage);
+                $("#" + equipment[curr].item.equipment.slot + "Slot>div").eq(1).append(itemImageR);
+            }
+            else
+	           $("#" + equipment[curr].item.equipment.slot + "Slot>div").append(itemImage);
             $("#" + equipment[curr].item.equipment.slot + "Slot>div").append(addon);
         }
     }

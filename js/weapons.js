@@ -32,7 +32,7 @@ function makePlatelegs(modifiers) {
 }
 
 function makeGloves(modifiers) {
-    return new Armor(1,"gloves","hands",modifiers);
+    return new Armor(0.5,"gloves","hands",modifiers); //Glove AC gets doubled
 }
 
 //Weapon modifiers

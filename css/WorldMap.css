@@ -34,7 +34,7 @@
     height: 64px;
     position: absolute;
     bottom:0;
-    right:-9em;
+    right:0;
 }
 
 #craftMenuTable {
@@ -459,6 +459,11 @@ tr.spaceUnder>td {
     height: 8em;
     left: -2.5em;
     top: -2.5em;
+}
+
+#weaponSlot div img {
+    width: 6em;
+    height: 6em;
 }
 
 #legsSlot div img {

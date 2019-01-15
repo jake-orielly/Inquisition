@@ -77,6 +77,8 @@ var copper_chestplate = new Item("copper_chestplate",false,makeChestplate(["copp
 var iron_chestplate = new Item("iron_chestplate",false,makeChestplate(["iron"]),336,new Craftable(90,smithingAptitude,[{item:iron_bar,amount:7}]));
 var the_iron_fortress = new Item("the_iron_fortress",false, makeChestplate(["iron","the_iron_fortress"]),545);
 
+var leather_gloves = new Item("leather_gloves",false,makeGloves(),20);
+leather_gloves.wearable = {left:"leather_gloves_wearable_left",right:"leather_gloves_wearable_right"};
 var alchemist_gloves = new Item("alchemist_gloves",false,makeGloves(["alchemist_gloves"]),340);
 
 var copper_platelegs = new Item("copper_platelegs",false,makePlatelegs(["copper"]),53,new Craftable(30,null,[{item:copper_bar,amount:4}]));
@@ -99,7 +101,7 @@ var shopTemp = [flint_box,meat,oak_logs,evergreen_logs,copper_bar,iron_bar];
 fillShop(generalStoreInventory,shopTemp);
 shopTemp = [copper_axe,iron_axe,copper_pickaxe,iron_pickaxe,copper_dagger,iron_dagger,copper_short_sword,iron_short_sword,copper_mace,iron_mace];
 fillShop(toolStoreInventory,shopTemp);
-shopTemp = [copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs];
+shopTemp = [copper_chestplate,iron_chestplate,copper_platelegs,iron_platelegs,leather_gloves];
 fillShop(armorStoreInventory,shopTemp);
 shopTemp = [hp_potion_small,hp_potion_medium,mana_potion_small,mana_potion_medium,poison_potion_small,glass_vial,glass_jar,herb,berry,bear_claw,mushroom];
 fillShop(alchemyStoreInventory,shopTemp);
