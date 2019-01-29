@@ -54,6 +54,7 @@
     height: 65%;
     outline: 5px solid black;
     position:relative;
+    display:none;
 }
 
 #movesSection {
@@ -97,6 +98,9 @@
     padding: 6px 12px;
     border: 1px solid #ccc;
     border-top: none;
+}
+.inquisition {
+    display:none;
 }
 
 .inquisition td {

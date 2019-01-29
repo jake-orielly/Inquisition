@@ -76,9 +76,6 @@ flint_box.clickFunc = function() {
 var inventory = [];
 var equipment = {};
 
-$(".craftMenuButton").hide();
-$(".inquisition").hide();
-
 makePerkSortButtons(); 
 makeBoard();
 
@@ -96,6 +93,7 @@ function makeBoard() {
         }
     }
     mapAddons(mapTable);
+    $("#inventoryButton").show();
 }
 
 function makePerkSortButtons(sorted = "general") {

@@ -3,9 +3,9 @@ UI doesn’t indicate/explain items that you’re not high enough level to make
 Problem with perk menu mouseover when scrolling
 Removing item moves all items up, should leave empty space
 Right click empty space in inventory shows last item in list
-Cupcake flashes on screen during game load
 Game shows up at wrong size for window requiring zoom out
 Walking away from dialogue screws stuff up
+UI Doesn’t minimize when entering buildings and/or talking to people
 
 Non-Critical
 Buying item doesn’t remove it from shop inventory, selling doesn’t add it
