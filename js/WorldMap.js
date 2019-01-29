@@ -80,6 +80,7 @@ makePerkSortButtons();
 makeBoard();
 
 function makeBoard() {
+    hideInventory();
     board = [];
     for (var i = 0; i < mapTable.length; i++) {
         board[i] = [];
@@ -438,7 +439,7 @@ function movePlayer(x,y) {
     
     if ($("#shop").is(":visible")) {
         $("#shop").hide();
-        $("#inventory").hide();
+        hideInventory();
     }
     if ($("#treasure").is(":visible")) {
         $("#treasure").hide();
@@ -585,7 +586,7 @@ function checkCanCraft() {
 
     if (shouldCloseInventory) {
         shouldCloseInventory = false;
-        $("#inventory").hide();
+        hideInventory();
     }
     hideMenus();
     
@@ -619,6 +620,13 @@ function toggleInventory() {
         showInventory();
 }
 
+function hideInventory() {
+    $("#equipment").hide();
+    $("#inventoryTable").hide();
+    $("#skills").hide();
+    $("#upgrades").hide();
+}
+
 function toggleSkills() { 
     if ($("#skills").is(":visible")) {
         $("#skills").hide();
@@ -650,7 +658,7 @@ function toggleMenu(given) {
     if ($("#craftMenu").is(":visible")) {
         if (shouldCloseInventory) {
             shouldCloseInventory = false;
-            $("#inventory").hide();
+            hideInventory();
         }
         $("#craftMenu").hide();
     }
@@ -746,6 +754,9 @@ function showTreasure() {
 }
 
 function showDialogue(character,item) {
+    hideInventory();
+    if (character != questGiver && character != inkeeper)
+        $("#inventoryTable").css("display","inline-block")
 	currConvo = conversation[0];
 	for (var i = 1; i < conversation.length-1; i++)
 		currConvo = currConvo[conversation[i]];

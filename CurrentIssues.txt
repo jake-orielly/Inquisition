@@ -5,7 +5,8 @@ Removing item moves all items up, should leave empty space
 Right click empty space in inventory shows last item in list
 Game shows up at wrong size for window requiring zoom out
 Walking away from dialogue screws stuff up
-UI Doesn’t minimize when entering buildings and/or talking to people
+UI messes up in buildings due to smaller board size
+Equip/unequip no longer works
 
 Non-Critical
 Buying item doesn’t remove it from shop inventory, selling doesn’t add it
