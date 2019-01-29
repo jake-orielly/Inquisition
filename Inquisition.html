@@ -15,7 +15,7 @@
 
     </head>
     <script>//oncontextmenu="return false;"</script>
-    <body oncontextmenu="return false;" class="unselectable">
+    <body class="unselectable">
         <div style="position: absolute; left: 50%; top:0;">
             <div style="position: relative; left: -50%;" id="levelUpMessage">
                 <table>
@@ -108,6 +108,31 @@
             <table id="board" cellspacing=0>
             </table>
             <div id="inventory">
+                <div class="menuOuter" id="upgrades">
+                        <div class="menuInner">
+                            <p>Upgrades:</p>
+                            <hr>
+                            <p id="upgradePoints" style="margin-bottom:6px">Error</p>
+                            <table id="upgradeTable"></table>
+                        </div>
+                    </div>
+                <div class="menuOuter" id="skills">
+                    <div class="menuInner">
+                        <table>
+                            <tr>
+                                <td><img src="art/perk_gem_empty.png" id="perkGem0"></td>
+                                <td><img src="art/perk_gem_empty.png" id="perkGem1"></td>
+                                <td><img src="art/perk_gem_empty.png" id="perkGem2"></td>
+                                <td><img src="art/perk_gem_empty.png" id="perkGem3"></td>
+                                <td><img src="art/perk_gem_empty.png" id="perkGem4"></td>
+                            </tr>
+                        </table>
+                        <button class="perksButton" id="perksButton" onclick="togglePerks()">Perks</button>
+                        <div id="skillsTableDiv">
+                            <table cellspacing="0" id="skillsTable"></table>
+                        </div>
+                    </div>
+                </div>
                 <div id="equipment">
                     <img id="equipmentBackground" src='art/equipmentBackground.png'>
                     <div class="equipmentSlot" id="weaponSlot" style="right: 7em; top:6em; z-index:2;"><div></div></div>
@@ -119,29 +144,6 @@
                     <div id="hpBarMax"><div id="hpBarCurr"></div></div>
                 </div>
                 <table cellspacing="0" id="inventoryTable"></table>
-            </div>
-            <div class="menuOuter" id="skills">
-                <div class="menuInner">
-                    <table>
-                        <tr>
-                            <td><img src="art/perk_gem_empty.png" id="perkGem0"></td>
-                            <td><img src="art/perk_gem_empty.png" id="perkGem1"></td>
-                            <td><img src="art/perk_gem_empty.png" id="perkGem2"></td>
-                            <td><img src="art/perk_gem_empty.png" id="perkGem3"></td>
-                            <td><img src="art/perk_gem_empty.png" id="perkGem4"></td>
-                        </tr>
-                    </table>
-                    <button class="perksButton" id="perksButton" onclick="togglePerks()">Perks</button>
-                    <table cellspacing="0" id="skillsTable"></table>
-                </div>
-            </div>
-            <div class="menuOuter" id="upgrades">
-                <div class="menuInner">
-                    <p>Upgrades:</p>
-                    <hr>
-                    <p id="upgradePoints" style="margin-bottom:6px">Error</p>
-                    <table id="upgradeTable"></table>
-                </div>
             </div>
             <div id="perks">
                 <img class="closeButton" onclick="togglePerks()" src="art/close.png">

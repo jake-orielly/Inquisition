@@ -613,8 +613,10 @@ function checkCanCraft() {
 }
 
 function toggleInventory() {
-    if ($("#inventory").is(":visible"))
-        $("#inventory").hide();
+    if ($("#equipment").is(":visible")) {
+        $("#equipment").hide();
+        $("#inventoryTable").hide();
+    }
     else 
         showInventory();
 }
@@ -639,7 +641,7 @@ function meetsRequirements(given) {
 function inventoryCount(source,given) {
     var total = 0;
     for (var i = 0; i < source.length; i++) {
-        if (source[i].item == given)
+        if (source[i] && source[i].item == given)
             total += source[i].amount;
     }
     return total;
@@ -810,7 +812,8 @@ function chopText(text) {
 
 function showInventory() {
     updateInventory();
-    $("#inventory").show();
+    $("#equipment").css("display","inline-block");
+    $("#inventoryTable").css("display","inline-block");
     updateHPMana();
 }
 
@@ -870,7 +873,7 @@ function updateInventory() {
             }
             result += "<td>" + addon;
             result += "<img class='inventorySlot' src='art/inventorySlot.png'>";
-            if(curr < inventory.length+1) {
+            if(inventory[curr-1] && curr < inventory.length+1) {
                 result += "<img class='inventoryItem' onclick='itemClick(" + (curr-1) + ")' src='art/" + inventory[curr-1].item.name + ".png'>";
                 if (inventory[curr-1].amount > 1)
                     result += "<div class='inventoryAmountContainer' onclick='itemClick(" + (curr-1) + ")'><p class='inventoryItemAmount'>" + inventory[curr-1].amount + "</p></div>";
@@ -1324,8 +1327,15 @@ function addItem (source,item,amount = 1) {
     else if (amount > 1)
         for (var i = 0; i < amount; i++)
             source.push(new InventoryItem(item,1));
-    else
+    else {
+        for (var i = 0; i < source.length; i++) {
+            if (!source[i]) {
+                source[i] = new InventoryItem(item,amount);
+                return
+            }
+        }
         source.push(new InventoryItem(item,amount));
+    }
     updateInventory();
 }
 
@@ -1380,13 +1390,13 @@ function removeItem (source,item,amount = 1) {
                     source[i].amount -= amount;
                     amount = 0;
                     if (source[i].amount == 0)
-                        source.splice(i,1);
+                        source[i] = null;
                     break;
                 }
                 else {
                     amount -= source[i].amount;
                     source.amount = 0;
-                    source.splice(i,1);
+                    source[i] = null;
                     i--;
                 }
             }

@@ -47,13 +47,6 @@
     padding: 0.5em 0;
 }
 
-#skills, #upgrades {
-    position:absolute;
-    display:none;
-    padding: 5px;
-    bottom: 64px;
-}
-
 .menuOuter {
     border-radius:12px;
     background: rgb(125,126,125);
@@ -110,7 +103,7 @@ tr.spaceUnder>td {
     text-shadow: 1px 1px 1px black
 }
 
-#inventoryTable, #shopTable, #treasureTable {
+#shopTable, #treasureTable {
     position:absolute;
     bottom:70px;
     padding: 5px;
@@ -121,8 +114,14 @@ tr.spaceUnder>td {
     border: 8px solid rgb(61,61,61);
 }
 
-#inventoryTable, #skillsTable {
-    right: -25em;
+#inventoryTable {
+    display: inline-block;
+    padding: 5px;
+    background: #eeeeee;
+    background: -moz-linear-gradient(top,  #eeeeee 0%, #cccccc 100%);
+    background: -webkit-linear-gradient(top,  #eeeeee 0%,#cccccc 100%);
+    background: linear-gradient(to bottom,  #eeeeee 0%,#cccccc 100%);
+    border: 8px solid rgb(61,61,61);
 }
 
 #shopTable, #treasureTable {
@@ -168,12 +167,19 @@ tr.spaceUnder>td {
     position:relative;
 }
 
-#inventory, #shop, #treasure{
+#shop, #treasure{
     position: relative;
     display:none;
     bottom:40px;
     right:0px;
     z-index:2;
+}
+
+#inventory {
+    position: absolute;
+    z-index:2;
+    bottom: 4em;
+    right: 0em;
 }
 
 #perks {
@@ -186,7 +192,7 @@ tr.spaceUnder>td {
     top: 0;
     width: calc(100% - 18px);
     height: calc(100% - 18px);
-    z-index: 1;
+    z-index: 3;
     display:none;
 }
 
@@ -401,10 +407,16 @@ tr.spaceUnder>td {
     font-family: "Courier New";
 }
 
-#equipment {
-    position: absolute;
-    right: -11em;
-    bottom: 70px;
+#equipment, #inventoryTable, #skills, #upgrades {
+    display: none;
+    float: left;
+    margin-left: 1em;
+    padding: 5px;
+}
+
+#skillsTableDiv {
+    height: 18em;
+    overflow: auto;
 }
 
 #equipmentBackground {
