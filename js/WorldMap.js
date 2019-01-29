@@ -413,7 +413,8 @@ function movePlayer(x,y) {
     var tileType = "empty";
     var legalTile = true;
     var isHouse = (newLocation.children().hasClass("house01") || newLocation.children().hasClass("house11"));
-    
+    if (conversationChoice != undefined)
+        conversationChoice = undefined;
     if ($("#craftMenu").is(":visible")) {
         $("#craftMenu").hide();
         craftMenuAll = false;
