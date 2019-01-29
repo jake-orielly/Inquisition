@@ -1,6 +1,5 @@
 Critical
 UI doesn’t indicate/explain items that you’re not high enough level to make
-Problem with perk menu mouseover when scrolling
 Removing item moves all items up, should leave empty space
 Right click empty space in inventory shows last item in list
 Game shows up at wrong size for window requiring zoom out
